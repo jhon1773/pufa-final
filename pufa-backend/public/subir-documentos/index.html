@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PUFAB - Subir Documentos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+      .upload-wrapper {
+        max-width: 700px;
+        margin: 0 auto;
+      }
+
+      .upload-card {
+        background: white;
+        border-radius: 8px;
+        padding: 2rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .upload-card h1 {
+        margin: 0 0 0.5rem;
+        font-size: 24px;
+      }
+
+      .upload-card > p {
+        color: #768794;
+        margin: 0 0 2rem;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group label {
+        display: block;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+      }
+
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-family: inherit;
+        font-size: 13px;
+        box-sizing: border-box;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus,
+      .form-group textarea:focus {
+        outline: none;
+        border-color: var(--green-700);
+        box-shadow: 0 0 0 3px rgba(45, 126, 62, 0.1);
+      }
+
+      .upload-drop {
+        border: 2px dashed #ddd;
+        border-radius: 8px;
+        padding: 2rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        background: #f9f9f9;
+      }
+
+      .upload-drop.drag-over {
+        border-color: var(--green-700);
+        background: #f0f7f1;
+      }
+
+      .upload-drop-icon {
+        font-size: 32px;
+        margin-bottom: 0.5rem;
+      }
+
+      .upload-drop-text {
+        color: var(--green-700);
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+      }
+
+      .upload-drop-hint {
+        font-size: 12px;
+        color: #768794;
+      }
+
+      #fileInput {
+        display: none;
+      }
+
+      .files-list {
+        margin-top: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .file-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem;
+        background: #f9f9f9;
+        border-radius: 6px;
+        border-left: 3px solid var(--green-700);
+      }
+
+      .file-info {
+        flex: 1;
+      }
+
+      .file-name {
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+      }
+
+      .file-size {
+        font-size: 12px;
+        color: #768794;
+      }
+
+      .file-actions {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .btn-remove {
+        padding: 0.4rem 0.8rem;
+        background: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 11px;
+        transition: 0.2s;
+      }
+
+      .btn-remove:hover {
+        background: #dc2626;
+      }
+
+      .helper-text {
+        font-size: 12px;
+        color: #768794;
+        margin-top: 0.4rem;
+      }
+
+      .alert {
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1.5rem;
+      }
+
+      .alert-warning {
+        background: #fef3c7;
+        color: #92400e;
+        border-left: 3px solid #f59e0b;
+      }
+
+      .alert-success {
+        background: #dcfce7;
+        color: #166534;
+        border-left: 3px solid #10b981;
+      }
+
+      .alert-error {
+        background: #fee2e2;
+        color: #991b1b;
+        border-left: 3px solid #ef4444;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+      }
+
+      .btn {
+        flex: 1;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s;
+      }
+
+      .btn-primary {
+        background: var(--green-700);
+        color: white;
+      }
+
+      .btn-primary:hover:not(:disabled) {
+        background: #1e4620;
+      }
+
+      .btn-primary:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+      }
+
+      .btn-secondary {
+        background: #e0e0e0;
+        color: #333;
+      }
+
+      .btn-secondary:hover {
+        background: #d0d0d0;
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 4px;
+        background: #e0e0e0;
+        border-radius: 2px;
+        overflow: hidden;
+        margin-top: 1rem;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: var(--green-700);
+        width: 0%;
+        transition: width 0.3s;
+      }
+
+      .uploading {
+        display: none;
+        text-align: center;
+        margin-top: 1rem;
+      }
+
+      .uploading.show {
+        display: block;
+      }
+
+      @media (max-width: 768px) {
+        .upload-card {
+          padding: 1.5rem;
+        }
+
+        .action-buttons {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="gov-header">
+      <div class="container gov-header-inner">
+        <img
+          src="https://www.figma.com/api/mcp/asset/55d910c5-1bcc-479c-acd9-c78a28860e9b"
+          alt="GOV.CO"
+          class="gov-logo"
+        />
+        <nav class="gov-links">
+          <a href="https://www.gov.co/" target="_blank" rel="noreferrer">GOV.CO</a>
+          <a href="#">Ministerio de Cultura</a>
+          <a href="#">Proimágenes</a>
+        </nav>
+      </div>
+      <div class="flag-strip"></div>
+    </header>
+
+    <nav class="site-nav">
+      <div class="container site-nav-inner">
+        <a href="/" class="brand">
+          <span class="brand-icon">◧</span>
+          <strong>PUFAB</strong>
+        </a>
+        <div class="nav-links" id="navLinks">
+          <a href="/">Inicio</a>
+          <a href="/dashboard/">Dashboard</a>
+        </div>
+        <div class="nav-cta">
+          <button class="btn btn-ghost" id="logoutBtn">Cerrar Sesión</button>
+        </div>
+      </div>
+    </nav>
+
+    <main class="section-white">
+      <div class="container">
+        <a href="javascript:history.back()" style="text-decoration: none; color: var(--green-700); margin-bottom: 1rem; display: inline-block;">← Volver</a>
+
+        <div class="upload-wrapper">
+          <div class="upload-card">
+            <h1>📄 Subir Documentos</h1>
+            <p>Carga los documentos requeridos para tu trámite P.U.F.A.B.</p>
+
+            <div id="alertContainer"></div>
+
+            <form id="uploadForm">
+              <div class="form-group">
+                <label for="tramiteSelect">Trámite *</label>
+                <select id="tramiteSelect" required>
+                  <option value="">-- Selecciona un trámite --</option>
+                </select>
+                <div class="helper-text">Elige el trámite al que pertenecen los documentos</div>
+              </div>
+
+              <div class="form-group">
+                <label>Documentos a Subir *</label>
+                <div class="upload-drop" id="uploadDrop">
+                  <div class="upload-drop-icon">📁</div>
+                  <div class="upload-drop-text">Arrastra archivos aquí</div>
+                  <div class="upload-drop-hint">o haz clic para seleccionar (Max. 10MB cada uno)</div>
+                </div>
+                <input type="file" id="fileInput" multiple accept=".pdf,.doc,.docx,.jpg,.png,.mp4,.mov" />
+                <div class="files-list" id="filesList"></div>
+              </div>
+
+              <div class="form-group">
+                <label for="descripcion">Descripción (Opcional)</label>
+                <textarea id="descripcion" placeholder="Describe qué documentos estás enviando..."></textarea>
+              </div>
+
+              <div class="uploading" id="uploadingSection">
+                <p>Subiendo documentos...</p>
+                <div class="progress-bar">
+                  <div class="progress-fill" id="progressBar"></div>
+                </div>
+              </div>
+
+              <div class="action-buttons">
+                <button type="button" class="btn btn-secondary" onclick="history.back()">Cancelar</button>
+                <button type="submit" class="btn btn-primary" id="submitBtn">Subir Documentos</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script src="/api-client.js"></script>
+    <script>
+      // ========== SETUP ==========
+      const uploadForm = document.getElementById('uploadForm');
+      const fileInput = document.getElementById('fileInput');
+      const uploadDrop = document.getElementById('uploadDrop');
+      const filesList = document.getElementById('filesList');
+      const tramiteSelect = document.getElementById('tramiteSelect');
+      const submitBtn = document.getElementById('submitBtn');
+      const alertContainer = document.getElementById('alertContainer');
+      let selectedFiles = [];
+
+      // Logout
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        API_CLIENT.clearSession();
+        window.location.href = '/iniciar-sesion/';
+      });
+
+      // ========== FILE HANDLING ==========
+      uploadDrop.addEventListener('click', () => fileInput.click());
+
+      uploadDrop.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadDrop.classList.add('drag-over');
+      });
+
+      uploadDrop.addEventListener('dragleave', () => {
+        uploadDrop.classList.remove('drag-over');
+      });
+
+      uploadDrop.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadDrop.classList.remove('drag-over');
+        const files = Array.from(e.dataTransfer.files);
+        agregarArchivos(files);
+      });
+
+      fileInput.addEventListener('change', (e) => {
+        const files = Array.from(e.target.files);
+        agregarArchivos(files);
+      });
+
+      function agregarArchivos(newFiles) {
+        newFiles.forEach((file) => {
+          if (file.size > 10 * 1024 * 1024) {
+            //10MB
+            showAlert(`Archivo ${file.name} es muy grande (máx 10MB)`, 'error');
+            return;
+          }
+          if (!selectedFiles.find((f) => f.name === file.name)) {
+            selectedFiles.push(file);
+          }
+        });
+        renderFiles();
+      }
+
+      function renderFiles() {
+        filesList.innerHTML = selectedFiles
+          .map(
+            (f, i) => `
+          <div class="file-item">
+            <div class="file-info">
+              <div class="file-name">📄 ${f.name}</div>
+              <div class="file-size">${(f.size / 1024).toFixed(1)} KB</div>
+            </div>
+            <div class="file-actions">
+              <button type="button" class="btn-remove" onclick="removerArchivo(${i})">Eliminar</button>
+            </div>
+          </div>
+        `
+          )
+          .join('');
+      }
+
+      function removerArchivo(index) {
+        selectedFiles.splice(index, 1);
+        renderFiles();
+      }
+
+      // ========== CARGAR TRÁMITES ==========
+      async function cargarTramites() {
+        try {
+          const result = await API_CLIENT.tramites.listar(1, 100);
+          const tramites = result.data || result;
+
+          tramiteSelect.innerHTML = '<option value="">-- Selecciona un trámite --</option>' + tramites.map((t) => `<option value="${t.id}">${t.radicado || t.id} - ${t.proyecto?.titulo}</option>`).join('');
+        } catch (error) {
+          showAlert('Error cargando trámites: ' + error.message, 'error');
+        }
+      }
+
+      function showAlert(message, type = 'warning') {
+        alertContainer.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+        setTimeout(() => {
+          alertContainer.innerHTML = '';
+        }, 5000);
+      }
+
+      // ========== UPLOAD FORM ==========
+      uploadForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        if (!tramiteSelect.value) {
+          showAlert('Selecciona un trámite', 'warning');
+          return;
+        }
+
+        if (selectedFiles.length === 0) {
+          showAlert('Selecciona al menos un archivo', 'warning');
+          return;
+        }
+
+        submitBtn.disabled = true;
+        document.getElementById('uploadingSection').classList.add('show');
+
+        try {
+          const tramiteId = tramiteSelect.value;
+          const totalFiles = selectedFiles.length;
+          let uploadedCount = 0;
+
+          for (const file of selectedFiles) {
+            const formData = new FormData();
+            formData.append('archivo', file);
+            formData.append('tramite_id', tramiteId);
+            formData.append('descripcion', document.getElementById('descripcion').value);
+
+            await API_CLIENT.documentos.subir(tramiteId, file);
+
+            uploadedCount++;
+            const progress = (uploadedCount / totalFiles) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+          }
+
+          showAlert(`✓ ${uploadedCount} documento(s) subido(s) exitosamente`, 'success');
+          selectedFiles = [];
+          renderFiles();
+          fileInput.value = '';
+          document.getElementById('uploadingSection').classList.remove('show');
+
+          setTimeout(() => {
+            window.location.href = `/detalle-tramite/?id=${tramiteId}`;
+          }, 2000);
+        } catch (error) {
+          showAlert('Error subiendo documentos: ' + error.message, 'error');
+          document.getElementById('uploadingSection').classList.remove('show');
+          submitBtn.disabled = false;
+        }
+      });
+
+      // Inicializar
+      cargarTramites();
+    </script>
+  </body>
+</html>

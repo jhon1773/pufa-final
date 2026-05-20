@@ -1,0 +1,33 @@
+# Dependencias
+node_modules/
+
+# Build
+dist/
+
+# Variables de entorno — nunca commitear credenciales
+.env
+.env.local
+.env.*.local
+
+# Archivos subidos por usuarios
+uploads/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# TypeScript
+*.tsbuildinfo

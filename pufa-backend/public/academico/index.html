@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <script src='/route-guard.js'></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PUFAB - Portal Académico | Mi Panel</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="portal-page academico-page">
+    <header class="gov-header">
+      <div class="container gov-header-inner">
+        <img src="https://www.figma.com/api/mcp/asset/55d910c5-1bcc-479c-acd9-c78a28860e9b" alt="GOV.CO" class="gov-logo" />
+        <nav class="gov-links"><a href="https://www.gov.co/" target="_blank" rel="noreferrer">GOV.CO</a><a href="#">Ministerio de Cultura</a><a href="#">Proimágenes</a></nav>
+      </div>
+      <div class="flag-strip"></div>
+    </header>
+
+    <nav class="site-nav">
+      <div class="container site-nav-inner">
+        <a href="/" class="brand"><span class="brand-icon">◧</span><span>PUFAB</span></a>
+        <button class="menu-toggle" aria-label="Abrir menú" id="menuToggle">☰</button>
+        <div class="nav-links" id="navLinks">
+          <a href="/">Inicio</a>
+          <a href="/directorio/">Directorio</a>
+          <a href="/tramites/">Trámites</a>
+          <a href="/contacto/">Contacto</a>
+          <a href="/academico/" class="active">Académico</a>
+        </div>
+        <div class="portal-user">Ana Martínez</div>
+      </div>
+    </nav>
+
+    <main class="portal-shell container">
+      <aside class="portal-sidebar academico-sidebar">
+        <h2>Portal Académico</h2>
+        <a class="portal-link active" href="/academico/">Mi Panel</a>
+        <a class="portal-link" href="/academico/academico-2.html">Observatorio</a>
+        <a class="portal-link" href="/academico/academico-3.html">Capacitación</a>
+        <a class="portal-link" href="/academico/academico-4.html">Pasantías</a>
+        <a class="portal-link" href="/academico/academico-5.html">Recursos</a>
+      </aside>
+
+      <section class="portal-content" id="academicoPanel">Cargando panel académico...</section>
+    </main>
+
+    <script src="/api-client.js"></script>
+    <script>
+      const menuToggle = document.getElementById('menuToggle');
+      const navLinks = document.getElementById('navLinks');
+      const academicoPanel = document.getElementById('academicoPanel');
+
+      menuToggle?.addEventListener('click', () => navLinks?.classList.toggle('open'));
+
+      const quickActionRoutes = {
+        'Ver Estadísticas del Sector': '/academico/academico-2.html',
+        'Acceder a Tutoriales': '/academico/academico-3.html',
+        'Buscar Pasantías': '/academico/academico-4.html',
+      };
+
+      async function init() {
+        try {
+          const data = await API_CLIENT.portal.academico.panel();
+
+          academicoPanel.innerHTML = `
+          <div class="portal-breadcrumb">Portal Académico > Mi Panel</div>
+          <h1>Mi Panel Académico</h1>
+          <article class="academico-hero">¡Bienvenido al Portal Académico! Accede a recursos educativos, estadísticas del sector y oportunidades de pasantías en producciones cinematográficas en Boyacá.</article>
+
+          <div class="academico-metrics">
+            <article><strong>${data.stats.producciones}</strong><span>Producciones 2024</span></article>
+            <article><strong>${data.stats.tutoriales}</strong><span>Tutoriales</span></article>
+            <article><strong>${data.stats.pasantias}</strong><span>Pasantías Activas</span></article>
+            <article><strong>${data.stats.documentos}</strong><span>Documentos Legales</span></article>
+          </div>
+
+          <div class="portal-grid-2">
+            <section class="portal-card">
+              <h3>Acciones Rápidas</h3>
+              <div class="academico-actions">${(data.acciones || []).map((item) => `<a href="${quickActionRoutes[item] || '/academico/'}">${item}</a>`).join('')}</div>
+            </section>
+
+            <section class="portal-card">
+              <h3>Mis Aplicaciones</h3>
+              <div class="academico-list">${(data.aplicaciones || []).map((item) => `<div><strong>${item.titulo}</strong><span class="status-tag">${item.estado}</span></div>`).join('')}</div>
+            </section>
+          </div>
+        `;
+        } catch (error) {
+          academicoPanel.innerHTML = `<article class="portal-card"><h1>No fue posible cargar el panel académico</h1><p>${error?.message || 'Intenta de nuevo más tarde.'}</p></article>`;
+        }
+      }
+
+      init();
+    </script>
+    <script src='/nav-session.js'></script>
+    <script src='/sidebar-slider.js'></script>
+  </body>
+</html>

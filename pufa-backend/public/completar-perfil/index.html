@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PUFAB - Completar Perfil</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="auth-page">
+    <nav class="site-nav">
+      <div class="container site-nav-inner">
+        <a href="/" class="brand">
+          <span class="brand-icon">◧</span>
+          <span>PUFAB</span>
+        </a>
+      </div>
+    </nav>
+
+    <main class="auth-shell">
+      <section class="auth-card">
+        <header class="auth-header">
+          <h1>Completar Perfil</h1>
+          <p>Paso 2 de 2 - Información personal</p>
+        </header>
+
+        <div class="auth-tabs" role="tablist" aria-label="Tipo de perfil" style="--tab-count:2;">
+          <button class="auth-tab active" type="button" data-profile-type="natural" title="Persona Natural">Persona Natural</button>
+          <button class="auth-tab" type="button" data-profile-type="juridica" title="Persona Jurídica">Persona Jurídica</button>
+        </div>
+
+        <section class="auth-banner" id="profileBanner">
+          <span class="auth-banner-icon">👤</span>
+          <div>
+            <strong>Persona Natural</strong>
+            <p>Completa tu información personal para activar tu cuenta</p>
+          </div>
+        </section>
+
+        <!-- PERSONA NATURAL FORM -->
+        <form class="auth-form" id="naturalForm" style="display: block;">
+          <label>
+            Tipo de identificación *
+            <select name="tipoIdentificacion" required>
+              <option value="">Selecciona tipo de identificación</option>
+            </select>
+          </label>
+          <label>
+            Número de identificación *
+            <input type="text" name="numeroIdentificacion" placeholder="Ej: 1234567890" required />
+          </label>
+          <label>
+            Teléfono *
+            <input type="tel" name="telefono" placeholder="+57 300 123 4567" required />
+          </label>
+          <label>
+            Identidad de género *
+            <select name="identidadGenero" required>
+              <option value="">Selecciona identidad de género</option>
+            </select>
+          </label>
+          <label>
+            Nivel educativo *
+            <select name="nivelEducativo" required>
+              <option value="">Selecciona nivel educativo</option>
+            </select>
+          </label>
+          <label>
+            Municipio de residencia *
+            <select name="municipio" required>
+              <option value="">Selecciona municipio</option>
+            </select>
+          </label>
+          <label>
+            Dirección *
+            <input type="text" name="direccion" placeholder="Calle y número" required />
+          </label>
+
+          <div id="error-natural" class="auth-error" style="display: none;"></div>
+          <button type="submit" class="btn btn-primary full" id="submitNatural">Completar Perfil</button>
+        </form>
+
+        <!-- PERSONA JURÍDICA FORM -->
+        <form class="auth-form" id="juridicaForm" style="display: none;">
+          <label>
+            Razón social *
+            <input type="text" name="razonSocial" placeholder="Nombre de la empresa/institución" required />
+          </label>
+          <label>
+            NIT (Número de Identificación Tributaria) *
+            <input type="text" name="nit" placeholder="Ej: 9999999999" required />
+          </label>
+          <label>
+            Tipo de organización *
+            <select name="tipoOrganizacion" required>
+              <option value="">Selecciona tipo de organización</option>
+              <option value="productora">Productora Audiovisual</option>
+              <option value="proveedor">Proveedor Técnico</option>
+              <option value="academia">Institución Académica</option>
+              <option value="entidad">Entidad Pública</option>
+              <option value="otra">Otra</option>
+            </select>
+          </label>
+          <label>
+            Persona de contacto principal *
+            <input type="text" name="contactoPrincipal" placeholder="Nombre del representante" required />
+          </label>
+          <label>
+            Teléfono de contacto *
+            <input type="tel" name="telefonoContacto" placeholder="+57 300 123 4567" required />
+          </label>
+          <label>
+            Municipio de operación *
+            <select name="municipio" required>
+              <option value="">Selecciona municipio</option>
+            </select>
+          </label>
+          <label>
+            Dirección de la empresa *
+            <input type="text" name="direccion" placeholder="Calle, número y complemento" required />
+          </label>
+          <label>
+            Descripción de la empresa (máx 500 caracteres)
+            <textarea name="descripcion" placeholder="¿A qué se dedica tu empresa?" rows="4" maxlength="500"></textarea>
+          </label>
+
+          <div id="error-juridica" class="auth-error" style="display: none;"></div>
+          <button type="submit" class="btn btn-primary full" id="submitJuridica">Completar Perfil</button>
+        </form>
+
+        <p class="auth-footer">
+          <a href="/iniciar-sesion/">← Volver a inicio de sesión</a>
+        </p>
+      </section>
+    </main>
+
+    <script src="/api-client.js"></script>
+    <script>
+      const naturalForm = document.getElementById('naturalForm');
+      const juridicaForm = document.getElementById('juridicaForm');
+      const profileTabs = document.querySelectorAll('[data-profile-type]');
+      const profileBanner = document.getElementById('profileBanner');
+      const bannerIcons = { natural: '👤', juridica: '🏢' };
+      const bannerTexts = {
+        natural: ['Persona Natural', 'Completa tu información personal para activar tu cuenta'],
+        juridica: ['Persona Jurídica', 'Completa la información de tu organización'],
+      };
+
+      // Tab switching
+      profileTabs.forEach((tab) => {
+        tab.addEventListener('click', (e) => {
+          e.preventDefault();
+          profileTabs.forEach((t) => t.classList.remove('active'));
+          tab.classList.add('active');
+
+          const type = tab.dataset.profileType;
+          naturalForm.style.display = type === 'natural' ? 'block' : 'none';
+          juridicaForm.style.display = type === 'juridica' ? 'block' : 'none';
+
+          profileBanner.innerHTML = `
+            <span class="auth-banner-icon">${bannerIcons[type]}</span>
+            <div>
+              <strong>${bannerTexts[type][0]}</strong>
+              <p>${bannerTexts[type][1]}</p>
+            </div>
+          `;
+        });
+      });
+
+      // Cargar catálogos
+      async function loadCatalogos() {
+        try {
+          const tiposId = await API_CLIENT.catalogos.tiposIdentificacion();
+          const generos = await API_CLIENT.catalogos.identidadesGenero();
+          const educacion = await API_CLIENT.catalogos.nivelesEducativos();
+          const municipios = await API_CLIENT.catalogos.municipios();
+
+          // Llenar selects de Persona Natural
+          const selectTipoId = naturalForm.querySelector('[name="tipoIdentificacion"]');
+          tiposId.forEach((tipo) => {
+            const option = document.createElement('option');
+            option.value = tipo.id;
+            option.textContent = tipo.nombre;
+            selectTipoId.appendChild(option);
+          });
+
+          const selectGenero = naturalForm.querySelector('[name="identidadGenero"]');
+          generos.forEach((genero) => {
+            const option = document.createElement('option');
+            option.value = genero.id;
+            option.textContent = genero.nombre;
+            selectGenero.appendChild(option);
+          });
+
+          const selectEducacion = naturalForm.querySelector('[name="nivelEducativo"]');
+          educacion.forEach((edu) => {
+            const option = document.createElement('option');
+            option.value = edu.id;
+            option.textContent = edu.nombre;
+            selectEducacion.appendChild(option);
+          });
+
+          const selectMunicipio = naturalForm.querySelector('[name="municipio"]');
+          municipios.forEach((municipio) => {
+            const option = document.createElement('option');
+            option.value = municipio.id;
+            option.textContent = municipio.nombre;
+            selectMunicipio.appendChild(option);
+          });
+
+          // Llenar select de municipio en Persona Jurídica
+          const selectMunicipioJuridica = juridicaForm.querySelector('[name="municipio"]');
+          municipios.forEach((municipio) => {
+            const option = document.createElement('option');
+            option.value = municipio.id;
+            option.textContent = municipio.nombre;
+            selectMunicipioJuridica.appendChild(option);
+          });
+        } catch (error) {
+          console.error('Error cargando catálogos:', error);
+        }
+      }
+
+      // Enviar formulario Persona Natural
+      naturalForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const errorDiv = document.getElementById('error-natural');
+        errorDiv.style.display = 'none';
+
+        try {
+          const data = {
+            tipo_identificacion_id: naturalForm.tipoIdentificacion.value,
+            numero_identificacion: naturalForm.numeroIdentificacion.value,
+            telefono: naturalForm.telefono.value,
+            identidad_genero_id: naturalForm.identidadGenero.value,
+            nivel_educativo_id: naturalForm.nivelEducativo.value,
+            municipio_id: naturalForm.municipio.value,
+            direccion: naturalForm.direccion.value,
+          };
+
+          await API_CLIENT.usuarios.completarPerfilNatural(data);
+
+          // Crear solicitud de registro
+          await API_CLIENT.registro.crearSolicitud();
+
+          alert('✓ Perfil completado. Tu solicitud está pendiente de aprobación.');
+          window.location.href = '/iniciar-sesion/';
+        } catch (error) {
+          errorDiv.textContent = error.message || 'Error al completar el perfil.';
+          errorDiv.style.display = 'block';
+        }
+      });
+
+      // Enviar formulario Persona Jurídica
+      juridicaForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const errorDiv = document.getElementById('error-juridica');
+        errorDiv.style.display = 'none';
+
+        try {
+          const data = {
+            razon_social: juridicaForm.razonSocial.value,
+            nit: juridicaForm.nit.value,
+            tipo_organizacion: juridicaForm.tipoOrganizacion.value,
+            contacto_principal: juridicaForm.contactoPrincipal.value,
+            telefono_contacto: juridicaForm.telefonoContacto.value,
+            municipio_id: juridicaForm.municipio.value,
+            direccion: juridicaForm.direccion.value,
+            descripcion: juridicaForm.descripcion.value,
+          };
+
+          await API_CLIENT.usuarios.completarPerfilJuridica(data);
+
+          // Crear solicitud de registro
+          await API_CLIENT.registro.crearSolicitud();
+
+          alert('✓ Perfil completado. Tu solicitud está pendiente de aprobación.');
+          window.location.href = '/iniciar-sesion/';
+        } catch (error) {
+          errorDiv.textContent = error.message || 'Error al completar el perfil.';
+          errorDiv.style.display = 'block';
+        }
+      });
+
+      // Cargar catálogos al abrir la página
+      loadCatalogos();
+    </script>
+  </body>
+</html>

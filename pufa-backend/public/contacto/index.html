@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PUFAB - Contacto</title>
+    <meta
+      name="description"
+      content="Página de contacto de la Comisión Fílmica de Boyacá para solicitudes y acompañamiento."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="support-page">
+    <header class="gov-header">
+      <div class="container gov-header-inner">
+        <img
+          src="https://www.figma.com/api/mcp/asset/55d910c5-1bcc-479c-acd9-c78a28860e9b"
+          alt="GOV.CO"
+          class="gov-logo"
+        />
+        <nav class="gov-links">
+          <a href="https://www.gov.co/" target="_blank" rel="noreferrer">GOV.CO</a>
+          <a href="#">Ministerio de Cultura</a>
+          <a href="#">Proimágenes</a>
+        </nav>
+      </div>
+      <div class="flag-strip"></div>
+    </header>
+
+    <nav class="site-nav">
+      <div class="container site-nav-inner">
+        <a href="/" class="brand">
+          <span class="brand-icon">◧</span>
+          <span>PUFAB</span>
+        </a>
+        <button class="menu-toggle" aria-label="Abrir menú" id="menuToggle">☰</button>
+        <div class="nav-links" id="navLinks">
+          <a href="/">Inicio</a>
+          <a href="/#conocenos">Conózcanos</a>
+          <a href="/directorio/">Directorio</a>
+          <a href="/tramites/">Trámites</a>
+          <a href="/contacto/" class="active">Contacto</a>
+          <a href="/iniciar-sesion/">Ingresar</a>
+        </div>
+        <div class="nav-cta">
+          <a class="btn btn-ghost" href="/iniciar-sesion/">Ingresar</a>
+          <a class="btn btn-primary" href="/directorio/">Ventanilla Única</a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="support-shell">
+      <section class="support-hero section-white">
+        <div class="container support-hero-grid">
+          <div>
+            <span class="pill">Contacto</span>
+            <h1>¿Necesitas ayuda?</h1>
+            <p>
+              Estamos aquí para apoyar tu producción. Escríbenos y te responderemos en menos de 48
+              horas.
+            </p>
+          </div>
+          <a class="btn btn-primary support-hero-cta" href="/iniciar-sesion/">Iniciar sesión</a>
+        </div>
+      </section>
+
+      <section class="section-soft">
+        <div class="container support-layout">
+          <section class="support-info-panel">
+            <h2>Información de contacto</h2>
+            <article class="support-item">
+              <span class="support-icon">☎</span>
+              <div>
+                <strong>Teléfono</strong>
+                <p>+57 8 123 4567</p>
+                <small>Línea gratuita: +57 800 123 4567</small>
+              </div>
+            </article>
+            <article class="support-item">
+              <span class="support-icon">✉</span>
+              <div>
+                <strong>Correo electrónico</strong>
+                <p>info@boyacafilm.gov.co</p>
+                <small>ventanilla@boyacafilm.gov.co</small>
+              </div>
+            </article>
+            <article class="support-item">
+              <span class="support-icon">⌂</span>
+              <div>
+                <strong>Dirección</strong>
+                <p>Carrera 11 # 18-27</p>
+                <small>Tunja, Boyacá - Colombia</small>
+              </div>
+            </article>
+            <article class="support-item">
+              <span class="support-icon">◷</span>
+              <div>
+                <strong>Horario de atención</strong>
+                <p>Lunes a Viernes</p>
+                <small>8:00 a.m. - 5:00 p.m.</small>
+              </div>
+            </article>
+            <div class="support-map">
+              <iframe
+                title="Alcaldía de Tunja en Google Maps"
+                src="https://www.google.com/maps?q=Alcaldia%20de%20Tunja%2C%20Boyaca&output=embed"
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                allowfullscreen
+              ></iframe>
+              <div class="support-map-caption">
+                <strong>Alcaldía de Tunja</strong>
+                <span>Tunja, Boyacá - Colombia</span>
+              </div>
+            </div>
+          </section>
+
+          <form class="support-form" action="#" method="post">
+            <h2>Envíanos un mensaje</h2>
+            <label>
+              Nombre completo *
+              <input type="text" name="name" placeholder="Tu nombre" />
+            </label>
+            <label>
+              Correo electrónico *
+              <input type="email" name="email" placeholder="tu@email.com" />
+            </label>
+            <label>
+              Asunto *
+              <select name="subject">
+                <option>Selecciona un asunto</option>
+                <option>Permisos</option>
+                <option>Directorio</option>
+                <option>Soporte técnico</option>
+              </select>
+            </label>
+            <label>
+              Mensaje *
+              <textarea name="message" rows="6" placeholder="¿En qué podemos ayudarte?"></textarea>
+            </label>
+            <button type="submit" class="btn btn-primary full">Enviar mensaje</button>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <section>
+          <div class="brand footer-brand"><span class="brand-icon">◧</span><span>PUFAB</span></div>
+          <p>
+            Comisión Fílmica de Boyacá. Facilitamos la conexión entre producciones audiovisuales,
+            locaciones y talento local.
+          </p>
+        </section>
+        <section>
+          <h4>Directorio</h4>
+          <a href="/">Inicio</a>
+          <a href="/directorio/">Locaciones y talentos</a>
+          <a href="/contacto/">Contacto</a>
+        </section>
+        <section>
+          <h4>Contacto</h4>
+          <p>info@boyacafilm.gov.co</p>
+          <p>Tunja, Boyacá</p>
+          <p>+57 8 123 4567</p>
+        </section>
+        <section>
+          <h4>Síguenos</h4>
+          <div class="socials">
+            <a href="#">F</a>
+            <a href="#">I</a>
+            <a href="#">X</a>
+          </div>
+        </section>
+      </div>
+    </footer>
+
+    <script src="/nav-session.js"></script>
+  </body>
+</html>

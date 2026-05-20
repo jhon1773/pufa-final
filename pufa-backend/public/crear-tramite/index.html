@@ -1,0 +1,822 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PUFAB - Crear Trámite</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+      .tramite-container {
+        background: var(--white);
+        border-radius: var(--radius);
+        padding: 2rem;
+        max-width: 900px;
+        margin: 2rem auto;
+        box-shadow: var(--shadow);
+      }
+
+      .tramite-steps {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+        position: relative;
+      }
+
+      .tramite-steps::before {
+        content: '';
+        position: absolute;
+        top: 20px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--bg-soft);
+        z-index: 1;
+      }
+
+      .tramite-step {
+        flex: 1;
+        text-align: center;
+        position: relative;
+        z-index: 2;
+      }
+
+      .tramite-step-circle {
+        width: 40px;
+        height: 40px;
+        margin: 0 auto 0.5rem;
+        border-radius: 50%;
+        background: var(--bg-soft);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        color: var(--muted);
+        transition: all 0.2s;
+      }
+
+      .tramite-step.active .tramite-step-circle {
+        background: var(--green-700);
+        color: white;
+      }
+
+      .tramite-step.completed .tramite-step-circle {
+        background: var(--green-700);
+        color: white;
+      }
+
+      .tramite-step-label {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .tramite-section {
+        margin-bottom: 2rem;
+      }
+
+      .tramite-section h3 {
+        margin: 0 0 1rem;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      .form-group input,
+      .form-group textarea,
+      .form-group select {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 14px;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+      }
+
+      .item-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin: 1rem 0;
+      }
+
+      .item-card {
+        background: var(--bg-soft);
+        padding: 1rem;
+        border-radius: 8px;
+        border-left: 4px solid var(--green-700);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .item-card button {
+        background: #fee;
+        border: none;
+        color: #c33;
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 12px;
+      }
+
+      .add-btn {
+        background: var(--bg-soft);
+        border: 2px dashed var(--green-700);
+        color: var(--green-700);
+        padding: 1rem;
+        border-radius: 8px;
+        cursor: pointer;
+        text-align: center;
+        font-weight: 500;
+        transition: all 0.2s;
+      }
+
+      .add-btn:hover {
+        background: var(--white);
+      }
+
+      .checkbox-group {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin: 1rem 0;
+      }
+
+      .checkbox-item {
+        display: flex;
+        align-items: start;
+        gap: 0.75rem;
+      }
+
+      .checkbox-item input[type='checkbox'] {
+        width: auto;
+        margin-top: 0.3rem;
+        cursor: pointer;
+      }
+
+      .checkbox-item label {
+        margin: 0;
+        font-size: 13px;
+        color: var(--text);
+      }
+
+      .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+      }
+
+      .error-message,
+      .success-message {
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        border-left: 4px solid;
+      }
+
+      .error-message {
+        background: #fee;
+        color: #c33;
+        border-left-color: #c33;
+      }
+
+      .success-message {
+        background: #efe;
+        color: #3c3;
+        border-left-color: #3c3;
+      }
+
+      @media (max-width: 600px) {
+        .form-row,
+        .tramite-steps {
+          grid-template-columns: 1fr;
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="gov-header">
+      <div class="container gov-header-inner">
+        <img
+          src="https://www.figma.com/api/mcp/asset/55d910c5-1bcc-479c-acd9-c78a28860e9b"
+          alt="GOV.CO"
+          class="gov-logo"
+        />
+        <nav class="gov-links">
+          <a href="https://www.gov.co/" target="_blank" rel="noreferrer">GOV.CO</a>
+          <a href="#">Ministerio de Cultura</a>
+          <a href="#">Proimágenes</a>
+        </nav>
+      </div>
+      <div class="flag-strip"></div>
+    </header>
+
+    <nav class="site-nav">
+      <div class="container site-nav-inner">
+        <a href="/admin/" class="brand">
+          <span class="brand-icon">◧</span>
+          <span>PUFAB</span>
+        </a>
+        <button class="menu-toggle" aria-label="Abrir menú" id="menuToggle">☰</button>
+        <div class="nav-links" id="navLinks">
+          <a href="/admin/">Panel Admin</a>
+          <a href="/">Inicio</a>
+          <a href="/contacto/">Contacto</a>
+        </div>
+        <div class="nav-cta">
+          <a class="btn btn-ghost" id="logoutBtn">Cerrar Sesión</a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="section-white">
+      <div class="container">
+        <div class="tramite-container">
+          <h1>Crear Solicitud de Permiso P.U.F.A.B.</h1>
+          <p style="color: var(--muted); margin-bottom: 2rem;">Completa toda la información requerida para tu solicitud de rodaje audiovisual en Boyacá</p>
+
+          <div id="error-message" class="error-message" style="display: none;"></div>
+          <div id="success-message" class="success-message" style="display: none;"></div>
+          <div id="reserva-locacion-banner" class="success-message" style="display: none; background:#f0fdf4;color:#166534;border-left-color:#16a34a;"></div>
+
+          <div class="tramite-steps">
+            <div class="tramite-step active completed">
+              <div class="tramite-step-circle">1</div>
+              <div class="tramite-step-label">Proyecto</div>
+            </div>
+            <div class="tramite-step">
+              <div class="tramite-step-circle">2</div>
+              <div class="tramite-step-label">Locaciones</div>
+            </div>
+            <div class="tramite-step">
+              <div class="tramite-step-circle">3</div>
+              <div class="tramite-step-label">Equipo</div>
+            </div>
+            <div class="tramite-step">
+              <div class="tramite-step-circle">4</div>
+              <div class="tramite-step-label">Documentos</div>
+            </div>
+            <div class="tramite-step">
+              <div class="tramite-step-circle">5</div>
+              <div class="tramite-step-label">Compromisos</div>
+            </div>
+          </div>
+
+          <form id="crearTramiteForm">
+            <!-- PROYECTO -->
+            <div class="tramite-section">
+              <h3>📹 Proyecto Audiovisual</h3>
+              <div class="form-group">
+                <label for="proyecto">Selecciona el proyecto *</label>
+                <select id="proyecto" name="proyecto" required>
+                  <option value="">Cargando proyectos...</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- LOCACIONES -->
+            <div class="tramite-section">
+              <h3>📍 Locaciones de Rodaje</h3>
+              <p style="color: var(--muted); font-size: 13px; margin-bottom: 1rem;">Selecciona las locaciones ya registradas donde planeas rodar (mínimo 1)</p>
+
+              <div class="form-group" style="display: grid; grid-template-columns: 1fr auto; gap: 0.75rem; align-items: end; margin-bottom: 1rem;">
+                <div>
+                  <label for="locacionExistente">Locación disponible</label>
+                  <select id="locacionExistente">
+                    <option value="">Cargando locaciones...</option>
+                  </select>
+                </div>
+                <button type="button" class="add-btn" id="addLocacionExistente">+ Agregar</button>
+              </div>
+
+              <div id="locaciones-list" class="item-list"></div>
+            </div>
+
+            <!-- EQUIPO TÉCNICO -->
+            <div class="tramite-section">
+              <h3>⚙️ Equipo Técnico</h3>
+              <p style="color: var(--muted); font-size: 13px; margin-bottom: 1rem;">Especifica los roles técnicos necesarios (mínimo 1)</p>
+
+              <div id="equipo-list" class="item-list"></div>
+
+              <button type="button" class="add-btn" id="addEquipo">+ Agregar Rol Técnico</button>
+            </div>
+
+            <!-- DOCUMENTOS -->
+            <div class="tramite-section">
+              <h3>📁 Documentos Soporte</h3>
+              <p style="color: var(--muted); font-size: 13px; margin-bottom: 1rem;">Adjunta los documentos necesarios para tu solicitud (guión técnico, permisos, etc.)</p>
+
+              <div class="form-group" style="margin-bottom: 1rem;">
+                <label for="documentoInput">Selecciona archivos (PDF, DOC, DOCX, Images)</label>
+                <input type="file" id="documentoInput" multiple accept=".pdf,.doc,.docx,.jpg,.png,.jpeg" style="padding: 1rem; border: 2px dashed var(--green-700); cursor: pointer;" />
+              </div>
+
+              <button type="button" class="add-btn" id="addDocumento" style="margin-top: 0.5rem;">+ Agregar Documento</button>
+              <div id="documentos-list" class="item-list" style="margin-top: 1rem;"></div>
+            </div>
+
+            <!-- COMPROMISOS ÉTICOS -->
+            <div class="tramite-section">
+              <h3>✅ Compromisos Éticos</h3>
+              <p style="color: var(--muted); font-size: 13px; margin-bottom: 1rem;">Confirma que cumplés con los compromisos requeridos</p>
+
+              <div class="checkbox-group">
+                <div class="checkbox-item">
+                  <input type="checkbox" id="compromiso1" name="compromisos" required />
+                  <label for="compromiso1">Respeto por la propiedad privada y espacios públicos</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="compromiso2" name="compromisos" required />
+                  <label for="compromiso2">Cumplimiento de normativas ambientales y de conservación</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="compromiso3" name="compromisos" required />
+                  <label for="compromiso3">Respeto por los derechos de las comunidades locales</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="compromiso4" name="compromisos" required />
+                  <label for="compromiso4">Contratación de personal local cuando sea posible</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="compromiso5" name="compromisos" required />
+                  <label for="compromiso5">Acceso seguro a la información sobre el Departamento</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <a href="/admin/" class="btn btn-ghost">Cancelar</a>
+              <button type="submit" class="btn btn-primary" id="submitBtn">Crear Solicitud de Permiso</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <!-- Modal para agregar equipo -->
+    <div id="equipoModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+      <div style="background: white; padding: 2rem; border-radius: 14px; max-width: 500px; width: 90%;">
+        <h3>Agregar Rol Técnico</h3>
+        <div class="form-group">
+          <label for="equipoRol">Rol Técnico *</label>
+          <select id="equipoRol">
+            <option value="">Selecciona rol</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="equipoCantidad">Cantidad de personas *</label>
+          <input type="number" id="equipoCantidad" min="1" placeholder="Ej: 3" />
+        </div>
+        <div class="form-group">
+          <label for="equipoDescripcion">Descripción del equipamiento/material necesario</label>
+          <textarea id="equipoDescripcion" placeholder="Detalles del equipamiento técnico requerido"></textarea>
+        </div>
+        <div style="display: flex; gap: 1rem;">
+          <button type="button" id="cancelEquipo" class="btn btn-ghost" style="flex: 1;">Cancelar</button>
+          <button type="button" id="saveEquipo" class="btn btn-primary" style="flex: 1;">Guardar Rol</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/api-client.js"></script>
+    <script src="/route-guard.js"></script>
+    <script>
+      const form = document.getElementById('crearTramiteForm');
+      const errorDiv = document.getElementById('error-message');
+      const successDiv = document.getElementById('success-message');
+      const submitBtn = document.getElementById('submitBtn');
+      const logoutBtn = document.getElementById('logoutBtn');
+
+      // Modales
+      const equipoModal = document.getElementById('equipoModal');
+      const reservaLocacionBanner = document.getElementById('reserva-locacion-banner');
+
+      // Arrays para almacenar datos
+      let locaciones = [];
+      let locacionesDisponibles = [];
+      let equipoTecnico = [];
+      let documentos = [];
+      const queryParams = new URLSearchParams(window.location.search);
+      const proyectoDesdeUrl = queryParams.get('proyecto-id') || queryParams.get('proyectoId') || queryParams.get('proyecto_id');
+      const reservaLocacionPendiente = (() => {
+        const fromQuery = queryParams.get('locacion');
+        if (fromQuery) return fromQuery;
+        try {
+          return JSON.parse(localStorage.getItem('pufab_reserva_locacion') || 'null')?.id_unico || null;
+        } catch {
+          return null;
+        }
+      })();
+
+      // Logout
+      logoutBtn.addEventListener('click', () => {
+        API_CLIENT.clearSession();
+        window.location.href = '/iniciar-sesion/';
+      });
+
+      // Cargar catálogos
+      async function loadCatalogos() {
+        const selectRol = document.getElementById('equipoRol');
+        const selectProyecto = document.getElementById('proyecto');
+        const selectLocacionExistente = document.getElementById('locacionExistente');
+
+        selectRol.innerHTML = '<option value="">Selecciona rol</option>';
+        selectProyecto.innerHTML = '<option value="">Cargando proyectos...</option>';
+        selectLocacionExistente.innerHTML = '<option value="">Cargando locaciones...</option>';
+
+        const [rolesResult, proyectosResult, locacionesResult] = await Promise.allSettled([
+          API_CLIENT.catalogos.rolesEquipoTecnico(),
+          API_CLIENT.portal.productor.proyectosMenu(),
+          API_CLIENT.portal.productor.locacionesMenu(),
+        ]);
+
+        if (rolesResult.status === 'fulfilled' && Array.isArray(rolesResult.value)) {
+          rolesResult.value.forEach((rol) => {
+            const option = document.createElement('option');
+            option.value = rol.id;
+            option.textContent = rol.nombre;
+            selectRol.appendChild(option);
+          });
+        }
+
+        if (proyectosResult.status === 'fulfilled') {
+          const proyectosList = proyectosResult.value?.data || proyectosResult.value;
+          selectProyecto.innerHTML = '<option value="">Selecciona proyecto</option>';
+          (Array.isArray(proyectosList) ? proyectosList : []).forEach((proy) => {
+            const option = document.createElement('option');
+            option.value = proy.id;
+            option.textContent = proy.titulo || proy.nombre_proyecto || `Proyecto ${proy.id}`;
+            selectProyecto.appendChild(option);
+          });
+          if (selectProyecto.options.length <= 1) {
+            selectProyecto.innerHTML = '<option value="">No hay proyectos registrados</option>';
+          }
+
+          if (proyectoDesdeUrl) {
+            selectProyecto.value = proyectoDesdeUrl;
+            if (selectProyecto.value !== proyectoDesdeUrl) {
+              selectProyecto.innerHTML = `<option value="${proyectoDesdeUrl}" selected>Proyecto seleccionado: ${proyectoDesdeUrl}</option>` + selectProyecto.innerHTML;
+              selectProyecto.value = proyectoDesdeUrl;
+            }
+            selectProyecto.disabled = true;
+          }
+        } else {
+          try {
+            const fallback = await API_CLIENT.proyectos.listar(1, 100);
+            const proyectosList = fallback?.data || fallback;
+            selectProyecto.innerHTML = '<option value="">Selecciona proyecto</option>';
+            (Array.isArray(proyectosList) ? proyectosList : []).forEach((proy) => {
+              const option = document.createElement('option');
+              option.value = proy.id;
+              option.textContent = proy.titulo || proy.nombre_proyecto || `Proyecto ${proy.id}`;
+              selectProyecto.appendChild(option);
+            });
+
+            if (proyectoDesdeUrl) {
+              selectProyecto.value = proyectoDesdeUrl;
+              selectProyecto.disabled = true;
+            }
+          } catch (fallbackError) {
+            selectProyecto.innerHTML = '<option value="">No fue posible cargar proyectos</option>';
+            console.error('Error cargando proyectos:', proyectosResult.reason, fallbackError);
+          }
+        }
+
+        if (locacionesResult.status === 'fulfilled') {
+          locacionesDisponibles = Array.isArray(locacionesResult.value?.data)
+            ? locacionesResult.value.data
+            : Array.isArray(locacionesResult.value)
+              ? locacionesResult.value
+              : [];
+          renderLocacionesDisponibles();
+        } else {
+          selectLocacionExistente.innerHTML = '<option value="">No fue posible cargar locaciones</option>';
+          console.error('Error cargando locaciones existentes:', locacionesResult.reason);
+        }
+
+        if (selectRol.options.length <= 1) {
+          console.error('No se pudieron cargar roles técnicos desde el backend.');
+        }
+      }
+
+      function renderLocacionesDisponibles() {
+        const selectLocacionExistente = document.getElementById('locacionExistente');
+        selectLocacionExistente.innerHTML = '<option value="">Selecciona una locación existente</option>';
+        locacionesDisponibles.forEach((loc) => {
+          const option = document.createElement('option');
+          option.value = loc.id_unico;
+          option.textContent = `${loc.nombre_lugar} - ${loc.municipio_nombre || 'Sin municipio'}`;
+          selectLocacionExistente.appendChild(option);
+        });
+
+        if (!locacionesDisponibles.length) {
+          selectLocacionExistente.innerHTML = '<option value="">No hay locaciones registradas</option>';
+        }
+
+        if (reservaLocacionPendiente) {
+          const pendiente = locacionesDisponibles.find((loc) => String(loc.id_unico) === String(reservaLocacionPendiente));
+          if (pendiente && !locaciones.some((loc) => String(loc.id_unico) === String(pendiente.id_unico))) {
+            locaciones.push(pendiente);
+            renderLocaciones();
+            selectLocacionExistente.value = pendiente.id_unico;
+            if (reservaLocacionBanner) {
+              reservaLocacionBanner.textContent = `Locación preseleccionada: ${pendiente.nombre_lugar}. Puedes completar los demás datos y enviar la solicitud.`;
+              reservaLocacionBanner.style.display = 'block';
+            }
+            localStorage.removeItem('pufab_reserva_locacion');
+          }
+        }
+      }
+
+      document.getElementById('addLocacionExistente').addEventListener('click', (e) => {
+        e.preventDefault();
+        const selectLocacionExistente = document.getElementById('locacionExistente');
+        const selectedId = selectLocacionExistente.value;
+
+        if (!selectedId) {
+          alert('Selecciona una locación del menú.');
+          return;
+        }
+
+        const locacion = locacionesDisponibles.find((l) => l.id_unico === selectedId);
+        if (!locacion) {
+          alert('No se encontró la locación seleccionada.');
+          return;
+        }
+
+        if (locaciones.some((l) => l.id_unico === locacion.id_unico)) {
+          alert('Esta locación ya fue agregada.');
+          return;
+        }
+
+        locaciones.push(locacion);
+        renderLocaciones();
+      });
+
+      function renderLocaciones() {
+        const container = document.getElementById('locaciones-list');
+        container.innerHTML = locaciones
+          .map(
+            (loc, idx) => `
+          <div class="item-card">
+            <div>
+              <strong>${loc.nombre_lugar}</strong>
+              <p style="margin: 0.25rem 0 0; font-size: 12px; color: var(--muted);">${loc.municipio_nombre || 'Sin municipio'} · ${loc.tipo_espacio_nombre || 'Sin tipo de espacio'}</p>
+            </div>
+            <button type="button" onclick="removeLocacion(${idx})">Eliminar</button>
+          </div>
+        `
+          )
+          .join('');
+      }
+
+      window.removeLocacion = (idx) => {
+        locaciones.splice(idx, 1);
+        renderLocaciones();
+      };
+
+      // Agregar equipo
+      document.getElementById('addEquipo').addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById('equipoRol').value = '';
+        document.getElementById('equipoCantidad').value = '';
+        document.getElementById('equipoDescripcion').value = '';
+        equipoModal.style.display = 'flex';
+      });
+
+      document.getElementById('cancelEquipo').addEventListener('click', (e) => {
+        e.preventDefault();
+        equipoModal.style.display = 'none';
+      });
+
+      document.getElementById('saveEquipo').addEventListener('click', (e) => {
+        e.preventDefault();
+        const rol = document.getElementById('equipoRol').value;
+        const cantidad = document.getElementById('equipoCantidad').value;
+        const descripcion = document.getElementById('equipoDescripcion').value;
+
+        if (!rol || !cantidad) {
+          alert('Por favor completa rol y cantidad');
+          return;
+        }
+
+        equipoTecnico.push({
+          rol: parseInt(rol),
+          cantidad: parseInt(cantidad),
+          descripcion,
+        });
+
+        renderEquipo();
+        equipoModal.style.display = 'none';
+      });
+
+      function renderEquipo() {
+        const container = document.getElementById('equipo-list');
+        container.innerHTML = equipoTecnico
+          .map(
+            (eq, idx) => `
+          <div class="item-card">
+            <div>
+              <strong>Rol ID: ${eq.rol}</strong>
+              <p style="margin: 0.25rem 0 0; font-size: 12px; color: var(--muted);">${eq.cantidad} personas - ${eq.descripcion || 'Sin descripción'}</p>
+            </div>
+            <button type="button" onclick="removeEquipo(${idx})">Eliminar</button>
+          </div>
+        `
+          )
+          .join('');
+      }
+
+      window.removeEquipo = (idx) => {
+        equipoTecnico.splice(idx, 1);
+        renderEquipo();
+      };
+
+      // Manejo de documentos
+      document.getElementById('addDocumento').addEventListener('click', (e) => {
+        e.preventDefault();
+        const input = document.getElementById('documentoInput');
+        if (input.files.length === 0) {
+          alert('Por favor selecciona al menos un archivo');
+          return;
+        }
+
+        for (let file of input.files) {
+          if (documentos.some((d) => d.name === file.name)) {
+            alert(`Archivo "${file.name}" ya fue agregado`);
+            continue;
+          }
+          documentos.push(file);
+        }
+
+        input.value = '';
+        renderDocumentos();
+      });
+
+      function renderDocumentos() {
+        const container = document.getElementById('documentos-list');
+        if (documentos.length === 0) {
+          container.innerHTML = '';
+          return;
+        }
+        container.innerHTML = documentos
+          .map(
+            (doc, idx) => `
+          <div class="item-card">
+            <div>
+              <strong>📄 ${doc.name}</strong>
+              <p style="margin: 0.25rem 0 0; font-size: 12px; color: var(--muted);">${(doc.size / 1024).toFixed(2)} KB</p>
+            </div>
+            <button type="button" onclick="removeDocumento(${idx})">Eliminar</button>
+          </div>
+        `
+          )
+          .join('');
+      }
+
+      window.removeDocumento = (idx) => {
+        documentos.splice(idx, 1);
+        renderDocumentos();
+      };
+
+      // Enviar formulario
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        errorDiv.style.display = 'none';
+        successDiv.style.display = 'none';
+
+        const proyectoId = parseInt(form.proyecto.value);
+        const compromisos = document.querySelectorAll('input[name="compromisos"]:checked').length;
+
+        if (!proyectoId) {
+          errorDiv.textContent = 'Por favor selecciona un proyecto';
+          errorDiv.style.display = 'block';
+          return;
+        }
+
+        if (locaciones.length === 0) {
+          errorDiv.textContent = 'Por favor agrega al menos una locación';
+          errorDiv.style.display = 'block';
+          return;
+        }
+
+        if (equipoTecnico.length === 0) {
+          errorDiv.textContent = 'Por favor agrega al menos un rol técnico';
+          errorDiv.style.display = 'block';
+          return;
+        }
+
+        if (compromisos < 5) {
+          errorDiv.textContent = 'Por favor acepta todos los compromisos éticos';
+          errorDiv.style.display = 'block';
+          return;
+        }
+
+        try {
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Creando solicitud...';
+
+          const locacionesPayload = locaciones.map((loc) => ({
+            id_unico: loc.id_unico,
+            origen_tipo: loc.origen,
+            origen_id: loc.id_origen,
+            municipio_id: loc.municipio_id || undefined,
+            tipo_espacio_id: loc.tipo_espacio_id || undefined,
+            nombre_lugar: loc.nombre_lugar,
+            observaciones: loc.observaciones || undefined,
+          }));
+
+          const equipoPayload = equipoTecnico.map((eq) => ({
+            rol_equipo_tecnico_id: eq.rol,
+            nombre_completo: `Equipo técnico (${eq.cantidad})`,
+            telefono: undefined,
+            email: undefined,
+            identificacion: undefined,
+          }));
+
+          const data = {
+            proyecto_id: proyectoId,
+            locaciones: locacionesPayload,
+            equipo_tecnico: equipoPayload,
+            compromiso_etico_aceptado: true,
+            manejo_residuos_aceptado: true,
+            observaciones_generales: 'Solicitud creada desde formulario web.',
+          };
+
+          // Crear trámite primero
+          const result = await API_CLIENT.tramites.crear(data);
+
+          // Luego cargar documentos si existen
+          if (documentos.length > 0 && result?.id) {
+            const formData = new FormData();
+            documentos.forEach((doc) => {
+              formData.append('archivos', doc);
+            });
+
+            try {
+              const token = localStorage.getItem('pufab_token');
+              await fetch(`/api/v1/tramites/${result.id}/documentos`, {
+                method: 'POST',
+                headers: {
+                  'Authorization': `Bearer ${token}`,
+                },
+                body: formData,
+              });
+            } catch (docError) {
+              console.log('Aviso: documentos no cargados automáticamente', docError);
+            }
+          }
+          const tramiteId = result?.id;
+          const radicado = result?.numero_radicado || 'N/A';
+
+          successDiv.textContent = `✓ Solicitud de permiso creada exitosamente. Radicado: ${radicado}. Redirigiendo...`;
+          successDiv.style.display = 'block';
+
+          setTimeout(() => {
+            if (proyectoDesdeUrl) {
+              window.location.href = `/detalle-proyecto/?id=${proyectoDesdeUrl}`;
+            } else if (tramiteId) {
+              window.location.href = `/detalle-tramite/?id=${tramiteId}`;
+            } else {
+              window.location.href = '/tramites/';
+            }
+          }, 2000);
+        } catch (error) {
+          errorDiv.textContent = error.message || 'Error al crear la solicitud';
+          errorDiv.style.display = 'block';
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Crear Solicitud de Permiso';
+        }
+      });
+
+      // Cargar catálogos al iniciar
+      loadCatalogos();
+    </script>
+  </body>
+</html>

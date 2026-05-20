@@ -1,0 +1,592 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PUFAB - Mi Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+      .dashboard-container {
+        display: grid;
+        grid-template-columns: 250px 1fr;
+        gap: 2rem;
+        min-height: calc(100vh - 200px);
+      }
+
+      .dashboard-sidebar {
+        background: var(--bg-soft);
+        padding: 1.5rem;
+        border-radius: var(--radius);
+        height: fit-content;
+        position: sticky;
+        top: 100px;
+      }
+
+      .dashboard-sidebar h3 {
+        margin: 0 0 1rem;
+        font-size: 14px;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .dashboard-menu {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .dashboard-menu a,
+      .dashboard-menu button {
+        background: none;
+        border: none;
+        padding: 0.75rem 1rem;
+        text-align: left;
+        cursor: pointer;
+        font-family: inherit;
+        border-radius: 8px;
+        font-size: 14px;
+        color: var(--text);
+        transition: all 0.2s;
+      }
+
+      .dashboard-menu a:hover,
+      .dashboard-menu button:hover {
+        background: var(--white);
+      }
+
+      .dashboard-menu a.active,
+      .dashboard-menu button.active {
+        background: var(--white);
+        color: var(--green-700);
+        font-weight: 600;
+      }
+
+      .dashboard-content {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+      }
+
+      .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .dashboard-header h1 {
+        margin: 0;
+        font-size: 28px;
+      }
+
+      .dashboard-header p {
+        margin: 0.5rem 0 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .stats-overview {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+      }
+
+      .stat-card {
+        background: var(--white);
+        padding: 1.5rem;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        text-align: center;
+      }
+
+      .stat-card strong {
+        display: block;
+        font-size: 28px;
+        color: var(--green-700);
+        margin-bottom: 0.5rem;
+      }
+
+      .stat-card span {
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .items-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .item-card {
+        background: var(--white);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+        border-left: 4px solid var(--green-700);
+        transition: all 0.2s;
+      }
+
+      .item-card:hover {
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+        transform: translateY(-2px);
+      }
+
+      .item-card.status-pendiente {
+        border-left-color: #f59e0b;
+      }
+
+      .item-card.status-aprobado {
+        border-left-color: #10b981;
+      }
+
+      .item-card.status-rechazado {
+        border-left-color: #ef4444;
+      }
+
+      .item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 1rem;
+      }
+
+      .item-title {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .item-badge {
+        display: inline-block;
+        font-size: 11px;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        background: var(--bg-soft);
+        color: var(--text);
+      }
+
+      .item-meta {
+        display: flex;
+        gap: 1rem;
+        margin: 1rem 0;
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .item-meta span {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+
+      .item-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+      }
+
+      .item-actions button,
+      .item-actions a {
+        flex: 1;
+        padding: 0.5rem;
+        border: none;
+        border-radius: 6px;
+        font-size: 12px;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        transition: all 0.2s;
+      }
+
+      .item-actions .btn-view {
+        background: var(--green-700);
+        color: white;
+      }
+
+      .item-actions .btn-edit {
+        background: var(--bg-soft);
+        color: var(--text);
+      }
+
+      .loading {
+        text-align: center;
+        color: var(--muted);
+        padding: 2rem;
+      }
+
+      .loading::after {
+        content: '...';
+        animation: dots 1.5s steps(4, end) infinite;
+      }
+
+      @keyframes dots {
+        0%, 20% { content: '.'; }
+        40% { content: '..'; }
+        60% { content: '...'; }
+      }
+
+      @media (max-width: 768px) {
+        .dashboard-container {
+          grid-template-columns: 1fr;
+        }
+
+        .dashboard-sidebar {
+          position: static;
+        }
+
+        .items-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="gov-header">
+      <div class="container gov-header-inner">
+        <img
+          src="https://www.figma.com/api/mcp/asset/55d910c5-1bcc-479c-acd9-c78a28860e9b"
+          alt="GOV.CO"
+          class="gov-logo"
+        />
+        <nav class="gov-links">
+          <a href="https://www.gov.co/" target="_blank" rel="noreferrer">GOV.CO</a>
+          <a href="#">Ministerio de Cultura</a>
+          <a href="#">Proimágenes</a>
+        </nav>
+      </div>
+      <div class="flag-strip"></div>
+    </header>
+
+    <nav class="site-nav">
+      <div class="container site-nav-inner">
+        <a href="/" class="brand">
+          <span class="brand-icon">◧</span>
+          <span>PUFAB</span>
+        </a>
+        <button class="menu-toggle" aria-label="Abrir menú" id="menuToggle">☰</button>
+        <div class="nav-links" id="navLinks">
+          <a href="/">Inicio</a>
+          <a href="#" id="dashboardLink" class="active">Mi Dashboard</a>
+          <a href="/contacto/">Contacto</a>
+        </div>
+        <div class="nav-cta">
+          <a class="btn btn-ghost" id="logoutBtn">Cerrar Sesión</a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="section-white">
+      <div class="container">
+        <div class="dashboard-container">
+          <aside class="dashboard-sidebar">
+            <h3>Menú</h3>
+            <div class="dashboard-menu">
+              <button class="active" data-view="proyectos">Mis Proyectos</button>
+              <button data-view="tramites">Mis Trámites</button>
+              <button data-view="documentos">Mis Documentos</button>
+              <button data-view="pagos">Mis Pagos</button>
+            </div>
+            <h3 style="margin-top: 2rem;">Acciones Rápidas</h3>
+            <div class="dashboard-menu">
+              <a href="/crear-proyecto/" class="btn btn-primary full" style="display: block; width: 100%; text-decoration: none; margin-bottom: 0.5rem;">+ Nuevo Proyecto</a>
+              <a href="/crear-tramite/" class="btn btn-primary full" style="display: block; width: 100%; text-decoration: none; margin-bottom: 0.5rem;">+ Nuevo Trámite</a>
+              <a href="/subir-documentos/" class="btn btn-primary full" style="display: block; width: 100%; text-decoration: none; margin-bottom: 0.5rem;">+ Subir Doc</a>
+              <a href="/registrar-pago/" class="btn btn-primary full" style="display: block; width: 100%; text-decoration: none;">+ Registrar Pago</a>
+            </div>
+            <h3 style="margin-top: 2rem;">Administración</h3>
+            <div class="dashboard-menu">
+              <a href="/admin-dashboard.html" style="display: block;">🔧 Panel Admin</a>
+              <a href="/test-operations.html" style="display: block;">🧪 Pruebas API</a>
+            </div>
+          </aside>
+
+          <section class="dashboard-content">
+            <!-- PROYECTOS VIEW -->
+            <div id="view-proyectos" class="view active">
+              <div class="dashboard-header">
+                <div>
+                  <h1>Mis Proyectos</h1>
+                  <p>Gestiona tus proyectos audiovisuales</p>
+                </div>
+              </div>
+
+              <div class="stats-overview">
+                <div class="stat-card">
+                  <strong id="stat-total-proyectos">0</strong>
+                  <span>Proyectos totales</span>
+                </div>
+                <div class="stat-card">
+                  <strong id="stat-borradores">0</strong>
+                  <span>En borrador</span>
+                </div>
+                <div class="stat-card">
+                  <strong id="stat-en-tramite">0</strong>
+                  <span>En trámite</span>
+                </div>
+                <div class="stat-card">
+                  <strong id="stat-finalizados">0</strong>
+                  <span>Finalizados</span>
+                </div>
+              </div>
+
+              <div id="proyectos-container" class="items-grid">
+                <div class="loading">Cargando proyectos</div>
+              </div>
+            </div>
+
+            <!-- TRAMITES VIEW -->
+            <div id="view-tramites" class="view" style="display: none;">
+              <div class="dashboard-header">
+                <div>
+                  <h1>Mis Trámites</h1>
+                  <p>Gestiona tus solicitudes de permiso P.U.F.A.B.</p>
+                </div>
+              </div>
+
+              <div id="tramites-container" class="items-grid">
+                <div class="loading">Cargando trámites</div>
+              </div>
+            </div>
+
+            <!-- DOCUMENTOS VIEW -->
+            <div id="view-documentos" class="view" style="display: none;">
+              <div class="dashboard-header">
+                <div>
+                  <h1>Mis Documentos</h1>
+                  <p>Revisa los documentos que has subido a la plataforma</p>
+                </div>
+              </div>
+
+              <div id="documentos-container" class="items-grid">
+                <div class="loading">Cargando documentos</div>
+              </div>
+            </div>
+
+            <!-- PAGOS VIEW -->
+            <div id="view-pagos" class="view" style="display: none;">
+              <div class="dashboard-header">
+                <div>
+                  <h1>Mis Pagos</h1>
+                  <p>Revisa el estado de tus pagos y abonos</p>
+                </div>
+              </div>
+
+              <div id="pagos-container" class="items-grid">
+                <div class="loading">Cargando pagos</div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <script src="/api-client.js"></script>
+    <script src="/route-guard.js"></script>
+    <script>
+      const views = document.querySelectorAll('.view');
+      const menuButtons = document.querySelectorAll('.dashboard-menu button');
+      const logoutBtn = document.getElementById('logoutBtn');
+
+      // View switching
+      menuButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          menuButtons.forEach((b) => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          views.forEach((v) => (v.style.display = 'none'));
+          const viewId = `view-${btn.dataset.view}`;
+          document.getElementById(viewId).style.display = 'block';
+
+          if (btn.dataset.view === 'proyectos') loadProyectos();
+          else if (btn.dataset.view === 'tramites') loadTramites();
+          else if (btn.dataset.view === 'documentos') loadDocumentos();
+          else if (btn.dataset.view === 'pagos') loadPagos();
+        });
+      });
+
+      // Logout
+      logoutBtn.addEventListener('click', () => {
+        API_CLIENT.clearSession();
+        window.location.href = '/iniciar-sesion/';
+      });
+
+      async function loadProyectos() {
+        const container = document.getElementById('proyectos-container');
+        try {
+          const result = await API_CLIENT.proyectos.listar(1, 50);
+          const data = result.data || result;
+
+          if (!data || data.length === 0) {
+            container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--muted);">No tienes proyectos aún. <a href="/crear-proyecto/">Crea uno ahora →</a></p>';
+            return;
+          }
+
+          // Actualizar estadísticas
+          document.getElementById('stat-total-proyectos').textContent = data.length;
+
+          container.innerHTML = data
+            .map(
+              (p) => `
+            <div class="item-card">
+              <div class="item-header">
+                <h3 class="item-title">${p.nombre_proyecto || 'Proyecto sin título'}</h3>
+                <span class="item-badge">${p.estado_proyecto || p.estado || 'Borrador'}</span>
+              </div>
+              <p style="margin: 0.5rem 0; font-size: 13px; color: var(--muted);">${p.sinopsis || 'Sin descripción'}</p>
+              <div class="item-meta">
+                <span>📹 ${p.tipo_produccion?.nombre || p.tipo_produccion_id || 'N/A'}</span>
+                <span>💰 $${Number(p.presupuesto_total || 0).toLocaleString('es-CO')}</span>
+              </div>
+              <div class="item-actions">
+                <a href="/detalle-proyecto/?id=${p.id}" class="btn-view">Ver</a>
+                <a href="/editar-proyecto/?id=${p.id}" class="btn-edit">Editar</a>
+              </div>
+            </div>
+          `
+            )
+            .join('');
+        } catch (error) {
+          container.innerHTML = `<p style="grid-column: 1/-1; color: var(--muted);">Error al cargar proyectos: ${error.message}</p>`;
+        }
+      }
+
+      async function loadTramites() {
+        const container = document.getElementById('tramites-container');
+        try {
+          const result = await API_CLIENT.tramites.listar(1, 50);
+          const data = result.data || result;
+
+          if (!data || data.length === 0) {
+            container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--muted);">No tienes trámites aún.</p>';
+            return;
+          }
+
+          container.innerHTML = data
+            .map(
+              (t) => `
+            <div class="item-card status-${(t.estado || 'pendiente').toLowerCase()}">
+              <div class="item-header">
+                <h3 class="item-title">${t.radicado || t.id}</h3>
+                <span class="item-badge">${t.estado || 'Pendiente'}</span>
+              </div>
+              <p style="margin: 0.5rem 0; font-size: 13px; color: var(--muted);">${t.proyecto_titulo || 'Proyecto'}</p>
+              <div class="item-meta">
+                <span>📍 ${t.municipio || 'N/A'}</span>
+                <span>📅 ${new Date(t.fecha_creacion || Date.now()).toLocaleDateString('es-CO')}</span>
+              </div>
+              <div class="item-actions">
+                <a href="/detalle-tramite/?id=${t.id}" class="btn-view">Ver</a>
+              </div>
+            </div>
+          `
+            )
+            .join('');
+        } catch (error) {
+          container.innerHTML = `<p style="grid-column: 1/-1; color: var(--muted);">Error al cargar trámites: ${error.message}</p>`;
+        }
+      }
+
+      async function loadDocumentos() {
+        const container = document.getElementById('documentos-container');
+        try {
+          const result = await API_CLIENT.tramites.listar(1, 50);
+          const tramites = result.data || result;
+
+          if (!tramites || tramites.length === 0) {
+            container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--muted);">No tienes documentos.</p>';
+            return;
+          }
+
+          let allDocs = [];
+          for (const tramite of tramites) {
+            try {
+              const docs = await API_CLIENT.documentos.listarPorTramite(tramite.id);
+              allDocs = allDocs.concat(docs.data || docs || []);
+            } catch (e) {
+              // Ignorar error en tramite específico
+            }
+          }
+
+          if (allDocs.length === 0) {
+            container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--muted);">No tienes documentos.</p>';
+            return;
+          }
+
+          container.innerHTML = allDocs
+            .map(
+              (doc) => `
+            <div class="item-card">
+              <div class="item-header">
+                <h3 class="item-title">${doc.nombre_archivo || 'Documento'}</h3>
+                <span class="item-badge">${doc.estado || 'Pendiente'}</span>
+              </div>
+              <div class="item-meta">
+                <span>📄 ${doc.tipo_documento || 'Documento'}</span>
+                <span>🔐 ${doc.hash_sha256?.substring(0, 16) || 'N/A'}...</span>
+              </div>
+            </div>
+          `
+            )
+            .join('');
+        } catch (error) {
+          container.innerHTML = `<p style="grid-column: 1/-1; color: var(--muted);">Error al cargar documentos</p>`;
+        }
+      }
+
+      async function loadPagos() {
+        const container = document.getElementById('pagos-container');
+        try {
+          const result = await API_CLIENT.tramites.listar(1, 50);
+          const tramites = result.data || result;
+
+          if (!tramites || tramites.length === 0) {
+            container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--muted);">No tienes pagos.</p>';
+            return;
+          }
+
+          let allPagos = [];
+          for (const tramite of tramites) {
+            try {
+              const pagos = await API_CLIENT.pagos.listarPorTramite(tramite.id);
+              allPagos = allPagos.concat(pagos.data || pagos || []);
+            } catch (e) {
+              // Ignorar error
+            }
+          }
+
+          if (allPagos.length === 0) {
+            container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--muted);">No tienes pagos registrados.</p>';
+            return;
+          }
+
+          container.innerHTML = allPagos
+            .map(
+              (pago) => `
+            <div class="item-card">
+              <div class="item-header">
+                <h3 class="item-title">Pago $${(pago.monto || 0).toLocaleString('es-CO')}</h3>
+                <span class="item-badge">${pago.estado || 'Pendiente'}</span>
+              </div>
+              <div class="item-meta">
+                <span>💳 ${pago.tipo_pago || 'Pago'}</span>
+                <span>📅 ${new Date(pago.fecha_pago || Date.now()).toLocaleDateString('es-CO')}</span>
+              </div>
+            </div>
+          `
+            )
+            .join('');
+        } catch (error) {
+          container.innerHTML = `<p style="grid-column: 1/-1; color: var(--muted);">Error al cargar pagos</p>`;
+        }
+      }
+
+      // Cargar proyectos al iniciar
+      loadProyectos();
+    </script>
+  </body>
+</html>

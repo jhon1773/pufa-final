@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <script src='/route-guard.js'></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PUFAB - Trámites | Panel de Producción</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="portal-page">
+    <header class="gov-header">
+      <div class="container gov-header-inner">
+        <img src="https://www.figma.com/api/mcp/asset/55d910c5-1bcc-479c-acd9-c78a28860e9b" alt="GOV.CO" class="gov-logo" />
+        <nav class="gov-links">
+          <a href="https://www.gov.co/" target="_blank" rel="noreferrer">GOV.CO</a>
+          <a href="#">Ministerio de Cultura</a>
+          <a href="#">Proimágenes</a>
+        </nav>
+      </div>
+      <div class="flag-strip"></div>
+    </header>
+
+    <nav class="site-nav">
+      <div class="container site-nav-inner">
+        <a href="/" class="brand"><span class="brand-icon">◧</span><span>PUFAB</span></a>
+        <button class="menu-toggle" aria-label="Abrir menú" id="menuToggle">☰</button>
+        <div class="nav-links" id="navLinks">
+          <a href="/">Inicio</a>
+          <a href="/directorio/">Directorio</a>
+          <a href="/tramites/" class="active">Trámites</a>
+          <a href="/contacto/">Contacto</a>
+        </div>
+        <div class="portal-user">Juan Pérez García</div>
+      </div>
+    </nav>
+
+    <main class="portal-shell container">
+      <aside class="portal-sidebar">
+        <h2>Ventanilla Única</h2>
+        <a class="portal-link active" href="/tramites/">Mi panel</a>
+        <a class="portal-link" href="/tramites/productor-2.html">Mis Permisos</a>
+        <a class="portal-link" href="/tramites/productor-3.html">Catálogo de Locaciones</a>
+        <a class="portal-link" href="/tramites/productor-4.html">Directorio de Proveedores</a>
+        <a class="portal-link" href="/tramites/productor-5.html">Evaluaciones</a>
+        <a class="portal-link" href="/directorio/">Directorio de Proveedores</a>
+      </aside>
+
+      <section class="portal-content">
+        <div class="portal-breadcrumb">Ventanilla Única > Mi Panel</div>
+        <h1>Mi Panel de Producción</h1>
+
+        <div class="portal-metrics">
+          <article><strong id="metricActivos">0</strong><span>Permisos Activos</span></article>
+          <article><strong id="metricPendientes">0</strong><span>Pendientes</span></article>
+          <article><strong id="metricSubsanacion">0</strong><span>En Subsanación</span></article>
+          <article><strong id="metricTotal">0</strong><span>Total Trámites</span></article>
+        </div>
+
+        <section class="portal-card">
+          <div class="portal-card-head"><h3>Mis Permisos Recientes</h3><a href="/tramites/productor-2.html">Ver todos</a></div>
+          <div id="panelPermisosRecientes">Cargando permisos...</div>
+        </section>
+
+        <div class="portal-grid-2">
+          <section class="portal-card">
+            <h3>Acciones Rápidas</h3>
+            <a class="quick-btn primary" href="/crear-tramite/">Solicitar Nuevo Permiso</a>
+            <a class="quick-btn" href="/tramites/productor-3.html">Explorar Locaciones</a>
+            <a class="quick-btn" href="/directorio/">Buscar Proveedores</a>
+          </section>
+
+          <section class="portal-card">
+            <h3>Próximos Vencimientos</h3>
+            <div id="panelVencimientos">Cargando alertas...</div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const menuToggle = document.getElementById('menuToggle');
+      const navLinks = document.getElementById('navLinks');
+      menuToggle?.addEventListener('click', () => navLinks?.classList.toggle('open'));
+
+      const metricActivos = document.getElementById('metricActivos');
+      const metricPendientes = document.getElementById('metricPendientes');
+      const metricSubsanacion = document.getElementById('metricSubsanacion');
+      const metricTotal = document.getElementById('metricTotal');
+      const panelPermisosRecientes = document.getElementById('panelPermisosRecientes');
+      const panelVencimientos = document.getElementById('panelVencimientos');
+
+      function estadoClass(estado) {
+        if (estado === 'aprobado') return 'success';
+        if (estado === 'subsanacion') return 'danger';
+        return 'warning';
+      }
+
+      async function cargarPanelProductora() {
+        try {
+          const response = await fetch('/api/v1/portal/productor/permisos');
+          const payload = await response.json();
+          const permisos = payload?.datos?.data || payload?.data || [];
+
+          const activos = permisos.filter((p) => p.estado === 'aprobado').length;
+          const pendientes = permisos.filter((p) => p.estado === 'pendiente').length;
+          const subsanacion = permisos.filter((p) => p.estado === 'subsanacion').length;
+
+          metricActivos.textContent = String(activos);
+          metricPendientes.textContent = String(pendientes);
+          metricSubsanacion.textContent = String(subsanacion);
+          metricTotal.textContent = String(permisos.length);
+
+          const recientes = permisos.slice(0, 3);
+          if (!recientes.length) {
+            panelPermisosRecientes.innerHTML = '<p>No hay permisos registrados.</p>';
+          } else {
+            panelPermisosRecientes.innerHTML = recientes.map((item) => `
+              <div class="portal-permit">
+                <div>
+                  <small>${item.numero_radicado}</small>
+                  <strong>${item.proyecto}</strong>
+                  <span>${item.locacion} · Progreso ${item.progreso}%</span>
+                </div>
+                <span class="status-badge ${estadoClass(item.estado)}">${item.estado_label}</span>
+              </div>
+              <div class="progress"><span style="width:${item.progreso}%"></span></div>
+            `).join('');
+          }
+
+          const correcciones = permisos
+            .filter((p) => Array.isArray(p.correcciones) && p.correcciones.length)
+            .slice(0, 2);
+
+          if (!correcciones.length) {
+            panelVencimientos.innerHTML = '<div class="alert-item info"><strong>Sin observaciones pendientes</strong><span>Tu flujo de permisos está al día</span></div>';
+          } else {
+            panelVencimientos.innerHTML = correcciones.map((item) => `
+              <div class="alert-item warning">
+                <strong>Corrección ${item.numero_radicado}</strong>
+                <span>${item.correcciones[0]}</span>
+              </div>
+            `).join('');
+          }
+        } catch (error) {
+          panelPermisosRecientes.innerHTML = '<p>No fue posible cargar el panel.</p>';
+          panelVencimientos.innerHTML = '<p>No fue posible cargar alertas.</p>';
+        }
+      }
+
+      cargarPanelProductora();
+    </script>
+    <script src='/nav-session.js'></script>
+    <script src='/sidebar-slider.js'></script>
+  </body>
+</html>

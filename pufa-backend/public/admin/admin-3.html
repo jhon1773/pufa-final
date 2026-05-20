@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <script src='/route-guard.js'></script><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>PUFAB - Admin | Verificación</title><link rel="stylesheet" href="/styles.css" /></head>
+  <body class="portal-page admin-page">
+    <header class="gov-header"><div class="container gov-header-inner"><img src="https://www.figma.com/api/mcp/asset/55d910c5-1bcc-479c-acd9-c78a28860e9b" alt="GOV.CO" class="gov-logo" /><nav class="gov-links"><a href="https://www.gov.co/" target="_blank" rel="noreferrer">GOV.CO</a><a href="#">Ministerio de Cultura</a><a href="#">Proimágenes</a></nav></div><div class="flag-strip"></div></header>
+    <nav class="site-nav"><div class="container site-nav-inner"><a href="/" class="brand"><span class="brand-icon">◧</span><span>PUFAB</span></a><button class="menu-toggle" aria-label="Abrir menú" id="menuToggle">☰</button><div class="nav-links" id="navLinks"><a href="/">Inicio</a><a href="/directorio/">Directorio</a><a href="/tramites/">Trámites</a><a href="/contacto/">Contacto</a><a href="/admin/" class="active">Admin</a></div><div class="portal-user">Carlos Rodríguez</div></div></nav>
+
+    <main class="portal-shell container">
+      <aside class="portal-sidebar admin-sidebar">
+        <h2>Panel Administrativo</h2>
+        <a class="portal-link" href="/admin/">Resumen</a>
+        <a class="portal-link" href="/admin/admin-2.html">Usuarios y Accesos</a>
+        <a class="portal-link active" href="/admin/admin-3.html">Verificación de Perfiles</a>
+        <a class="portal-link" href="/admin/admin-4.html">Gestión de Locaciones</a>
+        <a class="portal-link" href="/admin/admin-5.html">Flujo de Permisos</a>
+        <a class="portal-link" href="/admin/admin-6.html">Comités Técnicos</a>
+        <a class="portal-link" href="/admin/admin-7.html">Finanzas y Reservas</a>
+        <a class="portal-link" href="/admin/admin-8.html">Estadísticas y KPIs</a>
+        <a class="portal-link" href="/admin/admin-9.html">Comunicaciones</a>
+      </aside>
+
+      <section class="portal-content">
+        <div class="portal-breadcrumb">Panel Administrativo > Verificación de Perfiles</div>
+        <div class="portal-head-row">
+          <h1>Verificación y Control de Calidad</h1>
+          <button class="btn btn-primary" id="btnAbrirModalPerfil" onclick="document.getElementById('modalCrearPerfil').style.display='flex'">+ Añadir Perfil</button>
+        </div>
+        <div class="admin-stack" id="verificacionList">Cargando perfiles...</div>
+      </section>
+    </main>
+
+    <!-- MODAL CREAR PERFIL -->
+    <div id="modalCrearPerfil" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+      <div style="background: white; padding: 2rem; border-radius: 8px; max-width: 520px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
+        <h2 style="margin: 0 0 1rem;">Añadir Perfil para Verificación</h2>
+        <p style="margin: 0 0 1rem; color: #666;">Ingresa el correo de un usuario existente para crear su perfil de proveedor.</p>
+        <form id="formCrearPerfil" style="display: grid; gap: 0.85rem;">
+          <input id="inputEmailPerfil" type="email" placeholder="usuario@pufab.gov.co" required style="width: 100%; padding: 0.7rem; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;" />
+          <input id="inputTelefonoPerfil" type="tel" placeholder="Teléfono (opcional)" style="width: 100%; padding: 0.7rem; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;" />
+          <input id="inputSitioPerfil" type="url" placeholder="Sitio web (opcional)" style="width: 100%; padding: 0.7rem; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;" />
+          <textarea id="inputDescripcionPerfil" placeholder="Descripción breve (opcional)" rows="3" style="width: 100%; padding: 0.7rem; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;"></textarea>
+          <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
+            <button type="button" id="btnCerrarModalPerfil" onclick="document.getElementById('modalCrearPerfil').style.display='none'" style="flex: 1; padding: 0.7rem; background: #ddd; border: none; border-radius: 4px; cursor: pointer; font-weight: 500;">Cancelar</button>
+            <button type="submit" style="flex: 1; padding: 0.7rem; background: #2d7e3e; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-weight: 500;">Crear Perfil</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL DETALLES PERFIL -->
+    <div id="modalDetallesVerificacion" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+      <div style="background: white; padding: 2rem; border-radius: 8px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+          <h2 style="margin: 0;">Detalles del Perfil</h2>
+          <button type="button" onclick="document.getElementById('modalDetallesVerificacion').style.display='none'" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #999;">✕</button>
+        </div>
+        <div id="modalDetallesContenido" style="margin-bottom: 1.5rem;">Cargando...</div>
+        <button type="button" onclick="document.getElementById('modalDetallesVerificacion').style.display='none'" style="width: 100%; padding: 0.7rem; background: #ddd; border: none; border-radius: 4px; cursor: pointer; font-weight: 500;">Cerrar</button>
+      </div>
+    </div>
+
+    <script>
+      const menuToggle = document.getElementById('menuToggle');
+      const navLinks = document.getElementById('navLinks');
+      const verificacionList = document.getElementById('verificacionList');
+      const btnAbrirModalPerfil = document.getElementById('btnAbrirModalPerfil');
+      const btnCerrarModalPerfil = document.getElementById('btnCerrarModalPerfil');
+      const modalCrearPerfil = document.getElementById('modalCrearPerfil');
+      const formCrearPerfil = document.getElementById('formCrearPerfil');
+      
+      menuToggle?.addEventListener('click', () => navLinks?.classList.toggle('open'));
+
+      // Abrir modal
+      if (btnAbrirModalPerfil && modalCrearPerfil) {
+        btnAbrirModalPerfil.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          modalCrearPerfil.style.display = 'flex';
+        });
+      }
+
+      // Cerrar modal
+      if (btnCerrarModalPerfil && modalCrearPerfil) {
+        btnCerrarModalPerfil.addEventListener('click', function(e) {
+          e.preventDefault();
+          modalCrearPerfil.style.display = 'none';
+        });
+      }
+
+      formCrearPerfil?.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const email = document.getElementById('inputEmailPerfil').value.trim();
+        const telefono = document.getElementById('inputTelefonoPerfil').value.trim();
+        const sitio_web = document.getElementById('inputSitioPerfil').value.trim();
+        const descripcion = document.getElementById('inputDescripcionPerfil').value.trim();
+
+        if (!email) {
+          alert('Debes ingresar un correo.');
+          return;
+        }
+
+        const response = await fetch('/api/v1/portal/admin/verificacion/perfiles', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, telefono, sitio_web, descripcion }),
+        });
+        const payload = await response.json();
+        const result = payload?.datos || payload;
+
+        if (!result?.ok) {
+          alert(result?.error || 'No se pudo crear el perfil.');
+          return;
+        }
+
+        alert(result?.mensaje || 'Perfil creado correctamente.');
+        formCrearPerfil.reset();
+        modalCrearPerfil.style.display = 'none';
+        await init();
+      });
+
+      function badge(value) {
+        const v = String(value || '').toLowerCase();
+        if (v.includes('apro')) return 'success';
+        if (v.includes('pend')) return 'warning';
+        return 'danger';
+      }
+
+      function ensureDetailsModal() {
+        let modal = document.getElementById('modalDetallesVerificacion');
+        let modalContent = document.getElementById('modalDetallesContenido');
+
+        if (modal && modalContent) {
+          return { modal, modalContent };
+        }
+
+        if (!modal) {
+          const wrapper = document.createElement('div');
+          wrapper.innerHTML = `
+            <div id="modalDetallesVerificacion" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+              <div style="background: white; padding: 2rem; border-radius: 8px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                  <h2 style="margin: 0;">Detalles del Perfil</h2>
+                  <button type="button" data-close-modal style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #999;">✕</button>
+                </div>
+                <div id="modalDetallesContenido" style="margin-bottom: 1.5rem;">Cargando...</div>
+                <button type="button" data-close-modal style="width: 100%; padding: 0.7rem; background: #ddd; border: none; border-radius: 4px; cursor: pointer; font-weight: 500;">Cerrar</button>
+              </div>
+            </div>
+          `;
+          document.body.appendChild(wrapper.firstElementChild);
+          modal = document.getElementById('modalDetallesVerificacion');
+
+          modal?.querySelectorAll('[data-close-modal]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              modal.style.display = 'none';
+            });
+          });
+        }
+
+        modalContent = document.getElementById('modalDetallesContenido');
+        return { modal, modalContent };
+      }
+
+      async function showDetailsModal(perfilId) {
+        try {
+          const { modal, modalContent } = ensureDetailsModal();
+          if (!modal || !modalContent) {
+            alert('No se pudo abrir el modal de detalles.');
+            return;
+          }
+
+          const response = await fetch(`/api/v1/portal/admin/verificacion/${perfilId}`);
+          const payload = await response.json();
+          const result = payload?.datos || payload;
+
+          if (result.ok && result.data) {
+            const p = result.data;
+            modalContent.innerHTML = `
+              <div style="display: grid; gap: 1rem;">
+                <div>
+                  <p style="margin: 0; font-size: 0.85rem; color: #666; text-transform: uppercase;">Email</p>
+                  <p style="margin: 0.5rem 0 0; font-weight: 600;">${p.email}</p>
+                </div>
+                <div>
+                  <p style="margin: 0; font-size: 0.85rem; color: #666; text-transform: uppercase;">Tipo de Perfil</p>
+                  <p style="margin: 0.5rem 0 0; font-weight: 600;">${p.tipo}</p>
+                </div>
+                <div>
+                  <p style="margin: 0; font-size: 0.85rem; color: #666; text-transform: uppercase;">Teléfono</p>
+                  <p style="margin: 0.5rem 0 0; font-weight: 600;">${p.telefono}</p>
+                </div>
+                <div>
+                  <p style="margin: 0; font-size: 0.85rem; color: #666; text-transform: uppercase;">Sitio Web</p>
+                  <p style="margin: 0.5rem 0 0; font-weight: 600;">${p.sitio_web}</p>
+                </div>
+                <div>
+                  <p style="margin: 0; font-size: 0.85rem; color: #666; text-transform: uppercase;">Descripción</p>
+                  <p style="margin: 0.5rem 0 0; font-weight: 600;">${p.descripcion}</p>
+                </div>
+                <div>
+                  <p style="margin: 0; font-size: 0.85rem; color: #666; text-transform: uppercase;">Estado</p>
+                  <p style="margin: 0.5rem 0 0; font-weight: 600;"><span class="status-badge ${badge(p.estado)}">${p.estado}</span></p>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e5e7eb;">
+                  <div>
+                    <p style="margin: 0; font-size: 0.85rem; color: #666; text-transform: uppercase;">Activo</p>
+                    <p style="margin: 0.5rem 0 0; font-weight: 600;">${p.activo ? '✓ Sí' : '✗ No'}</p>
+                  </div>
+                  <div>
+                    <p style="margin: 0; font-size: 0.85rem; color: #666; text-transform: uppercase;">Fecha Actualización</p>
+                    <p style="margin: 0.5rem 0 0; font-weight: 600;">${p.fecha_actualizacion}</p>
+                  </div>
+                </div>
+              </div>
+            `;
+
+            modal.style.display = 'flex';
+          } else {
+            alert('No se pudieron cargar los detalles del perfil.');
+          }
+        } catch (error) {
+          alert('Error al cargar detalles: ' + error.message);
+        }
+      }
+
+      async function init() {
+        const response = await fetch('/api/v1/portal/admin/verificacion');
+        const payload = await response.json();
+        const items = payload?.datos?.data || payload?.data || [];
+
+        verificacionList.innerHTML = items.length
+          ? items.map((item) => `<article class="portal-card"><div class="permit-top"><div><h3>${item.nombre}</h3><p>${item.tipo} · ${item.fecha}</p></div><span class="status-badge ${badge(item.estado)}">${item.estado}</span></div><div class="permit-actions"><button style="background:none;border:none;color:#2d7e3e;cursor:pointer;text-decoration:underline;" data-ver="${item.id}">Ver</button><button style="background:none;border:none;color:#2d7e3e;cursor:pointer;text-decoration:underline;" data-aprobar="${item.id}">Aprobar</button><button style="background:none;border:none;color:#dc2626;cursor:pointer;text-decoration:underline;" data-rechazar="${item.id}">Rechazar</button><button style="background:none;border:none;color:#991b1b;cursor:pointer;text-decoration:underline;" data-eliminar="${item.id}">Eliminar</button></div></article>`).join('')
+          : '<article class="portal-card">No hay perfiles para verificación.</article>';
+
+        verificacionList.querySelectorAll('[data-ver]').forEach((btn) => {
+          btn.addEventListener('click', async (event) => {
+            event.preventDefault();
+            const id = btn.getAttribute('data-ver');
+            await showDetailsModal(id);
+          });
+        });
+
+        verificacionList.querySelectorAll('[data-aprobar]').forEach((btn) => {
+          btn.addEventListener('click', async (event) => {
+            event.preventDefault();
+            const id = btn.getAttribute('data-aprobar');
+            const res = await fetch(`/api/v1/portal/admin/verificacion/${id}/aprobar`, { method: 'POST' });
+            const payload = await res.json();
+            const result = payload?.datos || payload;
+            if (!result?.ok) {
+              alert('No se pudo aprobar el perfil.');
+              return;
+            }
+            await init();
+          });
+        });
+
+        verificacionList.querySelectorAll('[data-rechazar]').forEach((btn) => {
+          btn.addEventListener('click', async (event) => {
+            event.preventDefault();
+            const id = btn.getAttribute('data-rechazar');
+            const res = await fetch(`/api/v1/portal/admin/verificacion/${id}/rechazar`, { method: 'POST' });
+            const payload = await res.json();
+            const result = payload?.datos || payload;
+            if (!result?.ok) {
+              alert('No se pudo rechazar el perfil.');
+              return;
+            }
+            await init();
+          });
+        });
+
+        verificacionList.querySelectorAll('[data-eliminar]').forEach((btn) => {
+          btn.addEventListener('click', async (event) => {
+            event.preventDefault();
+            const id = btn.getAttribute('data-eliminar');
+            const confirmed = window.confirm('¿Seguro que deseas eliminar este perfil? Esta acción no se puede deshacer.');
+            if (!confirmed) return;
+
+            const res = await fetch(`/api/v1/portal/admin/verificacion/${id}/eliminar`, { method: 'POST' });
+            const payload = await res.json();
+            const result = payload?.datos || payload;
+
+            if (!result?.ok) {
+              alert(result?.error || 'No se pudo eliminar el perfil.');
+              return;
+            }
+
+            alert(result?.mensaje || 'Perfil eliminado correctamente.');
+            await init();
+          });
+        });
+      }
+
+      init();
+    </script>
+    <script src='/nav-session.js'></script>
+    <script src='/sidebar-slider.js'></script>
+  </body>
+</html>

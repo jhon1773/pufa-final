@@ -1,0 +1,647 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <script src='/route-guard.js'></script><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>PUFAB - Admin | Estadísticas y KPIs</title><link rel="stylesheet" href="/styles.css" /></head>
+  <body class="portal-page admin-page">
+    <header class="gov-header"><div class="container gov-header-inner"><img src="https://www.figma.com/api/mcp/asset/55d910c5-1bcc-479c-acd9-c78a28860e9b" alt="GOV.CO" class="gov-logo" /><nav class="gov-links"><a href="https://www.gov.co/" target="_blank" rel="noreferrer">GOV.CO</a><a href="#">Ministerio de Cultura</a><a href="#">Proimágenes</a></nav></div><div class="flag-strip"></div></header>
+    <nav class="site-nav"><div class="container site-nav-inner"><a href="/" class="brand"><span class="brand-icon">◧</span><span>PUFAB</span></a><button class="menu-toggle" aria-label="Abrir menú" id="menuToggle">☰</button><div class="nav-links" id="navLinks"><a href="/">Inicio</a><a href="/directorio/">Directorio</a><a href="/tramites/">Trámites</a><a href="/contacto/">Contacto</a><a href="/admin/" class="active">Admin</a></div><div class="portal-user">Carlos Rodríguez</div></div></nav>
+
+    <main class="portal-shell container">
+      <aside class="portal-sidebar admin-sidebar">
+        <h2>Panel Administrativo</h2>
+        <a class="portal-link" href="/admin/">Resumen</a>
+        <a class="portal-link" href="/admin/admin-2.html">Usuarios y Accesos</a>
+        <a class="portal-link" href="/admin/admin-3.html">Verificación de Perfiles</a>
+        <a class="portal-link" href="/admin/admin-4.html">Gestión de Locaciones</a>
+        <a class="portal-link" href="/admin/admin-5.html">Flujo de Permisos</a>
+        <a class="portal-link" href="/admin/admin-6.html">Comités Técnicos</a>
+        <a class="portal-link" href="/admin/admin-7.html">Finanzas y Reservas</a>
+        <a class="portal-link active" href="/admin/admin-8.html">Estadísticas y KPIs</a>
+        <a class="portal-link" href="/admin/admin-9.html">Comunicaciones</a>
+      </aside>
+
+      <section class="portal-content" id="kpisContent">Cargando KPIs...</section>
+    </main>
+
+    <style>
+      .heatmap-card {
+        display: grid;
+        gap: 14px;
+        width: 100%;
+      }
+
+      .kpi-wide {
+        grid-column: 1 / -1;
+        width: 100%;
+      }
+
+      .calendar-widget {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 280px minmax(0, 1fr);
+        gap: 0;
+        border-radius: 18px;
+        overflow: hidden;
+        border: 1px solid #dfe3e8;
+        background: #fff;
+        min-height: 420px;
+        justify-self: stretch;
+      }
+
+      .calendar-side {
+        background: linear-gradient(180deg, #2ecc71 0%, #29c26a 100%);
+        color: #fff;
+        padding: 24px 22px;
+        display: grid;
+        align-content: space-between;
+        gap: 18px;
+        min-height: 100%;
+      }
+
+      .calendar-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        opacity: 0.92;
+      }
+
+      .calendar-big-day {
+        display: grid;
+        gap: 0;
+        line-height: 0.92;
+      }
+
+      .calendar-big-day strong {
+        font-size: clamp(56px, 10vw, 84px);
+        font-weight: 800;
+      }
+
+      .calendar-big-day span {
+        letter-spacing: 2px;
+        font-weight: 700;
+        font-size: 15px;
+      }
+
+      .calendar-summary {
+        display: grid;
+        gap: 12px;
+        font-size: 13px;
+      }
+
+      .calendar-summary h4 {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 800;
+      }
+
+      .calendar-summary ul {
+        margin: 0;
+        padding-left: 18px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .calendar-summary small {
+        opacity: 0.82;
+      }
+
+      .calendar-main {
+        padding: 18px 20px 20px;
+        display: grid;
+        gap: 16px;
+        background: #fff;
+        min-width: 0;
+      }
+
+      .calendar-yearbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        color: #9ca3af;
+        font-weight: 700;
+        font-size: 13px;
+      }
+
+      .calendar-months {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        color: #9ca3af;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .calendar-months span.active {
+        color: var(--green-900);
+      }
+
+      .calendar-weekdays,
+      .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .calendar-weekdays span {
+        text-align: center;
+        font-size: 11px;
+        color: #6b7280;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+      }
+
+      .calendar-day {
+        aspect-ratio: 1 / 1;
+        border-radius: 999px;
+        display: grid;
+        place-items: center;
+        font-size: 12px;
+        font-weight: 800;
+        cursor: pointer;
+        border: 1px solid transparent;
+        color: #374151;
+        transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+        position: relative;
+      }
+
+      .calendar-day:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+      }
+
+      .calendar-day[data-level="0"] { background: #f3f4f6; }
+      .calendar-day[data-level="1"] { background: #d1fae5; }
+      .calendar-day[data-level="2"] { background: #86efac; }
+      .calendar-day[data-level="3"] { background: #22c55e; color: #fff; }
+      .calendar-day[data-level="4"] { background: #15803d; color: #fff; }
+
+      .calendar-day.selected {
+        border-color: #0f9f5f;
+        box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.14);
+      }
+
+      .calendar-day.empty {
+        background: transparent;
+        cursor: default;
+      }
+
+      .calendar-day.muted {
+        opacity: 0.42;
+      }
+
+      .calendar-selected-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.16);
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .calendar-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #fff;
+      }
+
+      .heatmap-topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .range-switcher {
+        display: inline-flex;
+        gap: 8px;
+        padding: 4px;
+        background: #f3f5f7;
+        border: 1px solid #dfe3e8;
+        border-radius: 999px;
+      }
+
+      .range-switcher button {
+        border: 0;
+        background: transparent;
+        color: var(--muted);
+        font-weight: 700;
+        font-size: 12px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        cursor: pointer;
+      }
+
+      .range-switcher button.active {
+        background: #fff;
+        color: var(--green-900);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      }
+
+      .heatmap-legend {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .heatmap-legend-swatch {
+        width: 14px;
+        height: 14px;
+        border-radius: 4px;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+      }
+
+      .heatmap-grid {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(24px, 1fr));
+        gap: 8px;
+      }
+
+      .heatmap-cell {
+        aspect-ratio: 1 / 1;
+        border-radius: 6px;
+        background: #ebedf0;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        position: relative;
+        display: grid;
+        place-items: center;
+        color: rgba(255, 255, 255, 0.95);
+        font-size: 11px;
+        font-weight: 700;
+        cursor: help;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+      }
+
+      .heatmap-cell:hover {
+        transform: translateY(-1px) scale(1.02);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+      }
+
+      .heatmap-cell[data-level="0"] { background: #ebedf0; color: rgba(31, 41, 55, 0.72); }
+      .heatmap-cell[data-level="1"] { background: #c6e48b; }
+      .heatmap-cell[data-level="2"] { background: #7bc96f; }
+      .heatmap-cell[data-level="3"] { background: #239a3b; }
+      .heatmap-cell[data-level="4"] { background: #196127; }
+
+      .heatmap-summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        gap: 12px;
+      }
+
+      .heatmap-summary article {
+        border: 1px solid #dfe3e8;
+        border-radius: 10px;
+        padding: 12px 14px;
+        background: #fff;
+      }
+
+      .heatmap-summary strong {
+        display: block;
+        font-size: 22px;
+        margin-bottom: 4px;
+      }
+    </style>
+
+    <script>
+      const menuToggle = document.getElementById('menuToggle');
+      const navLinks = document.getElementById('navLinks');
+      const kpisContent = document.getElementById('kpisContent');
+      menuToggle?.addEventListener('click', () => navLinks?.classList.toggle('open'));
+
+      const moneyFormatter = new Intl.NumberFormat('es-CO', {
+        style: 'currency',
+        currency: 'COP',
+        maximumFractionDigits: 0,
+      });
+
+      let currentRangeDays = 30;
+
+      function money(value) {
+        return moneyFormatter.format(Number(value || 0));
+      }
+
+      function dateLabel(value) {
+        if (!value) return 'Sin fecha';
+        return new Date(value).toLocaleDateString('es-CO', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+        });
+      }
+
+      function formatTooltip(item) {
+        const registros = Number(item.registros || 0);
+        const tramites = Number(item.tramites || 0);
+        const costo = Number(item.costo_total || item.total || 0);
+        const abono = Number(item.abono_total || 0);
+        return `${item.dia || item.mes || 'Dato'} | Registros: ${registros} | Trámites: ${tramites} | Costo: ${money(costo)} | Abono: ${money(abono)}`;
+      }
+
+      function bars(items, className) {
+        const values = items.map((i) => Number(i.total || 0));
+        const maxValue = Math.max(1, ...values);
+        const minHeight = 24;
+        const maxHeight = 180;
+
+        return `<div class="${className}">${items
+          .map((i) => {
+            const value = Number(i.total || 0);
+            const ratio = Math.max(0, value) / maxValue;
+            const height = Math.round(minHeight + ratio * (maxHeight - minHeight));
+            return `<div title="${formatTooltip(i)}"><i style="height:${height}px"></i><span>${i.mes || i.dia || 'N/A'}</span></div>`;
+          })
+          .join('')}</div>`;
+      }
+
+      function dailyBars(items, className) {
+        const values = items.map((i) => Number(i.registros || i.tramites || 0));
+        const maxValue = Math.max(1, ...values);
+        const minHeight = 20;
+        const maxHeight = 150;
+
+        return `<div class="${className}">${items
+          .map((i) => {
+            const total = Number(i.registros || i.tramites || 0);
+            const ratio = Math.max(0, total) / maxValue;
+            const height = Math.round(minHeight + ratio * (maxHeight - minHeight));
+            return `<div title="${formatTooltip(i)}"><i style="height:${height}px"></i><span>${i.dia}</span></div>`;
+          })
+          .join('')}</div>`;
+      }
+
+      function tableRows(items, renderRow) {
+        return items.map(renderRow).join('');
+      }
+
+      function totalMovimiento(row) {
+        return Number(row.registros || 0) + Number(row.tramites || 0);
+      }
+
+      function normalizeDayMap(items) {
+        const map = new Map();
+        items.forEach((item) => {
+          const key = String(item.fecha).slice(0, 10);
+          map.set(key, item);
+        });
+        return map;
+      }
+
+      function startOfDay(date) {
+        const copy = new Date(date);
+        copy.setHours(0, 0, 0, 0);
+        return copy;
+      }
+
+      function addDays(date, days) {
+        const copy = new Date(date);
+        copy.setDate(copy.getDate() + days);
+        return copy;
+      }
+
+      function isoDate(date) {
+        return date.toISOString().slice(0, 10);
+      }
+
+      function monthLabel(date) {
+        return date.toLocaleDateString('es-CO', { month: 'short' }).replace('.', '');
+      }
+
+      function weekdayLabel(date) {
+        return date.toLocaleDateString('es-CO', { weekday: 'short' }).toUpperCase();
+      }
+
+      function buildCalendar(items) {
+        const values = items.map((item) => Number(item.registros || 0) + Number(item.tramites || 0));
+        const maxValue = Math.max(1, ...values);
+        const dayMap = normalizeDayMap(items);
+        const dates = items.map((item) => new Date(item.fecha)).sort((a, b) => a - b);
+        const first = startOfDay(dates[0] || new Date());
+        const last = startOfDay(dates[dates.length - 1] || new Date());
+        const start = addDays(first, -first.getDay());
+        const end = addDays(last, 6 - last.getDay());
+
+        const cells = [];
+        for (let cursor = new Date(start); cursor <= end; cursor = addDays(cursor, 1)) {
+          const key = isoDate(cursor);
+          const item = dayMap.get(key);
+          const total = item ? Number(item.registros || 0) + Number(item.tramites || 0) : 0;
+          const level = item ? heatLevel(total, maxValue) : 0;
+          const tooltip = item
+            ? `${item.dia} | Registros: ${item.registros} | Trámites: ${item.tramites} | Costo: ${money(item.costo_total)} | Abono: ${money(item.abono_total)}`
+            : `${dateLabel(cursor)} | Sin actividad registrada`;
+
+          cells.push({
+            key,
+            day: cursor.getDate(),
+            fullDate: new Date(cursor),
+            item,
+            total,
+            level,
+            tooltip,
+            outside: cursor.getMonth() !== first.getMonth() && cursor < first || cursor.getMonth() !== last.getMonth() && cursor > last,
+          });
+        }
+
+        const selected = [...cells].reverse().find((cell) => cell.item) || cells[cells.length - 1] || null;
+
+        return { cells, selected, start, end };
+      }
+
+      function heatLevel(value, maxValue) {
+        if (!value || !maxValue) return 0;
+        const ratio = Number(value) / Number(maxValue);
+        if (ratio <= 0) return 0;
+        if (ratio <= 0.25) return 1;
+        if (ratio <= 0.5) return 2;
+        if (ratio <= 0.75) return 3;
+        return 4;
+      }
+
+      function heatmap(items, valueKey, tooltipBuilder) {
+        const values = items.map((item) => Number(item[valueKey] || 0));
+        const maxValue = Math.max(1, ...values);
+        return `
+          <div class="heatmap-grid">
+            ${items.map((item) => {
+              const value = Number(item[valueKey] || 0);
+              const level = heatLevel(value, maxValue);
+              const tooltip = tooltipBuilder(item, value);
+              return `<div class="heatmap-cell" data-level="${level}" title="${tooltip}">${dateLabel(item.fecha).slice(0, 2)}</div>`;
+            }).join('')}
+          </div>
+        `;
+      }
+
+      function rangeButtons() {
+        return `
+          <div class="range-switcher" role="tablist" aria-label="Rango de trazabilidad">
+            ${[7, 30, 90].map((days) => `<button type="button" data-range-days="${days}" class="${days === currentRangeDays ? 'active' : ''}">${days} días</button>`).join('')}
+          </div>
+        `;
+      }
+
+      async function load() {
+        const response = await fetch(`/api/v1/portal/admin/kpis?dias=${currentRangeDays}`);
+        const payload = await response.json();
+        const data = payload?.datos || payload;
+
+        const trazabilidad = data.trazabilidadDiaria || [];
+        const costosRecientes = data.costosRecientes || [];
+        const estadosTramite = data.estadosTramite || [];
+        const actividadUsuarios = data.actividadUsuarios || [];
+        const rankingDias = data.rankingDias || [];
+        const calendar = buildCalendar(trazabilidad);
+        const selected = calendar.selected?.item || trazabilidad[trazabilidad.length - 1] || null;
+
+        kpisContent.innerHTML = `
+          <div class="portal-breadcrumb">Panel Administrativo > Estadísticas y KPIs</div>
+          <div class="heatmap-topbar">
+            <h1 style="margin:0;">Estadísticas y KPIs</h1>
+            ${rangeButtons()}
+          </div>
+          <div class="portal-grid-2">
+            <section class="portal-card"><h3>Permisos Procesados</h3>${bars(data.permisosProcesados || [], 'admin-bars green')}</section>
+            <section class="portal-card"><h3>Ingresos Mensuales</h3>${bars(data.ingresosMensuales || [], 'admin-bars yellow')}</section>
+          </div>
+          <div class="portal-grid-2">
+            <section class="portal-card kpi-wide" style="padding:0;overflow:hidden;">
+              <div class="calendar-widget">
+                <aside class="calendar-side">
+                  <div class="calendar-badge"><span class="calendar-dot"></span> Trazabilidad diaria</div>
+                  <div class="calendar-big-day">
+                    <strong>${selected ? new Date(selected.fecha).getDate().toString().padStart(2, '0') : '--'}</strong>
+                    <span>${selected ? new Date(selected.fecha).toLocaleDateString('es-CO', { weekday: 'long' }).toUpperCase() : 'SIN DATOS'}</span>
+                  </div>
+                  <div class="calendar-summary">
+                    <h4>${selected ? dateLabel(selected.fecha) : 'Sin actividad'}</h4>
+                    <small>Rango activo: últimos ${data.rangoDias || currentRangeDays} días.</small>
+                    <ul>
+                      <li><strong>${selected ? selected.registros : 0}</strong> registros</li>
+                      <li><strong>${selected ? selected.tramites : 0}</strong> trámites</li>
+                      <li><strong>${selected ? money(selected.costo_total) : money(0)}</strong> costo total</li>
+                      <li><strong>${selected ? money(selected.abono_total) : money(0)}</strong> abono requerido</li>
+                    </ul>
+                  </div>
+                </aside>
+                <section class="calendar-main">
+                  <div class="calendar-yearbar">
+                    <div>${new Date(trazabilidad[0]?.fecha || new Date()).getFullYear()} · ${currentRangeDays} días</div>
+                    <div class="calendar-selected-pill"><span class="calendar-dot"></span> ${selected ? dateLabel(selected.fecha) : 'Sin selección'}</div>
+                  </div>
+                  <div class="calendar-months">
+                    ${[...new Set(trazabilidad.map((item) => new Date(item.fecha).toLocaleDateString('es-CO', { month: 'short' }).replace('.', '')))].map((month) => `<span class="${month === new Date(selected?.fecha || new Date()).toLocaleDateString('es-CO', { month: 'short' }).replace('.', '') ? 'active' : ''}">${month}</span>`).join('')}
+                  </div>
+                  <div class="calendar-weekdays">${['DOM', 'LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB'].map((d) => `<span>${d}</span>`).join('')}</div>
+                  <div class="calendar-grid">
+                    ${calendar.cells.map((cell) => `
+                      <div
+                        class="calendar-day ${cell.item ? '' : 'empty'} ${cell.item && selected && cell.key === String(selected.fecha).slice(0, 10) ? 'selected' : ''} ${cell.outside ? 'muted' : ''}"
+                        data-date="${cell.key}"
+                        data-tooltip="${cell.tooltip}"
+                        data-level="${cell.level}"
+                        title="${cell.tooltip}"
+                      >${cell.item ? cell.day : ''}</div>
+                    `).join('')}
+                  </div>
+                </section>
+              </div>
+            </section>
+          </div>
+          <section class="portal-card">
+            <h3>Costos y Abonos Recientes</h3>
+            <div class="admin-table">
+              <div class="admin-table-head"><span>Radicado</span><span>Proyecto</span><span>Fecha</span><span>Presupuesto</span><span>Abono</span><span>Estado</span></div>
+              ${tableRows(costosRecientes, (row) => `
+                <div class="admin-table-row">
+                  <span title="${row.solicitante}">${row.radicado || 'N/A'}</span>
+                  <span title="Solicitante: ${row.solicitante}">${row.proyecto}</span>
+                  <span>${dateLabel(row.fecha)}</span>
+                  <span title="Costo base: ${money(row.costo_base)} | Presupuesto total: ${money(row.presupuesto_total)}">${money(row.presupuesto_total)}</span>
+                  <span title="Porcentaje: ${Number(row.porcentaje_abono || 0)}% | Abono requerido: ${money(row.abono_requerido)}">${money(row.abono_requerido)}</span>
+                  <span>${row.estado}</span>
+                </div>
+              `)}
+            </div>
+          </section>
+          <div class="portal-grid-2">
+            <section class="portal-card">
+              <h3>Estados de Trámite</h3>
+              <div class="admin-table">
+                <div class="admin-table-head"><span>Estado</span><span>Registros</span></div>
+                ${tableRows(estadosTramite, (row) => `
+                  <div class="admin-table-row">
+                    <span>${row.estado}</span>
+                    <span>${row.total}</span>
+                  </div>
+                `)}
+              </div>
+            </section>
+            <section class="portal-card">
+              <h3>Días con Más Movimiento</h3>
+              <div class="heatmap-summary">
+                ${tableRows(rankingDias, (row) => `
+                  <article title="${row.dia} | Registros: ${row.registros} | Trámites: ${row.tramites} | Costo: ${money(row.costo_total)} | Abono: ${money(row.abono_total)}">
+                    <strong>${totalMovimiento(row)}</strong>
+                    <span>${dateLabel(row.fecha)}</span>
+                    <div style="font-size:12px;color:var(--muted);margin-top:6px;">${row.registros} registros, ${row.tramites} trámites</div>
+                  </article>
+                `)}
+              </div>
+            </section>
+          </div>
+          <section class="portal-card">
+            <h3>Actividad por Usuario</h3>
+            <div class="admin-table">
+              <div class="admin-table-head"><span>Usuario</span><span>Tipo</span><span>Trámites</span><span>Solicitudes</span><span>Último movimiento</span></div>
+              ${tableRows(actividadUsuarios, (row) => `
+                <div class="admin-table-row">
+                  <span title="ID ${row.id}">${row.email}</span>
+                  <span>${row.tipo_persona}</span>
+                  <span>${row.tramites}</span>
+                  <span>${row.solicitudes_registro}</span>
+                  <span>${dateLabel(row.ultimo_movimiento)}</span>
+                </div>
+              `)}
+            </div>
+          </section>
+          <section class="portal-card"><h3>Indicadores Clave</h3><div class="admin-kpis"><article><strong>${data.indicadores.tiempo_respuesta} días</strong><span>Tiempo Promedio de Respuesta</span></article><article><strong>${data.indicadores.satisfaccion}%</strong><span>Satisfacción del Usuario</span></article><article><strong>${data.indicadores.permisos_aprobados}%</strong><span>Permisos Aprobados</span></article><article><strong>${data.indicadores.tasa_cancelacion}%</strong><span>Tasa de Cancelación</span></article></div></section>
+        `;
+      }
+
+      document.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-range-days]');
+        if (!button) return;
+        const days = Number(button.getAttribute('data-range-days'));
+        if (![7, 30, 90].includes(days)) return;
+        currentRangeDays = days;
+        load();
+      });
+
+      document.addEventListener('mouseover', (event) => {
+        const day = event.target.closest('[data-date]');
+        if (!day) return;
+        const date = day.getAttribute('data-date');
+        if (!date) return;
+        const current = document.querySelector('.calendar-selected-pill');
+        if (current) {
+          current.innerHTML = `<span class="calendar-dot"></span> ${dateLabel(date)}`;
+        }
+      });
+
+      load();
+    </script>
+    <script src='/nav-session.js'></script>
+    <script src='/sidebar-slider.js'></script>
+  </body>
+</html>

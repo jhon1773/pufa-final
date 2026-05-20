@@ -1,0 +1,1810 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PUFAB - Registro</title>
+    <meta
+      name="description"
+      content="Registro de usuarios PUFAB con aprobación administrativa y perfil completo de persona natural o jurídica."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+      :root {
+        --bg: #07111f;
+        --bg-elevated: rgba(10, 19, 34, 0.9);
+        --bg-panel: rgba(13, 23, 41, 0.92);
+        --surface: rgba(17, 27, 48, 0.86);
+        --surface-strong: #101b30;
+        --line: rgba(255, 255, 255, 0.1);
+        --line-strong: rgba(255, 255, 255, 0.18);
+        --text: #f7fafc;
+        --muted: #9aa8bd;
+        --accent: #f0c34b;
+        --accent-2: #4ae0c1;
+        --accent-3: #7ec8ff;
+        --danger: #ff7b7b;
+        --success: #76f1b4;
+        --shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+        --radius-xl: 28px;
+        --radius-lg: 22px;
+        --radius-md: 16px;
+        --radius-sm: 12px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        min-height: 100%;
+      }
+
+      body.registro-page {
+        margin: 0;
+        color: var(--text);
+        font-family: 'Nunito Sans', sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(146, 201, 55, 0.16), transparent 28%),
+          radial-gradient(circle at 85% 20%, rgba(74, 224, 193, 0.12), transparent 26%),
+          linear-gradient(180deg, #07111f 0%, #081321 52%, #04070d 100%);
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .registro-topbar {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(4, 8, 15, 0.55);
+        backdrop-filter: blur(18px);
+      }
+
+      .registro-topbar-inner {
+        max-width: 1320px;
+        margin: 0 auto;
+        padding: 16px 28px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+      }
+
+      .registro-brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.05rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .registro-brand-mark {
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        color: #08111d;
+        box-shadow: 0 12px 28px rgba(74, 224, 193, 0.28);
+      }
+
+      .registro-toplinks {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        color: var(--muted);
+        font-size: 0.94rem;
+      }
+
+      .registro-toplinks a {
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid transparent;
+        transition: 0.2s ease;
+      }
+
+      .registro-toplinks a:hover {
+        color: var(--text);
+        border-color: var(--line);
+        background: rgba(255, 255, 255, 0.04);
+      }
+
+      .registro-shell {
+        max-width: 1320px;
+        margin: 0 auto;
+        padding: 28px;
+      }
+
+      .registro-grid {
+        display: grid;
+        grid-template-columns: minmax(290px, 400px) minmax(0, 1fr);
+        gap: 24px;
+        align-items: start;
+      }
+
+      .registro-rail,
+      .registro-card {
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 30px;
+        background: var(--bg-elevated);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(20px);
+      }
+
+      .registro-rail {
+        position: sticky;
+        top: 24px;
+        padding: 28px;
+        overflow: hidden;
+      }
+
+      .registro-rail::before,
+      .registro-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 30%);
+        opacity: 0.55;
+      }
+
+      .registro-rail,
+      .registro-card {
+        position: relative;
+      }
+
+      .registro-rail h1,
+      .registro-card h2,
+      .registro-card h3 {
+        font-family: 'Nunito Sans', sans-serif;
+        font-weight: 800;
+        margin: 0;
+      }
+
+      .registro-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(146, 201, 55, 0.26);
+        background: rgba(146, 201, 55, 0.1);
+        color: #dced8e;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        margin-bottom: 18px;
+      }
+
+      .registro-rail h1 {
+        font-size: clamp(1.9rem, 3.2vw, 2.8rem);
+        line-height: 1.05;
+        letter-spacing: -0.04em;
+        margin-bottom: 12px;
+        max-width: 14ch;
+        text-wrap: balance;
+      }
+
+      .registro-rail p {
+        margin: 0;
+        line-height: 1.65;
+        font-size: 0.98rem;
+      }
+
+      .registro-rail p,
+      .registro-note,
+      .registro-helper,
+      .registro-summary,
+      .registro-support-item small {
+        color: var(--muted);
+      }
+
+      .registro-support {
+        margin-top: 24px;
+        display: grid;
+        gap: 14px;
+      }
+
+      .registro-support-card--hero {
+        padding: 22px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, rgba(146, 201, 55, 0.16), rgba(255, 255, 255, 0.03));
+        border: 1px solid rgba(146, 201, 55, 0.18);
+      }
+
+      .registro-support-card--hero strong {
+        font-size: 1.05rem;
+        margin-bottom: 8px;
+      }
+
+      .registro-support-card--hero .registro-summary {
+        line-height: 1.65;
+      }
+
+      .registro-support-card {
+        padding: 18px;
+        border-radius: var(--radius-md);
+        background: rgba(255, 255, 255, 0.035);
+        border: 1px solid rgba(146, 201, 55, 0.14);
+      }
+
+      .registro-support-card strong {
+        display: block;
+        font-size: 1rem;
+        margin-bottom: 6px;
+      }
+
+      .registro-support-list {
+        display: grid;
+        gap: 12px;
+        margin-top: 12px;
+      }
+
+      .registro-support-item {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.04);
+      }
+
+      .registro-support-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        flex: 0 0 auto;
+        background: linear-gradient(135deg, rgba(240, 195, 75, 0.22), rgba(74, 224, 193, 0.2));
+        color: #fff;
+      }
+
+      .registro-summary-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #dfe8f7;
+        font-size: 0.93rem;
+      }
+
+      .registro-card {
+        padding: 28px;
+        overflow: hidden;
+      }
+
+      .registro-card-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        align-items: flex-start;
+        margin-bottom: 20px;
+      }
+
+      .registro-card-header h2 {
+        font-size: clamp(1.6rem, 3vw, 2.3rem);
+        letter-spacing: -0.04em;
+        margin-bottom: 8px;
+      }
+
+      .registro-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+        border-radius: 999px;
+        font-size: 0.9rem;
+        border: 1px solid rgba(146, 201, 55, 0.22);
+        background: rgba(146, 201, 55, 0.08);
+        color: #dced8e;
+      }
+
+      .registro-tabs,
+      .registro-stepper {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .registro-tabs {
+        padding: 10px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.035);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .tab-button,
+      .step-button {
+        border: 0;
+        cursor: pointer;
+        color: var(--text);
+        font-family: inherit;
+        transition: 0.22s ease;
+      }
+
+      .tab-button,
+      .step-button {
+        padding: 12px 16px;
+        border-radius: 16px;
+        background: transparent;
+        color: var(--muted);
+        font-weight: 700;
+      }
+
+      .tab-button.active {
+        background: linear-gradient(135deg, rgba(146, 201, 55, 0.28), rgba(115, 214, 170, 0.18));
+        color: var(--text);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 10px 24px rgba(146, 201, 55, 0.12);
+      }
+
+      .registro-idea {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 14px;
+        padding: 10px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(146, 201, 55, 0.22);
+        background: rgba(146, 201, 55, 0.08);
+        color: #c9eb7d;
+        font-size: 0.88rem;
+        font-weight: 700;
+      }
+
+      .registro-banner {
+        margin: 18px 0 20px;
+        padding: 18px 20px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, rgba(146, 201, 55, 0.12), rgba(74, 224, 193, 0.08));
+        border: 1px solid rgba(146, 201, 55, 0.18);
+        display: flex;
+        gap: 14px;
+        align-items: center;
+      }
+
+      .registro-banner-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 16px;
+        display: grid;
+        place-items: center;
+        flex: 0 0 auto;
+        background: rgba(255, 255, 255, 0.08);
+        font-size: 1.1rem;
+      }
+
+      .registro-banner strong {
+        display: block;
+        margin-bottom: 2px;
+      }
+
+      .registro-form {
+        display: grid;
+        gap: 20px;
+      }
+
+      .form-section {
+        padding: 20px;
+        border-radius: 22px;
+        border: 1px solid rgba(146, 201, 55, 0.14);
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      #naturalSection .form-section-header,
+      #juridicaSection .form-section-header {
+        display: none;
+      }
+
+      #naturalSection,
+      #juridicaSection {
+        padding-top: 6px;
+      }
+
+      .form-section-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: flex-start;
+        margin-bottom: 16px;
+      }
+
+      .form-section-header h3 {
+        font-size: 1.2rem;
+        margin-bottom: 6px;
+        color: #dced8e;
+      }
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .grid-auto {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 14px;
+      }
+
+      label.field {
+        display: grid;
+        gap: 8px;
+        font-size: 0.93rem;
+        color: #e9eef6;
+      }
+
+      label.field span {
+        color: var(--muted);
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(3, 8, 15, 0.45);
+        color: var(--text);
+        border-radius: 16px;
+        padding: 14px 16px;
+        font: inherit;
+        outline: none;
+        transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+      }
+
+      textarea {
+        min-height: 112px;
+        resize: vertical;
+      }
+
+      input::placeholder,
+      textarea::placeholder {
+        color: #6f7b90;
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        border-color: rgba(74, 224, 193, 0.5);
+        box-shadow: 0 0 0 4px rgba(74, 224, 193, 0.12);
+      }
+
+      input[type='checkbox'] {
+        width: 18px;
+        height: 18px;
+        padding: 0;
+        margin: 0;
+        accent-color: var(--accent-2);
+      }
+
+      .checkbox-grid {
+        display: grid;
+        gap: 10px;
+      }
+
+      .checkbox-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(146, 201, 55, 0.12);
+      }
+
+      .auth-password {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .auth-password-toggle {
+        width: 46px;
+        height: 46px;
+        flex: 0 0 auto;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.03);
+        color: var(--text);
+        cursor: pointer;
+      }
+
+      .helper-row {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .helper-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(146, 201, 55, 0.12);
+        color: var(--muted);
+        font-size: 0.88rem;
+      }
+
+      .message {
+        display: none;
+        padding: 14px 16px;
+        border-radius: 16px;
+        font-weight: 600;
+      }
+
+      .message.error {
+        background: rgba(255, 123, 123, 0.12);
+        border: 1px solid rgba(255, 123, 123, 0.24);
+        color: #ffd8d8;
+      }
+
+      .message.success {
+        background: rgba(118, 241, 180, 0.1);
+        border: 1px solid rgba(118, 241, 180, 0.24);
+        color: #d7ffe8;
+      }
+
+      .registro-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+
+      .btn-primary {
+        border: 0;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 15px 22px;
+        border-radius: 999px;
+        font: inherit;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+        color: #07111f;
+        background: linear-gradient(135deg, #d5ef59 0%, #9ccc30 45%, #79d7b7 100%);
+        box-shadow: 0 18px 34px rgba(146, 201, 55, 0.22);
+      }
+
+      .btn-primary:disabled {
+        opacity: 0.66;
+        cursor: progress;
+      }
+
+      .btn-secondary {
+        border: 1px solid rgba(146, 201, 55, 0.18);
+        background: rgba(146, 201, 55, 0.08);
+        color: var(--text);
+      }
+
+      .registro-footer {
+        margin-top: 18px;
+        text-align: center;
+        color: var(--muted);
+      }
+
+      .registro-footer a {
+        color: #f8e19a;
+        font-weight: 700;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .registro-helpgrid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .registro-helpgrid .mini-card {
+        min-height: 0;
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 12px;
+        align-items: start;
+      }
+
+      .mini-card-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        margin-bottom: 12px;
+        background: rgba(146, 201, 55, 0.12);
+        color: #dced8e;
+      }
+
+      .mini-card p {
+        margin: 0;
+        line-height: 1.55;
+      }
+
+      .persona-section-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+
+      .persona-section-header h3 {
+        font-size: 1.18rem;
+        margin: 0 0 6px;
+        color: #dced8e;
+      }
+
+      .persona-section-header p {
+        margin: 0;
+        line-height: 1.5;
+      }
+
+      .persona-section-tag {
+        flex: 0 0 auto;
+        padding: 10px 14px;
+        border-radius: 999px;
+        border: 1px solid rgba(146, 201, 55, 0.18);
+        background: rgba(146, 201, 55, 0.08);
+        color: #dced8e;
+        font-size: 0.88rem;
+        font-weight: 700;
+      }
+
+      .mini-card {
+        padding: 16px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .mini-card strong {
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      .invalid-note {
+        color: #ffd0d0;
+      }
+
+      @media (max-width: 1180px) {
+        .registro-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .registro-rail {
+          position: static;
+        }
+
+        .grid-3 {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      /* Stepper Styles */
+      .stepper {
+        display: grid;
+        gap: 14px;
+        margin-bottom: 22px;
+      }
+
+      .stepper-track {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+        align-items: center;
+      }
+
+      .step-node {
+        position: relative;
+        display: grid;
+        gap: 10px;
+        text-align: center;
+      }
+
+      .step-node::before {
+        content: '';
+        position: absolute;
+        top: 22px;
+        left: calc(50% + 22px);
+        right: calc(-50% + 22px);
+        height: 2px;
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .step-node:last-child::before {
+        display: none;
+      }
+
+      .step-chip {
+        width: 44px;
+        height: 44px;
+        margin: 0 auto;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        font-weight: 800;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--muted);
+      }
+
+      .step-node.active .step-chip,
+      .step-node.done .step-chip {
+        color: #08121f;
+        background: linear-gradient(135deg, var(--accent-2) 0%, var(--accent-3) 100%);
+        border-color: transparent;
+      }
+
+      .step-node.done::before {
+        background: linear-gradient(90deg, var(--accent-2) 0%, var(--accent-3) 100%);
+      }
+
+      .step-node span {
+        font-size: 0.84rem;
+        color: var(--muted);
+      }
+
+      .step-node.active span,
+      .step-node.done span {
+        color: #ecf4ca;
+      }
+
+      .progress-line {
+        height: 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .progress-line > div {
+        height: 100%;
+        width: 25%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, var(--accent-2) 0%, var(--accent-3) 100%);
+        transition: width 0.24s ease;
+      }
+
+      .step-panel {
+        display: none;
+        padding: 20px;
+        border-radius: 22px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: var(--panel-2);
+      }
+
+      .step-panel.active {
+        display: block;
+      }
+
+      .step-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: flex-start;
+        margin-bottom: 16px;
+      }
+
+      .step-header h3 {
+        margin: 0 0 4px;
+        font-size: 1.2rem;
+        color: #eff6aa;
+      }
+
+      .step-badge {
+        flex: 0 0 auto;
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: rgba(74, 224, 193, 0.08);
+        border: 1px solid rgba(74, 224, 193, 0.18);
+        color: #c2efe8;
+        font-weight: 700;
+        font-size: 0.9rem;
+      }
+
+      .step-lead {
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .register-tabs {
+        display: inline-grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        padding: 6px;
+        margin-bottom: 16px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .register-tab {
+        border: 0;
+        cursor: pointer;
+        padding: 11px 16px;
+        border-radius: 14px;
+        background: transparent;
+        color: var(--muted);
+        font: inherit;
+        font-weight: 700;
+      }
+
+      .register-tab.active {
+        background: rgba(146, 201, 55, 0.12);
+        color: #e9f39d;
+      }
+
+      .steps {
+        display: grid;
+        gap: 18px;
+      }
+
+      .actions {
+        margin-top: 18px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+
+      .actions .left,
+      .actions .right {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 44px;
+        padding: 0 18px;
+        border-radius: 999px;
+        border: 1px solid transparent;
+        font-weight: 700;
+        transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+        font-size: 0.95rem;
+        cursor: pointer;
+      }
+
+      .btn:hover:not(:disabled) {
+        transform: translateY(-1px);
+      }
+
+      .btn-ghost {
+        border-color: rgba(255, 255, 255, 0.1);
+        color: var(--text);
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      .btn-primary {
+        color: #08121f;
+        background: linear-gradient(135deg, var(--accent) 0%, #9bcb32 46%, var(--accent-2) 100%);
+        box-shadow: 0 18px 34px rgba(146, 201, 55, 0.2);
+      }
+
+      .btn-primary:disabled {
+        opacity: 0.66;
+        cursor: not-allowed;
+      }
+
+      .profile-summary {
+        padding: 16px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        display: grid;
+        gap: 8px;
+      }
+
+      @media (max-width: 760px) {
+        .registro-shell {
+          padding: 16px;
+        }
+
+        .registro-topbar-inner,
+        .registro-card,
+        .registro-rail {
+          padding: 18px;
+        }
+
+        .grid-2,
+        .grid-3,
+        .registro-helpgrid {
+          grid-template-columns: 1fr;
+        }
+
+        .registro-card-header {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body class="registro-page">
+    <header class="gov-header">
+      <div class="container gov-header-inner">
+        <img
+          src="https://www.figma.com/api/mcp/asset/55d910c5-1bcc-479c-acd9-c78a28860e9b"
+          alt="GOV.CO"
+          class="gov-logo"
+        />
+        <nav class="gov-links">
+          <a href="https://www.gov.co/" target="_blank" rel="noreferrer">GOV.CO</a>
+          <a href="#">Ministerio de Cultura</a>
+          <a href="#">Proimágenes</a>
+        </nav>
+      </div>
+      <div class="flag-strip"></div>
+    </header>
+
+    <nav class="site-nav">
+      <div class="container site-nav-inner">
+        <a href="/" class="brand">
+          <span class="brand-icon">◧</span>
+          <span>PUFAB</span>
+        </a>
+        <button class="menu-toggle" aria-label="Abrir menú" id="menuToggle">☰</button>
+        <div class="nav-links" id="navLinks">
+          <a href="/">Inicio</a>
+          <a href="/directorio/">Directorio</a>
+          <a href="/tramites/">Trámites</a>
+          <a href="/contacto/">Contacto</a>
+          <a href="/iniciar-sesion/">Ingresar</a>
+        </div>
+        <div class="nav-cta">
+          <a class="btn btn-ghost" href="/contacto/">Contacto</a>
+          <a class="btn btn-primary" href="/iniciar-sesion/">Ingresar</a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="registro-shell">
+      <div class="registro-grid">
+        <aside class="registro-rail">
+          <div class="registro-kicker">Registro con revisión</div>
+          <h1>Abre tu cuenta y deja listo el perfil completo desde el primer envío.</h1>
+          <p>
+            Este registro es exclusivo para productoras. La cuenta queda pendiente hasta la aprobación del admin y
+            el formulario se adapta según seas persona natural o jurídica.
+          </p>
+
+          <div class="registro-support">
+            <div class="registro-support-card registro-support-card--hero">
+              <strong>Antes de empezar</strong>
+              <div class="registro-summary">Escoge el tipo de persona y completa solo los datos que correspondan a tu caso.</div>
+            </div>
+
+            <div class="registro-support-card">
+              <strong>Contacto de apoyo</strong>
+              <div class="registro-support-list">
+                <div class="registro-support-item">
+                  <div class="registro-support-icon">✉</div>
+                  <div>
+                    <strong>cultura@boyaca.gov.co</strong>
+                    <small>Asistencia general para el registro.</small>
+                  </div>
+                </div>
+                <div class="registro-support-item">
+                  <div class="registro-support-icon">☎</div>
+                  <div>
+                    <strong>+57 8 123 4567</strong>
+                    <small>Línea de apoyo institucional.</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="registro-helpgrid">
+              <div class="mini-card">
+                <div class="mini-card-icon">✓</div>
+                <strong>Aprobación</strong>
+                <p>La cuenta no inicia sesión hasta revisar el admin.</p>
+              </div>
+              <div class="mini-card">
+                <div class="mini-card-icon">◧</div>
+                <strong>Catálogos</strong>
+                <p>Los campos de selección se cargan desde la API del backend.</p>
+              </div>
+              <div class="mini-card">
+                <div class="mini-card-icon">⌁</div>
+                <strong>Perfil</strong>
+                <p>Se guarda el perfil base en el mismo registro.</p>
+              </div>
+            </div>
+
+            <div class="registro-summary-badge">Paso final: confirmación y envío para revisión.</div>
+          </div>
+        </aside>
+
+        <section class="registro-card">
+          <div class="registro-card-header">
+            <div>
+              <h2>Crear cuenta</h2>
+              <div class="registro-note">Completa tus datos de acceso y el perfil que corresponda a tu persona o entidad.</div>
+            </div>
+            <div class="registro-pill" id="approvalPill">Productora en revisión</div>
+          </div>
+
+          <form id="signupForm" class="steps" novalidate>
+            <!-- STEPPER VISUAL -->
+            <div class="stepper">
+              <div class="stepper-track" aria-label="Avance del registro productora">
+                <div class="step-node active" data-step-node="0"><div class="step-chip">1</div><span>Acceso</span></div>
+                <div class="step-node" data-step-node="1"><div class="step-chip">2</div><span>Perfil base</span></div>
+                <div class="step-node" data-step-node="2"><div class="step-chip">3</div><span>Detalles</span></div>
+                <div class="step-node" data-step-node="3"><div class="step-chip">4</div><span>Confirmación</span></div>
+              </div>
+              <div class="progress-line" aria-hidden="true"><div id="progressBar"></div></div>
+            </div>
+
+            <!-- PASOS -->
+            <section class="step-panel active" data-step="0">
+              <div class="step-header">
+                <h3>Datos de acceso</h3>
+                <div class="step-lead">Empieza con tu correo y contraseña segura.</div>
+              </div>
+              <div class="grid-2">
+                <label class="field">
+                  <span>Correo electrónico *</span>
+                  <input type="email" name="email" placeholder="tu@email.co" required />
+                </label>
+                <label class="field">
+                  <span>Teléfono</span>
+                  <input type="tel" name="telefono" placeholder="3101234567" />
+                </label>
+                <label class="field">
+                  <span>Contraseña *</span>
+                  <div class="auth-password">
+                    <input type="password" name="password" id="passwordInput" placeholder="••••••••" required />
+                    <button type="button" class="auth-password-toggle" id="passwordToggle" aria-label="Mostrar contraseña">◔</button>
+                  </div>
+                </label>
+                <label class="field">
+                  <span>Confirmar contraseña *</span>
+                  <input type="password" name="confirmPassword" id="confirmPasswordInput" placeholder="••••••••" required />
+                </label>
+              </div>
+            </section>
+
+            <section class="step-panel" data-step="1">
+              <div class="step-header">
+                <h3>Perfil base de la productora</h3>
+                <div class="step-lead">Cuéntanos lo esencial sobre tu empresa audiovisual.</div>
+              </div>
+              <div class="grid-2">
+                <label class="field">
+                  <span>Municipio de operación</span>
+                  <select name="municipio_base_id" data-catalog="municipios"></select>
+                </label>
+                <label class="field">
+                  <span>Tiempo operando en el sector</span>
+                  <select name="tiempo_operando_sector_id" data-catalog="rangosExperienciaSector"></select>
+                </label>
+                <label class="field" style="grid-column: 1 / -1;">
+                  <span>Descripción de la productora *</span>
+                  <textarea name="descripcion_productora" placeholder="Resume tu experiencia y especialidades audiovisuales" required></textarea>
+                </label>
+              </div>
+            </section>
+
+            <section class="step-panel" data-step="2">
+              <div class="step-header">
+                <h3>Detalles de la productora</h3>
+                <div class="step-lead">Completa solo el bloque que corresponde a tu tipo de persona.</div>
+              </div>
+
+              <div class="register-tabs" role="tablist" aria-label="Tipo de persona">
+                <button class="register-tab active" type="button" data-persona="natural">Persona natural</button>
+                <button class="register-tab" type="button" data-persona="juridica">Persona jurídica</button>
+              </div>
+
+              <!-- PERSONA NATURAL -->
+              <section id="naturalSection" class="grid-3">
+                <label class="field">
+                  <span>Tipo de identificación</span>
+                  <select name="tipo_identificacion_id" data-catalog="tiposIdentificacion"></select>
+                </label>
+                <label class="field">
+                  <span>Número de documento *</span>
+                  <input type="text" name="numero_documento" placeholder="1012345678" />
+                </label>
+                <label class="field">
+                  <span>Fecha de nacimiento</span>
+                  <input type="date" name="fecha_nacimiento" />
+                </label>
+                <label class="field">
+                  <span>Primer nombre *</span>
+                  <input type="text" name="primer_nombre" placeholder="María" />
+                </label>
+                <label class="field">
+                  <span>Segundo nombre</span>
+                  <input type="text" name="segundo_nombre" placeholder="Fernanda" />
+                </label>
+                <label class="field">
+                  <span>Primer apellido *</span>
+                  <input type="text" name="primer_apellido" placeholder="Gómez" />
+                </label>
+                <label class="field">
+                  <span>Segundo apellido</span>
+                  <input type="text" name="segundo_apellido" placeholder="Torres" />
+                </label>
+                <label class="field">
+                  <span>Lugar de nacimiento</span>
+                  <select name="lugar_nacimiento_id" data-catalog="municipios"></select>
+                </label>
+                <label class="field">
+                  <span>Municipio de residencia</span>
+                  <select name="municipio_residencia_id" data-catalog="municipios"></select>
+                </label>
+                <label class="field">
+                  <span>Dirección</span>
+                  <input type="text" name="direccion" placeholder="Calle 10 # 5-30" />
+                </label>
+                <label class="field">
+                  <span>Sexo al nacer</span>
+                  <select name="sexo_nacer_id" data-catalog="sexosNacer"></select>
+                </label>
+                <label class="field">
+                  <span>Identidad de género</span>
+                  <select name="identidad_genero_id" data-catalog="identidadesGenero"></select>
+                </label>
+                <label class="field">
+                  <span>Grupo étnico</span>
+                  <select name="grupo_etnico_id" data-catalog="gruposEtnicos"></select>
+                </label>
+                <label class="field">
+                  <span>¿Pertenece a grupo étnico?</span>
+                  <select name="pertenece_grupo_etnico" data-boolean-select>
+                    <option value="">Seleccione</option>
+                    <option value="true">Sí</option>
+                    <option value="false">No</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span>¿Tiene discapacidad?</span>
+                  <select name="tiene_discapacidad" data-boolean-select>
+                    <option value="">Seleccione</option>
+                    <option value="true">Sí</option>
+                    <option value="false">No</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span>Tipo de discapacidad</span>
+                  <select name="tipo_discapacidad_id" data-catalog="tiposDiscapacidad"></select>
+                </label>
+                <label class="field">
+                  <span>¿Vive en zona rural?</span>
+                  <select name="vive_zona_rural" data-boolean-select>
+                    <option value="">Seleccione</option>
+                    <option value="true">Sí</option>
+                    <option value="false">No</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span>¿Se considera campesino?</span>
+                  <select name="se_considera_campesino" data-boolean-select>
+                    <option value="">Seleccione</option>
+                    <option value="true">Sí</option>
+                    <option value="false">No</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span>¿Víctima del conflicto armado?</span>
+                  <select name="victima_conflicto_armado" data-boolean-select>
+                    <option value="">Seleccione</option>
+                    <option value="true">Sí</option>
+                    <option value="false">No</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span>¿Migrante o refugiado?</span>
+                  <select name="migrante_refugiado" data-boolean-select>
+                    <option value="">Seleccione</option>
+                    <option value="true">Sí</option>
+                    <option value="false">No</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span>Nivel educativo</span>
+                  <select name="nivel_educativo_id" data-catalog="nivelesEducativos"></select>
+                </label>
+                <label class="field">
+                  <span>Tiempo de dedicación al sector</span>
+                  <select name="tiempo_dedicacion_sector_id" data-catalog="tiemposDedicacionSector"></select>
+                </label>
+                <label class="field">
+                  <span>De dónde provienen tus ingresos</span>
+                  <select name="ingresos_provienen_sector_id" data-catalog="tiposIngresosSector"></select>
+                </label>
+                <label class="field">
+                  <span>Equipos propios (tipo)</span>
+                  <select name="equipos_propios_tipo_id" data-catalog="tiposPropiedadEquipos"></select>
+                </label>
+                <label class="field">
+                  <span>Gama de equipos</span>
+                  <select name="gama_equipos_id" data-catalog="gamasEquipos"></select>
+                </label>
+                <label class="field">
+                  <span>Rango de experiencia</span>
+                  <select name="tiempo_experiencia_sector_id" data-catalog="rangosExperienciaSector"></select>
+                </label>
+                <label class="field">
+                  <span>Producción en la que participa</span>
+                  <select name="produccion_participa_id" data-catalog="tiposProduccionParticipa"></select>
+                </label>
+                <label class="field">
+                  <span>Inglés - Habla (0-5)</span>
+                  <input type="number" name="ingles_habla" min="0" max="5" />
+                </label>
+                <label class="field">
+                  <span>Inglés - Lee (0-5)</span>
+                  <input type="number" name="ingles_lee" min="0" max="5" />
+                </label>
+                <label class="field">
+                  <span>Inglés - Escribe (0-5)</span>
+                  <input type="number" name="ingles_escribe" min="0" max="5" />
+                </label>
+              </section>
+
+              <!-- PERSONA JURIDICA -->
+              <section id="juridicaSection" class="grid-3 hidden">
+                <label class="field">
+                  <span>Razón social *</span>
+                  <input type="text" name="razon_social" placeholder="Andes Cine SAS" />
+                </label>
+                <label class="field">
+                  <span>NIT *</span>
+                  <input type="text" name="nit" placeholder="900123456-7" />
+                </label>
+                <label class="field">
+                  <span>Tipo de entidad</span>
+                  <select name="tipo_entidad_id" data-catalog="tiposEntidad"></select>
+                </label>
+                <label class="field">
+                  <span>Fecha de constitución</span>
+                  <input type="date" name="fecha_constitucion" />
+                </label>
+                <label class="field">
+                  <span>Municipio</span>
+                  <select name="municipio_id" data-catalog="municipios"></select>
+                </label>
+                <label class="field">
+                  <span>Dirección física</span>
+                  <input type="text" name="direccion_fisica" placeholder="Cra. 7 # 12-34" />
+                </label>
+                <label class="field">
+                  <span>Teléfono de contacto</span>
+                  <input type="tel" name="telefono_contacto" placeholder="3101234567" />
+                </label>
+                <label class="field">
+                  <span>Correo institucional</span>
+                  <input type="email" name="correo_institucional" placeholder="contacto@entidad.co" />
+                </label>
+                <label class="field">
+                  <span>Página web (si aplica)</span>
+                  <input type="url" name="pagina_web" placeholder="https://" />
+                </label>
+                <label class="field" style="grid-column: 1 / -1;">
+                  <span>Objeto social</span>
+                  <textarea name="objeto_social" placeholder="Describe la actividad principal de la entidad"></textarea>
+                </label>
+                <label class="field">
+                  <span>Nombre del representante legal *</span>
+                  <input type="text" name="nombre_representante_legal" placeholder="Laura Gómez" />
+                </label>
+                <label class="field">
+                  <span>Tipo de documento representante</span>
+                  <select name="tipo_documento_representante_id" data-catalog="tiposIdentificacion"></select>
+                </label>
+                <label class="field">
+                  <span>Número de documento del representante *</span>
+                  <input type="text" name="numero_documento_representante" placeholder="1012345678" />
+                </label>
+                <label class="field">
+                  <span>Inicio del nombramiento</span>
+                  <input type="date" name="fecha_inicio_nombramiento" />
+                </label>
+                <label class="field">
+                  <span>Fin del nombramiento</span>
+                  <input type="date" name="fecha_fin_nombramiento" />
+                </label>
+                <label class="field" style="grid-column: 1 / -1;">
+                  <span>Áreas de trabajo</span>
+                  <textarea name="areas_trabajo" placeholder="Describe los áreas o líneas de trabajo"></textarea>
+                </label>
+                <label class="field" style="grid-column: 1 / -1;">
+                  <span>Proyectos realizados</span>
+                  <textarea name="proyectos_realizados" placeholder="Enumera o describe proyectos previos"></textarea>
+                </label>
+                <label class="field" style="grid-column: 1 / -1;">
+                  <span>Proyectos en curso</span>
+                  <textarea name="proyectos_en_curso" placeholder="Describe proyectos actualmente en desarrollo"></textarea>
+                </label>
+                <label class="field" style="grid-column: 1 / -1;">
+                  <span>Público objetivo o beneficiarios</span>
+                  <textarea name="publico_objetivo_beneficiarios" placeholder="Explica a quién impacta o beneficia la entidad"></textarea>
+                </label>
+                <label class="field">
+                  <span>Certificado de existencia y representación</span>
+                  <input type="file" name="certificado_existencia_representacion" accept=".pdf,.doc,.docx,.jpg,.png" />
+                </label>
+                <label class="field">
+                  <span>Copia del acta de constitución</span>
+                  <input type="file" name="copia_acta_constitucion" accept=".pdf,.doc,.docx,.jpg,.png" />
+                </label>
+                <label class="field">
+                  <span>RUT actualizado</span>
+                  <input type="file" name="rut_actualizado" accept=".pdf,.doc,.docx,.jpg,.png" />
+                </label>
+                <label class="field">
+                  <span>Acta de nombramiento del representante</span>
+                  <input type="file" name="acta_nombramiento_representante" accept=".pdf,.doc,.docx,.jpg,.png" />
+                </label>
+                <label class="field">
+                  <span>¿Cuenta con registro Soy Cultura?</span>
+                  <select name="registro_soy_cultura" data-boolean-select>
+                    <option value="">Seleccione</option>
+                    <option value="true">Sí</option>
+                    <option value="false">No</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span>¿Cuenta con registro Observatorio Cultural de Boyacá?</span>
+                  <select name="registro_observatorio_cultural_boyaca" data-boolean-select>
+                    <option value="">Seleccione</option>
+                    <option value="true">Sí</option>
+                    <option value="false">No</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span>¿Ha recibido estímulos o apoyos públicos?</span>
+                  <select name="ha_recibido_estimulos_apoyos" data-boolean-select>
+                    <option value="">Seleccione</option>
+                    <option value="true">Sí</option>
+                    <option value="false">No</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span>¿Participa en redes o asociaciones?</span>
+                  <select name="participa_redes_asociaciones" data-boolean-select>
+                    <option value="">Seleccione</option>
+                    <option value="true">Sí</option>
+                    <option value="false">No</option>
+                  </select>
+                </label>
+                <label class="field" style="grid-column: 1 / -1;">
+                  <span>¿Cuáles redes o asociaciones?</span>
+                  <textarea name="cuales_redes_asociaciones" placeholder="Indica redes, asociaciones o colectivos"></textarea>
+                </label>
+              </section>
+            </section>
+
+            <section class="step-panel" data-step="3">
+              <div class="step-header">
+                <h3>Confirmación y envío</h3>
+                <div class="step-lead">Revisa tus datos y acepta los términos para completar tu registro.</div>
+              </div>
+              <div class="confirmation-summary">
+                <p>✓ Correo: <strong id="summaryEmail"></strong></p>
+                <p>✓ Tipo: <strong id="summaryPersona"></strong></p>
+              </div>
+              <div class="grid-1">
+                <label class="field field-checkbox">
+                  <input type="checkbox" name="terms" required />
+                  <span>Acepto los términos y condiciones de PUFAB</span>
+                </label>
+                <label class="field field-checkbox">
+                  <input type="checkbox" name="autorizacion" required />
+                  <span>Autorizo el tratamiento de mis datos personales según la política de privacidad</span>
+                </label>
+              </div>
+            </section>
+
+            <!-- BOTONES DE NAVEGACIÓN -->
+            <div class="actions">
+              <div class="left">
+                <button type="button" class="btn btn-ghost" id="backBtn">Atrás</button>
+              </div>
+              <div class="right">
+                <button type="button" class="btn btn-ghost" id="saveDraftBtn">Guardar idea</button>
+                <button type="button" class="btn btn-primary" id="nextBtn">Continuar</button>
+                <button type="submit" class="btn btn-primary hidden" id="submitBtn">Enviar registro</button>
+              </div>
+            </div>
+          </form>
+
+          <p class="registro-footer">
+            ¿Ya tienes cuenta? <a href="/iniciar-sesion/">Ingresa aquí</a>
+          </p>
+        </section>
+      </div>
+    </main>
+
+    <script src="/api-client.js"></script>
+    <script>
+      const form = document.getElementById('signupForm');
+      const backBtn = document.getElementById('backBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const submitBtn = document.getElementById('submitBtn');
+      const saveDraftBtn = document.getElementById('saveDraftBtn');
+      const progressBar = document.getElementById('progressBar');
+      const naturalSection = document.getElementById('naturalSection');
+      const juridicaSection = document.getElementById('juridicaSection');
+      const summaryEmail = document.getElementById('summaryEmail');
+      const summaryPersona = document.getElementById('summaryPersona');
+      const tabs = Array.from(document.querySelectorAll('[data-persona]'));
+      const stepPanels = Array.from(document.querySelectorAll('.step-panel'));
+      const stepNodes = Array.from(document.querySelectorAll('[data-step-node]'));
+      const catalogSelects = Array.from(document.querySelectorAll('[data-catalog]'));
+      const role = 'productora';
+
+      let currentStep = 0;
+      let selectedPersona = 'natural';
+
+      function setMessage(element, text) {
+        const id = element.id || '';
+        let el = element;
+        if (typeof element === 'string') {
+          el = document.getElementById(element);
+        }
+        if (el) {
+          el.textContent = text || '';
+          el.style.display = text ? 'block' : 'none';
+        }
+      }
+
+      function parseCatalogItem(item) {
+        return {
+          value: item?.id ?? '',
+          label: item?.nombre ?? item?.descripcion ?? `#${item?.id ?? ''}`,
+        };
+      }
+
+      function fillSelect(select, items) {
+        const current = select.value;
+        const options = [{ value: '', label: 'Seleccione' }, ...(items || []).map(parseCatalogItem)];
+        select.innerHTML = options
+          .map((option) => `<option value="${String(option.value)}">${String(option.label)}</option>`)
+          .join('');
+        if (current) select.value = current;
+      }
+
+      async function loadCatalogs() {
+        const names = Array.from(new Set(catalogSelects.map((select) => select.dataset.catalog).filter(Boolean)));
+        const loaded = await Promise.all(
+          names.map(async (name) => {
+            const method = API_CLIENT.catalogos[name];
+            if (typeof method !== 'function') return [name, []];
+            try {
+              return [name, await method()];
+            } catch (error) {
+              console.warn(`No se pudo cargar el catálogo ${name}:`, error);
+              return [name, []];
+            }
+          }),
+        );
+        const catalogData = Object.fromEntries(loaded);
+        catalogSelects.forEach((select) => fillSelect(select, catalogData[select.dataset.catalog] || []));
+      }
+
+      function updateStepper() {
+        const progress = ((currentStep + 1) / stepPanels.length) * 100;
+        progressBar.style.width = `${progress}%`;
+        stepPanels.forEach((panel, index) => panel.classList.toggle('active', index === currentStep));
+        stepNodes.forEach((node, index) => {
+          node.classList.toggle('active', index === currentStep);
+          node.classList.toggle('done', index < currentStep);
+        });
+        backBtn.disabled = currentStep === 0;
+        nextBtn.classList.toggle('hidden', currentStep === stepPanels.length - 1);
+        submitBtn.classList.toggle('hidden', currentStep !== stepPanels.length - 1);
+        if (summaryEmail) summaryEmail.textContent = String(readField('email') || '');
+        if (summaryPersona) summaryPersona.textContent = selectedPersona === 'natural' ? 'Persona natural' : 'Persona jurídica';
+      }
+
+      function validateStep(step) {
+        if (step === 0) {
+          const email = String(readField('email') || '');
+          const password = String(readField('password') || '');
+          const confirmPassword = String(readField('confirmPassword') || '');
+          if (!email || !password || !confirmPassword) {
+            throw new Error('Completa el correo y la contraseña antes de continuar.');
+          }
+          if (password.length < 8) {
+            throw new Error('La contraseña debe tener al menos 8 caracteres.');
+          }
+          if (password !== confirmPassword) {
+            throw new Error('Las contraseñas no coinciden.');
+          }
+        }
+
+        if (step === 1) {
+          const descripcion = String(readField('descripcion_productora') || '');
+          if (!descripcion) {
+            throw new Error('Describe la productora antes de seguir.');
+          }
+        }
+
+        if (step === 2) {
+          if (selectedPersona === 'natural') {
+            if (!readField('numero_documento') || !readField('primer_nombre') || !readField('primer_apellido')) {
+              throw new Error('Completa el documento, nombre y apellido.');
+            }
+          } else {
+            if (!readField('razon_social') || !readField('nit') || !readField('nombre_representante_legal')) {
+              throw new Error('Completa la razón social, el NIT y el representante legal.');
+            }
+          }
+        }
+
+        if (step === 3) {
+          const terms = form.querySelector('[name="terms"]')?.checked;
+          const autorizacion = form.querySelector('[name="autorizacion"]')?.checked;
+          if (!terms || !autorizacion) {
+            throw new Error('Debes aceptar los términos y autorización para enviar el registro.');
+          }
+        }
+      }
+
+      function readField(name) {
+        const field = form.querySelector(`[name="${name}"]`);
+        if (!field || field.disabled) return undefined;
+        if (field.type === 'checkbox') return field.checked;
+        const value = String(field.value ?? '').trim();
+        if (!value) return undefined;
+        if (field.hasAttribute('data-boolean-select')) return value === 'true';
+        if (field.type === 'number' || field.dataset.cast === 'number') {
+          const num = Number(value);
+          return Number.isNaN(num) ? undefined : num;
+        }
+        if (field.tagName === 'SELECT' && /^[0-9]+$/.test(field.value)) return Number(value);
+        return value;
+      }
+
+      function readSection(names) {
+        return names.reduce((result, name) => {
+          const value = readField(name);
+          if (value !== undefined) result[name] = value;
+          return result;
+        }, {});
+      }
+
+      function setPersona(persona) {
+        selectedPersona = persona;
+        tabs.forEach((button) => button.classList.toggle('active', button.dataset.persona === persona));
+        naturalSection.classList.toggle('hidden', persona !== 'natural');
+        juridicaSection.classList.toggle('hidden', persona !== 'juridica');
+      }
+
+      function currentPayload() {
+        const email = String(readField('email') || '').trim();
+        const telefono = String(readField('telefono') || '').trim();
+        const password = String(readField('password') || '');
+
+        const perfilNatural = readSection([
+          'tipo_identificacion_id',
+          'numero_documento',
+          'fecha_nacimiento',
+          'primer_nombre',
+          'segundo_nombre',
+          'primer_apellido',
+          'segundo_apellido',
+          'municipio_residencia_id',
+          'direccion',
+          'sexo_nacer_id',
+          'identidad_genero_id',
+          'grupo_etnico_id',
+          'pertenece_grupo_etnico',
+          'tiene_discapacidad',
+          'tipo_discapacidad_id',
+          'vive_zona_rural',
+          'se_considera_campesino',
+          'victima_conflicto_armado',
+          'migrante_refugiado',
+          'nivel_educativo_id',
+          'tiempo_dedicacion_sector_id',
+          'ingresos_provienen_sector_id',
+          'equipos_propios_tipo_id',
+          'gama_equipos_id',
+          'tiempo_experiencia_sector_id',
+          'produccion_participa_id',
+          'ingles_habla',
+          'ingles_lee',
+          'ingles_escribe',
+        ]);
+
+        // Mapear lugar de nacimiento a texto (DTO espera `lugar_nacimiento` como string)
+        const lugarNacimientoSelect = form.querySelector('[name="lugar_nacimiento_id"]');
+        if (lugarNacimientoSelect && lugarNacimientoSelect.value) {
+          perfilNatural.lugar_nacimiento = lugarNacimientoSelect.selectedOptions?.[0]?.text || String(readField('lugar_nacimiento_id'));
+        }
+
+        const perfilJuridica = readSection([
+          'razon_social',
+          'nit',
+          'tipo_entidad_id',
+          'fecha_constitucion',
+          'municipio_id',
+          'direccion_fisica',
+          'telefono_contacto',
+          'correo_institucional',
+          'pagina_web',
+          'objeto_social',
+          'nombre_representante_legal',
+          'tipo_documento_representante_id',
+          'numero_documento_representante',
+          'fecha_inicio_nombramiento',
+          'fecha_fin_nombramiento',
+          'areas_trabajo',
+          'proyectos_realizados',
+          'proyectos_en_curso',
+          'publico_objetivo_beneficiarios',
+          'certificado_existencia_representacion',
+          'copia_acta_constitucion',
+          'rut_actualizado',
+          'acta_nombramiento_representante',
+          'registro_soy_cultura',
+          'registro_observatorio_cultural_boyaca',
+          'ha_recibido_estimulos_apoyos',
+          'participa_redes_asociaciones',
+          'cuales_redes_asociaciones',
+        ]);
+
+        return {
+          email,
+          password,
+          telefono: telefono || undefined,
+          tipo_persona: selectedPersona,
+          rolSolicitado: role,
+          perfilNatural: selectedPersona === 'natural' ? perfilNatural : undefined,
+          perfilJuridica: selectedPersona === 'juridica' ? perfilJuridica : undefined,
+          nombre:
+            selectedPersona === 'natural'
+              ? [perfilNatural.primer_nombre, perfilNatural.primer_apellido].filter(Boolean).join(' ').trim() || undefined
+              : perfilJuridica.razon_social || undefined,
+        };
+      }
+
+      function goNext() {
+        try {
+          validateStep(currentStep);
+          if (currentStep < stepPanels.length - 1) {
+            currentStep += 1;
+            updateStepper();
+          }
+        } catch (error) {
+          const errorDiv = document.createElement('div');
+          errorDiv.className = 'message error';
+          errorDiv.textContent = error.message || 'No fue posible avanzar.';
+          errorDiv.style.display = 'block';
+          form.parentElement?.insertBefore(errorDiv, form);
+          setTimeout(() => errorDiv.remove(), 4000);
+        }
+      }
+
+      function goBack() {
+        if (currentStep === 0) return;
+        currentStep -= 1;
+        updateStepper();
+      }
+
+      tabs.forEach((button) => {
+        button.addEventListener('click', () => setPersona(button.dataset.persona));
+      });
+
+      const passwordToggle = document.getElementById('passwordToggle');
+      const passwordInput = document.getElementById('passwordInput');
+      const confirmPasswordInput = document.getElementById('confirmPasswordInput');
+
+      if (passwordToggle) {
+        passwordToggle.addEventListener('click', () => {
+          const isPassword = passwordInput.type === 'password';
+          passwordInput.type = isPassword ? 'text' : 'password';
+          confirmPasswordInput.type = isPassword ? 'text' : 'password';
+        });
+      }
+
+      backBtn.addEventListener('click', goBack);
+      nextBtn.addEventListener('click', goNext);
+
+      saveDraftBtn.addEventListener('click', () => {
+        localStorage.setItem('pufab_productora_draft', JSON.stringify(currentPayload()));
+        const msg = document.createElement('div');
+        msg.className = 'message success';
+        msg.textContent = 'Borrador guardado en este navegador.';
+        msg.style.display = 'block';
+        form.parentElement?.insertBefore(msg, form);
+        setTimeout(() => msg.remove(), 2000);
+      });
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        try {
+          validateStep(0);
+          validateStep(1);
+          validateStep(2);
+          validateStep(3);
+
+          const payload = currentPayload();
+          const response = await API_CLIENT.auth.register(payload);
+          if (response?.success || response?.id || response?.usuario_id) {
+            localStorage.removeItem('pufab_productora_draft');
+            const msg = document.createElement('div');
+            msg.className = 'message success';
+            msg.innerHTML = '✓ Registro enviado. Recibirás confirmación por correo cuando sea aprobado.';
+            msg.style.display = 'block';
+            form.parentElement?.insertBefore(msg, form);
+            setTimeout(() => (window.location.href = '/iniciar-sesion/'), 2000);
+          } else {
+            throw new Error(response?.message || 'Error en el registro.');
+          }
+        } catch (error) {
+          const errorDiv = document.createElement('div');
+          errorDiv.className = 'message error';
+          errorDiv.textContent = error.message || 'Error al procesar el registro.';
+          errorDiv.style.display = 'block';
+          form.parentElement?.insertBefore(errorDiv, form);
+        }
+      });
+
+      // CARGAR CATÁLOGOS Y BORRADOR
+      (async () => {
+        await loadCatalogs();
+        const draft = localStorage.getItem('pufab_productora_draft');
+        if (draft) {
+          try {
+            const data = JSON.parse(draft);
+            Object.entries(data).forEach(([key, value]) => {
+              const field = form.querySelector(`[name="${key}"]`);
+              if (field && typeof value === 'boolean') {
+                if (field.type === 'checkbox') field.checked = value;
+                else if (field.hasAttribute('data-boolean-select')) field.value = value ? 'true' : 'false';
+              } else if (field && value !== undefined && value !== null) {
+                field.value = value;
+              }
+            });
+          } catch (e) {
+            console.warn('No se pudo cargar el borrador:', e);
+          }
+        }
+        updateStepper();
+      })();
+    </script>
+  </body>
+</html>

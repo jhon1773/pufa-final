@@ -1,0 +1,707 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PUFAB - Registrar Pago</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+      .payment-wrapper {
+        max-width: 700px;
+        margin: 0 auto;
+      }
+
+      .payment-card {
+        background: white;
+        border-radius: 8px;
+        padding: 2rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1.5rem;
+      }
+
+      .payment-card h1 {
+        margin: 0 0 0.5rem;
+        font-size: 24px;
+      }
+
+      .payment-card > p {
+        color: #768794;
+        margin: 0 0 2rem;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group label {
+        display: block;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+      }
+
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-family: inherit;
+        font-size: 13px;
+        box-sizing: border-box;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus,
+      .form-group textarea:focus {
+        outline: none;
+        border-color: var(--green-700);
+        box-shadow: 0 0 0 3px rgba(45, 126, 62, 0.1);
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .form-row .form-group {
+        margin-bottom: 0;
+      }
+
+      .info-box {
+        background: #f0f7f1;
+        border-left: 3px solid var(--green-700);
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1.5rem;
+      }
+
+      .info-box strong {
+        display: block;
+        color: var(--green-700);
+        margin-bottom: 0.5rem;
+      }
+
+      .info-box small {
+        display: block;
+        color: #768794;
+        margin-bottom: 0.25rem;
+      }
+
+      .amount-highlight {
+        background: #fef3c7;
+        border: 1px solid #fcd34d;
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1.5rem;
+      }
+
+      .amount-label {
+        font-size: 12px;
+        color: #92400e;
+        text-transform: uppercase;
+        margin-bottom: 0.25rem;
+      }
+
+      .amount-value {
+        font-size: 24px;
+        font-weight: 700;
+        color: #92400e;
+      }
+
+      .alert {
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1.5rem;
+      }
+
+      .alert-warning {
+        background: #fef3c7;
+        color: #92400e;
+        border-left: 3px solid #f59e0b;
+      }
+
+      .alert-success {
+        background: #dcfce7;
+        color: #166534;
+        border-left: 3px solid #10b981;
+      }
+
+      .alert-error {
+        background: #fee2e2;
+        color: #991b1b;
+        border-left: 3px solid #ef4444;
+      }
+
+      .payment-methods {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .payment-method {
+        position: relative;
+      }
+
+      .payment-method input[type='radio'] {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+      }
+
+      .payment-method label {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        border: 2px solid #ddd;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-weight: 500;
+      }
+
+      .payment-method input[type='radio']:checked + label {
+        border-color: var(--green-700);
+        background: #f0f7f1;
+      }
+
+      .payment-details {
+        background: #f9f9f9;
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1.5rem;
+        display: none;
+      }
+
+      .payment-details.show {
+        display: block;
+      }
+
+      .upload-area {
+        border: 2px dashed #ddd;
+        border-radius: 6px;
+        padding: 1.5rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .upload-area:hover {
+        border-color: var(--green-700);
+        background: #f0f7f1;
+      }
+
+      .upload-area.drag-over {
+        border-color: var(--green-700);
+        background: #f0f7f1;
+      }
+
+      #comprobante {
+        display: none;
+      }
+
+      .file-preview {
+        margin-top: 1rem;
+        padding: 0.75rem;
+        background: white;
+        border-radius: 4px;
+        border-left: 3px solid var(--green-700);
+      }
+
+      .file-name {
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+      }
+
+      .file-size {
+        font-size: 12px;
+        color: #768794;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 1rem;
+      }
+
+      .btn {
+        flex: 1;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s;
+      }
+
+      .btn-primary {
+        background: var(--green-700);
+        color: white;
+      }
+
+      .btn-primary:hover:not(:disabled) {
+        background: #1e4620;
+      }
+
+      .btn-primary:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+      }
+
+      .btn-secondary {
+        background: #e0e0e0;
+        color: #333;
+      }
+
+      .btn-secondary:hover {
+        background: #d0d0d0;
+      }
+
+      .processing {
+        display: none;
+        text-align: center;
+        padding: 2rem;
+      }
+
+      .processing.show {
+        display: block;
+      }
+
+      .spinner {
+        border: 3px solid #e0e0e0;
+        border-top: 3px solid var(--green-700);
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1rem;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .payment-card {
+          padding: 1.5rem;
+        }
+
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+
+        .payment-methods {
+          grid-template-columns: 1fr;
+        }
+
+        .action-buttons {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="gov-header">
+      <div class="container gov-header-inner">
+        <img
+          src="https://www.figma.com/api/mcp/asset/55d910c5-1bcc-479c-acd9-c78a28860e9b"
+          alt="GOV.CO"
+          class="gov-logo"
+        />
+        <nav class="gov-links">
+          <a href="https://www.gov.co/" target="_blank" rel="noreferrer">GOV.CO</a>
+          <a href="#">Ministerio de Cultura</a>
+          <a href="#">Proimágenes</a>
+        </nav>
+      </div>
+      <div class="flag-strip"></div>
+    </header>
+
+    <nav class="site-nav">
+      <div class="container site-nav-inner">
+        <a href="/" class="brand">
+          <span class="brand-icon">◧</span>
+          <strong>PUFAB</strong>
+        </a>
+        <div class="nav-links" id="navLinks">
+          <a href="/">Inicio</a>
+          <a href="/dashboard/">Dashboard</a>
+        </div>
+        <div class="nav-cta">
+          <button class="btn btn-ghost" id="logoutBtn">Cerrar Sesión</button>
+        </div>
+      </div>
+    </nav>
+
+    <main class="section-white">
+      <div class="container">
+        <a href="javascript:history.back()" style="text-decoration: none; color: var(--green-700); margin-bottom: 1rem; display: inline-block;">← Volver</a>
+
+        <div class="payment-wrapper">
+          <!-- INFORMACIÓN DEL TRÁMITE -->
+          <div class="payment-card">
+            <h1>💳 Registrar Pago</h1>
+            <p>Completa el registro de tu abono o pago de derechos</p>
+
+            <div id="alertContainer"></div>
+
+            <div class="info-box" id="tramiteInfo" style="display: none;">
+              <strong>Trámite: <span id="tramiteTitle"></span></strong>
+              <small>Radicado: <span id="tramiteRadicado"></span></small>
+              <small>Solicitante: <span id="tramiteUser"></span></small>
+            </div>
+          </div>
+
+          <!-- FORMULARIO DE PAGO -->
+          <div class="payment-card">
+            <form id="paymentForm">
+              <!-- MONTO -->
+              <div class="form-group">
+                <label for="tramiteSelect">Trámite *</label>
+                <select id="tramiteSelect" required>
+                  <option value="">-- Selecciona un trámite --</option>
+                </select>
+              </div>
+
+              <div class="amount-highlight" id="amountDisplay" style="display: none;">
+                <div class="amount-label">Valor a Pagar</div>
+                <div class="amount-value" id="amountValue">$0</div>
+              </div>
+
+              <div class="form-group">
+                <label for="monto">Monto a Pagar (COP) *</label>
+                <input type="number" id="monto" placeholder="0" required min="1000" />
+              </div>
+
+              <div class="form-group">
+                <label for="tipoPago">Tipo de Pago *</label>
+                <select id="tipoPago" required>
+                  <option value="">-- Selecciona tipo --</option>
+                  <option value="derechos_de_tramite">Derechos de Trámite</option>
+                  <option value="afianzamiento">Afianzamiento</option>
+                  <option value="abono">Abono a Cuenta</option>
+                  <option value="otro">Otro</option>
+                </select>
+              </div>
+
+              <!-- MÉTODO DE PAGO -->
+              <div class="form-group">
+                <label>Método de Pago *</label>
+                <div class="payment-methods">
+                  <div class="payment-method">
+                    <input type="radio" id="transferencia" name="metodoPago" value="transferencia" checked />
+                    <label for="transferencia">🏦 Transferencia</label>
+                  </div>
+                  <div class="payment-method">
+                    <input type="radio" id="consignacion" name="metodoPago" value="consignacion" />
+                    <label for="consignacion">📋 Consignación</label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- DETALLES SEGÚN MÉTODO -->
+              <div class="payment-details" id="detallesTransferencia">
+                <div class="form-group">
+                  <label for="bancoOrigen">Banco de Origen *</label>
+                  <input type="text" id="bancoOrigen" placeholder="Ej: Banco de Bogotá" />
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="numeroCuenta">Número de Cuenta *</label>
+                    <input type="text" id="numeroCuenta" placeholder="XXXX XXXX XXXX XXXX" />
+                  </div>
+                  <div class="form-group">
+                    <label for="referencia">Referencia de Transferencia *</label>
+                    <input type="text" id="referencia" placeholder="Ej: TRF-2024-001" />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="fechaTransferencia">Fecha de Transferencia *</label>
+                  <input type="date" id="fechaTransferencia" />
+                </div>
+              </div>
+
+              <div class="payment-details" id="detallesConsignacion">
+                <div class="form-group">
+                  <label for="bancoDestino">Banco Destino *</label>
+                  <select id="bancoDestino">
+                    <option value="">-- Selecciona banco --</option>
+                    <option value="banco_bogota">Banco de Bogotá</option>
+                    <option value="davivienda">Davivienda</option>
+                    <option value="bancolombia">Bancolombia</option>
+                    <option value="bbva">BBVA</option>
+                  </select>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="numeroCuentaDestino">Número de Cuenta *</label>
+                    <input type="text" id="numeroCuentaDestino" placeholder="XXXX XXXX XXXX" />
+                  </div>
+                  <div class="form-group">
+                    <label for="numeroComprobante">Número Comprobante *</label>
+                    <input type="text" id="numeroComprobante" placeholder="Ej: 123456789" />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="fechaConsignacion">Fecha de Consignación *</label>
+                  <input type="date" id="fechaConsignacion" />
+                </div>
+              </div>
+
+              <!-- COMPROBANTE -->
+              <div class="form-group">
+                <label>Comprobante de Pago (Recibo/Soporte) *</label>
+                <div class="upload-area" id="uploadArea">
+                  <div style="font-size: 24px; margin-bottom: 0.5rem;">📎</div>
+                  <div style="font-weight: 500; color: var(--green-700);">Sube tu comprobante</div>
+                  <div style="font-size: 12px; color: #768794;">PDF, JPG, PNG (máx 5MB)</div>
+                </div>
+                <input type="file" id="comprobante" accept=".pdf,.jpg,.jpeg,.png" />
+                <div class="file-preview" id="filePreview" style="display: none;">
+                  <div class="file-name" id="fileName"></div>
+                  <div class="file-size" id="fileSize"></div>
+                </div>
+              </div>
+
+              <!-- NOTAS -->
+              <div class="form-group">
+                <label for="notas">Notas (Opcional)</label>
+                <textarea id="notas" placeholder="Alguna nota adicional sobre el pago..." style="min-height: 80px;"></textarea>
+              </div>
+
+              <!-- PROCESSING -->
+              <div class="processing" id="processingSection">
+                <div class="spinner"></div>
+                <p>Registrando tu pago...</p>
+              </div>
+
+              <!-- BOTONES -->
+              <div class="action-buttons" id="actionButtons">
+                <button type="button" class="btn btn-secondary" onclick="history.back()">Cancelar</button>
+                <button type="submit" class="btn btn-primary" id="submitBtn">Registrar Pago</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script src="/api-client.js"></script>
+    <script>
+      // ========== SETUP ==========
+      const paymentForm = document.getElementById('paymentForm');
+      const tramiteSelect = document.getElementById('tramiteSelect');
+      const metodoPagoInputs = document.querySelectorAll('input[name="metodoPago"]');
+      const uploadArea = document.getElementById('uploadArea');
+      const comprobanteInput = document.getElementById('comprobante');
+      const alertContainer = document.getElementById('alertContainer');
+      const submitBtn = document.getElementById('submitBtn');
+      let selectedComprobante = null;
+
+      // Logout
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        API_CLIENT.clearSession();
+        window.location.href = '/iniciar-sesion/';
+      });
+
+      // ========== FILE UPLOAD ==========
+      uploadArea.addEventListener('click', () => comprobanteInput.click());
+
+      uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('drag-over');
+      });
+
+      uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('drag-over');
+      });
+
+      uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('drag-over');
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+          comprobanteInput.files = files;
+          handleComprobanteChange(files[0]);
+        }
+      });
+
+      comprobanteInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+          handleComprobanteChange(e.target.files[0]);
+        }
+      });
+
+      function handleComprobanteChange(file) {
+        if (file.size > 5 * 1024 * 1024) {
+          showAlert('Archivo muy grande (máx 5MB)', 'error');
+          comprobanteInput.value = '';
+          return;
+        }
+        selectedComprobante = file;
+        document.getElementById('fileName').textContent = '📄 ' + file.name;
+        document.getElementById('fileSize').textContent = (file.size / 1024).toFixed(1) + ' KB';
+        document.getElementById('filePreview').style.display = 'block';
+      }
+
+      // ========== MÉTODO DE PAGO ==========
+      metodoPagoInputs.forEach((input) => {
+        input.addEventListener('change', () => {
+          document.getElementById('detallesTransferencia').classList.remove('show');
+          document.getElementById('detallesConsignacion').classList.remove('show');
+
+          if (input.value === 'transferencia') {
+            document.getElementById('detallesTransferencia').classList.add('show');
+          } else if (input.value === 'consignacion') {
+            document.getElementById('detallesConsignacion').classList.add('show');
+          }
+        });
+      });
+
+      // Mostrar detalles de transferencia por defecto
+      document.getElementById('detallesTransferencia').classList.add('show');
+
+      // ========== CARGAR TRÁMITES ==========
+      async function cargarTramites() {
+        try {
+          const result = await API_CLIENT.tramites.listar(1, 100);
+          const tramites = result.data || result;
+
+          tramiteSelect.innerHTML = '<option value="">-- Selecciona un trámite --</option>' + tramites.map((t) => `<option value="${t.id}">${t.radicado || t.id} - ${t.proyecto?.titulo}</option>`).join('');
+
+          tramiteSelect.addEventListener('change', () => {
+            const tramiteId = tramiteSelect.value;
+            if (tramiteId) {
+              const tramite = tramites.find((t) => t.id == tramiteId);
+              if (tramite) {
+                mostrarInfoTramite(tramite);
+              }
+            }
+          });
+        } catch (error) {
+          showAlert('Error cargando trámites: ' + error.message, 'error');
+        }
+      }
+
+      function mostrarInfoTramite(tramite) {
+        document.getElementById('tramiteTitle').textContent = tramite.proyecto?.titulo || 'Trámite';
+        document.getElementById('tramiteRadicado').textContent = tramite.radicado || tramite.id;
+        document.getElementById('tramiteUser').textContent = tramite.usuario?.email || 'N/A';
+        document.getElementById('tramiteInfo').style.display = 'block';
+
+        // Mostrar monto sugerido si existe
+        if (tramite.monto_derechos) {
+          document.getElementById('amountValue').textContent = '$' + tramite.monto_derechos.toLocaleString('es-CO');
+          document.getElementById('monto').value = tramite.monto_derechos;
+          document.getElementById('amountDisplay').style.display = 'block';
+        }
+      }
+
+      function showAlert(message, type = 'warning') {
+        alertContainer.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+        setTimeout(() => {
+          alertContainer.innerHTML = '';
+        }, 5000);
+      }
+
+      // ========== FORM SUBMIT ==========
+      paymentForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        if (!tramiteSelect.value) {
+          showAlert('Selecciona un trámite', 'warning');
+          return;
+        }
+
+        if (!document.getElementById('monto').value) {
+          showAlert('Ingresa el monto', 'warning');
+          return;
+        }
+
+        if (!document.getElementById('tipoPago').value) {
+          showAlert('Selecciona tipo de pago', 'warning');
+          return;
+        }
+
+        if (!selectedComprobante) {
+          showAlert('Sube el comprobante de pago', 'warning');
+          return;
+        }
+
+        const metodoPago = document.querySelector('input[name="metodoPago"]:checked').value;
+
+        // Validar campos según método
+        if (metodoPago === 'transferencia') {
+          if (!document.getElementById('bancoOrigen').value || !document.getElementById('numeroCuenta').value || !document.getElementById('referencia').value) {
+            showAlert('Completa los datos de la transferencia', 'warning');
+            return;
+          }
+        } else if (metodoPago === 'consignacion') {
+          if (!document.getElementById('bancoDestino').value || !document.getElementById('numeroCuentaDestino').value || !document.getElementById('numeroComprobante').value) {
+            showAlert('Completa los datos de la consignación', 'warning');
+            return;
+          }
+        }
+
+        submitBtn.disabled = true;
+        document.getElementById('processingSection').classList.add('show');
+
+        try {
+          const tramiteId = tramiteSelect.value;
+          const payload = {
+            tramite_id: tramiteId,
+            monto: parseFloat(document.getElementById('monto').value),
+            tipo_pago: document.getElementById('tipoPago').value,
+            metodo_pago: metodoPago,
+            referencia: document.getElementById('referencia').value || document.getElementById('numeroComprobante').value,
+            notas: document.getElementById('notas').value
+          };
+
+          // Si es transferencia, guardar datos
+          if (metodoPago === 'transferencia') {
+            payload.banco_origen = document.getElementById('bancoOrigen').value;
+            payload.numero_cuenta = document.getElementById('numeroCuenta').value;
+            payload.fecha_transaccion = document.getElementById('fechaTransferencia').value;
+          } else {
+            payload.banco_destino = document.getElementById('bancoDestino').value;
+            payload.fecha_transaccion = document.getElementById('fechaConsignacion').value;
+          }
+
+          // Registrar pago
+          await API_CLIENT.pagos.crear(tramiteId, payload);
+
+          showAlert('✓ Pago registrado exitosamente', 'success');
+          paymentForm.reset();
+          selectedComprobante = null;
+          document.getElementById('filePreview').style.display = 'none';
+          document.getElementById('processingSection').classList.remove('show');
+
+          setTimeout(() => {
+            window.location.href = `/detalle-tramite/?id=${tramiteId}`;
+          }, 2000);
+        } catch (error) {
+          showAlert('Error registrando pago: ' + error.message, 'error');
+          document.getElementById('processingSection').classList.remove('show');
+          submitBtn.disabled = false;
+        }
+      });
+
+      // Inicializar
+      cargarTramites();
+    </script>
+  </body>
+</html>

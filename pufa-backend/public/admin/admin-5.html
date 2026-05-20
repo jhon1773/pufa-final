@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <script src='/route-guard.js'></script><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>PUFAB - Admin | Flujo de Permisos</title><link rel="stylesheet" href="/styles.css" /></head>
+  <body class="portal-page admin-page">
+    <header class="gov-header"><div class="container gov-header-inner"><img src="https://www.figma.com/api/mcp/asset/55d910c5-1bcc-479c-acd9-c78a28860e9b" alt="GOV.CO" class="gov-logo" /><nav class="gov-links"><a href="https://www.gov.co/" target="_blank" rel="noreferrer">GOV.CO</a><a href="#">Ministerio de Cultura</a><a href="#">Proimágenes</a></nav></div><div class="flag-strip"></div></header>
+    <nav class="site-nav"><div class="container site-nav-inner"><a href="/" class="brand"><span class="brand-icon">◧</span><span>PUFAB</span></a><button class="menu-toggle" aria-label="Abrir menú" id="menuToggle">☰</button><div class="nav-links" id="navLinks"><a href="/">Inicio</a><a href="/directorio/">Directorio</a><a href="/tramites/">Trámites</a><a href="/contacto/">Contacto</a><a href="/admin/" class="active">Admin</a></div><div class="portal-user">Carlos Rodríguez</div></div></nav>
+
+    <main class="portal-shell container">
+      <aside class="portal-sidebar admin-sidebar">
+        <h2>Panel Administrativo</h2>
+        <a class="portal-link" href="/admin/">Resumen</a>
+        <a class="portal-link" href="/admin/admin-2.html">Usuarios y Accesos</a>
+        <a class="portal-link" href="/admin/admin-3.html">Verificación de Perfiles</a>
+        <a class="portal-link" href="/admin/admin-4.html">Gestión de Locaciones</a>
+        <a class="portal-link active" href="/admin/admin-5.html">Flujo de Permisos</a>
+        <a class="portal-link" href="/admin/admin-6.html">Comités Técnicos</a>
+        <a class="portal-link" href="/admin/admin-7.html">Finanzas y Reservas</a>
+        <a class="portal-link" href="/admin/admin-8.html">Estadísticas y KPIs</a>
+        <a class="portal-link" href="/admin/admin-9.html">Comunicaciones</a>
+      </aside>
+
+      <section class="portal-content">
+        <div class="portal-breadcrumb">Panel Administrativo > Flujo de Permisos</div>
+        <h1>Flujo de Permisos P.U.F.A.B.</h1>
+        <section class="portal-card" style="margin-bottom: 1rem; border-left: 4px solid #2d7e3e;">
+          <h3 style="margin-top: 0;">Guía Rápida del Flujo</h3>
+          <p style="margin: 0.25rem 0 0.85rem; color: #4b5563;">Este apartado muestra solicitudes radicadas por productoras para revisión administrativa.</p>
+          <ul style="margin: 0; padding-left: 1.2rem; color: #374151; display: grid; gap: 0.35rem;">
+            <li><strong>Quién radica permisos:</strong> usuarios con perfil de productora que crean proyecto y envían trámite.</li>
+            <li><strong>Estados del flujo:</strong> Pendiente (en cola), En corrección (requiere ajustes), Aprobado o Rechazado (decisión final).</li>
+            <li><strong>Si no aparecen trámites:</strong> verifica que exista al menos un trámite radicado y que el buscador no tenga filtros activos.</li>
+          </ul>
+        </section>
+        <div class="admin-metrics" id="flujoMetrics"></div>
+        <div class="catalog-toolbar admin-toolbar"><input id="permisoSearch" type="search" placeholder="Buscar permiso..." /><button class="btn btn-secondary" id="buscarPermisoBtn">Buscar</button></div>
+        <div class="admin-stack" id="flujoList">Cargando permisos...</div>
+      </section>
+    </main>
+
+    <!-- MODAL DETALLES PERMISO -->
+    <div id="modalDetallesPermiso" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+      <div style="background: white; padding: 2rem; border-radius: 8px; max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+          <h2 style="margin: 0;">Detalles del Permiso</h2>
+          <button type="button" onclick="document.getElementById('modalDetallesPermiso').style.display='none'" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #999;">✕</button>
+        </div>
+        <div id="modalDetallesPermisoContenido" style="margin-bottom: 1.5rem;">Cargando...</div>
+        <button type="button" onclick="document.getElementById('modalDetallesPermiso').style.display='none'" style="width: 100%; padding: 0.7rem; background: #ddd; border: none; border-radius: 4px; cursor: pointer; font-weight: 500;">Cerrar</button>
+      </div>
+    </div>
+
+    <script>
+      const menuToggle = document.getElementById('menuToggle');
+      const navLinks = document.getElementById('navLinks');
+      const permisoSearch = document.getElementById('permisoSearch');
+      const buscarPermisoBtn = document.getElementById('buscarPermisoBtn');
+      const flujoMetrics = document.getElementById('flujoMetrics');
+      const flujoList = document.getElementById('flujoList');
+      menuToggle?.addEventListener('click', () => navLinks?.classList.toggle('open'));
+
+      function claseEstado(value) {
+        const v = String(value || '').toLowerCase();
+        if (v.includes('apro')) return 'success';
+        if (v.includes('rech')) return 'danger';
+        if (v.includes('corre')) return 'warning';
+        return 'muted';
+      }
+
+      function ensurePermisoModal() {
+        let modal = document.getElementById('modalDetallesPermiso');
+        let modalContent = document.getElementById('modalDetallesPermisoContenido');
+
+        if (modal && modalContent) {
+          return { modal, modalContent };
+        }
+
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = `
+          <div id="modalDetallesPermiso" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+            <div style="background: white; padding: 2rem; border-radius: 8px; max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 style="margin: 0;">Detalles del Permiso</h2>
+                <button type="button" data-close-modal style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #999;">✕</button>
+              </div>
+              <div id="modalDetallesPermisoContenido" style="margin-bottom: 1.5rem;">Cargando...</div>
+              <button type="button" data-close-modal style="width: 100%; padding: 0.7rem; background: #ddd; border: none; border-radius: 4px; cursor: pointer; font-weight: 500;">Cerrar</button>
+            </div>
+          </div>
+        `;
+
+        document.body.appendChild(wrapper.firstElementChild);
+        modal = document.getElementById('modalDetallesPermiso');
+        modalContent = document.getElementById('modalDetallesPermisoContenido');
+
+        modal?.querySelectorAll('[data-close-modal]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            modal.style.display = 'none';
+          });
+        });
+
+        return { modal, modalContent };
+      }
+
+      async function showDetailsModal(permisoId) {
+        try {
+          const response = await fetch(`/api/v1/portal/admin/flujo-permisos/${permisoId}`);
+          const payload = await response.json();
+          const result = payload?.datos || payload;
+
+          if (result.ok && result.data) {
+            const t = result.data;
+            const { modal, modalContent } = ensurePermisoModal();
+            if (!modal || !modalContent) {
+              alert('No fue posible abrir el detalle del permiso.');
+              return;
+            }
+            const documentos = t.requiere_documentos && t.requiere_documentos.length > 0 
+              ? t.requiere_documentos.map(d => `<li>${d}</li>`).join('')
+              : '<li>No requiere documentos adicionales</li>';
+            
+            modalContent.innerHTML = `
+              <div style="display: grid; gap: 1.5rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                  <div>
+                    <p style="margin: 0; font-size: 0.85rem; color: #666; text-transform: uppercase;">Radicado</p>
+                    <p style="margin: 0.5rem 0 0; font-weight: 600;">${t.numero_radicado}</p>
+                  </div>
+                  <div>
+                    <p style="margin: 0; font-size: 0.85rem; color: #666; text-transform: uppercase;">Estado</p>
+                    <p style="margin: 0.5rem 0 0; font-weight: 600;"><span class="status-badge ${claseEstado(t.estado_ui)}">${t.estado_ui}</span></p>
+                  </div>
+                </div>
+                <div>
+                  <p style="margin: 0; font-size: 0.85rem; color: #666; text-transform: uppercase;">Proyecto</p>
+                  <p style="margin: 0.5rem 0 0; font-weight: 600;">${t.proyecto}</p>
+                </div>
+                <div>
+                  <p style="margin: 0; font-size: 0.85rem; color: #666; text-transform: uppercase;">Descripción</p>
+                  <p style="margin: 0.5rem 0 0; font-weight: 600;">${t.descripcion_proyecto || 'Sin descripción'}</p>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                  <div>
+                    <p style="margin: 0; font-size: 0.85rem; color: #666; text-transform: uppercase;">Productora</p>
+                    <p style="margin: 0.5rem 0 0; font-weight: 600;">${t.productora}</p>
+                  </div>
+                  <div>
+                    <p style="margin: 0; font-size: 0.85rem; color: #666; text-transform: uppercase;">Director</p>
+                    <p style="margin: 0.5rem 0 0; font-weight: 600;">${t.director || 'N/A'}</p>
+                  </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                  <div>
+                    <p style="margin: 0; font-size: 0.85rem; color: #666; text-transform: uppercase;">Presupuesto</p>
+                    <p style="margin: 0.5rem 0 0; font-weight: 600;">$${Number(t.presupuesto_total).toLocaleString()}</p>
+                  </div>
+                  <div>
+                    <p style="margin: 0; font-size: 0.85rem; color: #666; text-transform: uppercase;">Duración</p>
+                    <p style="margin: 0.5rem 0 0; font-weight: 600;">${t.duracion_minutos} minutos</p>
+                  </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                  <div>
+                    <p style="margin: 0; font-size: 0.85rem; color: #666; text-transform: uppercase;">Solicitud</p>
+                    <p style="margin: 0.5rem 0 0; font-weight: 600;">${t.fecha_solicitud}</p>
+                  </div>
+                  <div>
+                    <p style="margin: 0; font-size: 0.85rem; color: #666; text-transform: uppercase;">Respuesta</p>
+                    <p style="margin: 0.5rem 0 0; font-weight: 600;">${t.fecha_respuesta || 'Pendiente'}</p>
+                  </div>
+                </div>
+                <div>
+                  <p style="margin: 0; font-size: 0.85rem; color: #666; text-transform: uppercase;">Documentos Requeridos</p>
+                  <ul style="margin: 0.5rem 0 0; padding-left: 1.5rem; color: #333;">${documentos}</ul>
+                </div>
+              </div>
+            `;
+
+            modal.style.display = 'flex';
+          } else {
+            alert('No se pudieron cargar los detalles del permiso.');
+          }
+        } catch (error) {
+          alert('Error al cargar detalles: ' + error.message);
+        }
+      }
+
+      async function load() {
+        try {
+          const params = new URLSearchParams();
+          if (permisoSearch.value.trim()) params.set('q', permisoSearch.value.trim());
+          const response = await fetch(`/api/v1/portal/admin/flujo-permisos?${params.toString()}`);
+          const payload = await response.json();
+          const data = payload?.datos || payload;
+
+          if (!data?.resumen || !Array.isArray(data?.data)) {
+            flujoMetrics.innerHTML = '';
+            flujoList.innerHTML = '<article class="portal-card">No fue posible cargar el flujo de permisos.</article>';
+            return;
+          }
+
+          flujoMetrics.innerHTML = `
+            <article><strong>${data.resumen.pendientes}</strong><span>Pendientes</span></article>
+            <article><strong>${data.resumen.revision}</strong><span>En revisión</span></article>
+            <article><strong>${data.resumen.aprobados}</strong><span>Aprobados</span></article>
+            <article><strong>${data.resumen.rechazados}</strong><span>Rechazados</span></article>
+          `;
+
+          flujoList.innerHTML = (data.data || []).length
+            ? data.data.map((item) => `<article class="portal-card"><div class="permit-top"><div><small>${item.numero_radicado}</small><h3>${item.proyecto}</h3><p>${item.productora} · ${item.ciudad} · ${item.fecha}</p></div><span class="status-badge ${claseEstado(item.estado_ui)}">${item.estado_ui}</span></div><div class="permit-actions"><button style="background:none;border:none;color:#2d7e3e;cursor:pointer;text-decoration:underline;" data-ver="${item.id}">Ver</button><button style="background:none;border:none;color:#2d7e3e;cursor:pointer;text-decoration:underline;" data-accion="aprobar" data-tramite-id="${item.id}">Aprobar</button><button style="background:none;border:none;color:#2d7e3e;cursor:pointer;text-decoration:underline;" data-accion="correccion" data-tramite-id="${item.id}">Corrección</button><button style="background:none;border:none;color:#dc2626;cursor:pointer;text-decoration:underline;" data-accion="rechazar" data-tramite-id="${item.id}">Rechazar</button></div></article>`).join('')
+            : '<article class="portal-card">No hay resultados para la búsqueda.</article>';
+
+          flujoList.querySelectorAll('[data-ver]').forEach((btn) => {
+            btn.addEventListener('click', async (event) => {
+              event.preventDefault();
+              const id = btn.getAttribute('data-ver');
+              await showDetailsModal(id);
+            });
+          });
+
+          flujoList.querySelectorAll('[data-accion]').forEach((btn) => {
+            btn.addEventListener('click', async (event) => {
+              event.preventDefault();
+              const id = btn.getAttribute('data-tramite-id');
+              const accion = btn.getAttribute('data-accion');
+              const res = await fetch(`/api/v1/portal/admin/flujo-permisos/${id}/estado`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ accion }),
+              });
+              const payloadAccion = await res.json();
+              const resultAccion = payloadAccion?.datos || payloadAccion;
+              if (!resultAccion?.ok) {
+                alert('No se pudo actualizar el estado del permiso.');
+                return;
+              }
+              await load();
+            });
+          });
+        } catch (error) {
+          flujoMetrics.innerHTML = '';
+          flujoList.innerHTML = '<article class="portal-card">Error al cargar permisos. Verifica la conexión del backend.</article>';
+          console.error('Error cargando flujo de permisos:', error);
+        }
+      }
+
+      permisoSearch?.addEventListener('input', load);
+      buscarPermisoBtn?.addEventListener('click', load);
+      load();
+    </script>
+    <script src='/nav-session.js'></script>
+    <script src='/sidebar-slider.js'></script>
+  </body>
+</html>

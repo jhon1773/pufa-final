@@ -1,0 +1,752 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <script src="/route-guard.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PUFAB - Mi Perfil</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+      :root {
+        --ink: #0f172a;
+        --muted: #64748b;
+        --surface: rgba(255, 255, 255, 0.82);
+        --border: rgba(148, 163, 184, 0.24);
+        --blue: #2563eb;
+        --teal: #0f766e;
+      }
+
+      body.portal-page {
+        background:
+          radial-gradient(circle at top left, rgba(37, 99, 235, 0.12), transparent 30%),
+          radial-gradient(circle at top right, rgba(15, 118, 110, 0.12), transparent 28%),
+          linear-gradient(180deg, #f8fbff 0%, #eef4f8 52%, #f8fafc 100%);
+      }
+
+      .page-wrap {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 1.25rem 0 3rem;
+      }
+
+      .hero-card,
+      .panel-card,
+      .side-card {
+        background: var(--surface);
+        backdrop-filter: blur(16px);
+        border: 1px solid var(--border);
+        box-shadow: 0 18px 50px rgba(15, 23, 42, 0.08);
+        border-radius: 24px;
+        min-width: 0;
+      }
+
+      .hero-card {
+        padding: 1.6rem 1.8rem;
+      }
+
+      .hero-card h1 {
+        margin: 0;
+        color: var(--ink);
+        font-size: clamp(2rem, 4vw, 3rem);
+      }
+
+      .hero-card p {
+        margin: 0.55rem 0 0;
+        color: var(--muted);
+        max-width: 72ch;
+        line-height: 1.6;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 330px 1fr;
+        gap: 1.25rem;
+        margin-top: 1.25rem;
+        align-items: start;
+      }
+
+      @media (max-width: 960px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .side-card,
+      .panel-card {
+        overflow: hidden;
+      }
+
+      .side-card {
+        padding: 1.4rem;
+      }
+
+      .avatar-shell {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 1rem;
+        min-width: 0;
+      }
+
+      .avatar {
+        width: 170px;
+        height: 170px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--blue), var(--teal));
+        border: 6px solid rgba(255, 255, 255, 0.92);
+        box-shadow: 0 18px 34px rgba(15, 23, 42, 0.18);
+        display: grid;
+        place-items: center;
+        color: white;
+        font-size: 3.2rem;
+        font-weight: 800;
+        overflow: hidden;
+      }
+
+      .avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .name {
+        margin: 0;
+        color: var(--ink);
+        font-size: 1.75rem;
+        line-height: 1.15;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+
+      .subtitle {
+        margin: 0;
+        color: var(--muted);
+        overflow-wrap: anywhere;
+        word-break: break-word;
+        max-width: 100%;
+      }
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.55rem;
+        max-width: 100%;
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        border-radius: 999px;
+        padding: 0.42rem 0.8rem;
+        font-size: 0.84rem;
+        font-weight: 700;
+      }
+
+      .chip.primary { background: #dbeafe; color: #1d4ed8; }
+      .chip.success { background: #d1fae5; color: #047857; }
+      .chip.warning { background: #fef3c7; color: #92400e; }
+
+      .action-stack {
+        display: grid;
+        gap: 0.7rem;
+        width: 100%;
+      }
+
+      .action-stack button,
+      .action-stack label {
+        border: 0;
+        border-radius: 14px;
+        padding: 0.85rem 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+      }
+
+      .action-stack button:hover,
+      .action-stack label:hover {
+        transform: translateY(-1px);
+      }
+
+      .btn-save {
+        background: linear-gradient(135deg, var(--blue), var(--teal));
+        color: white;
+        box-shadow: 0 16px 24px rgba(37, 99, 235, 0.14);
+      }
+
+      .btn-ghost {
+        background: white;
+        color: #334155;
+        border: 1px solid var(--border) !important;
+      }
+
+      .upload-box {
+        display: grid;
+        gap: 0.8rem;
+        padding: 1rem;
+        border-radius: 18px;
+        border: 1px dashed rgba(37, 99, 235, 0.34);
+        background: rgba(37, 99, 235, 0.05);
+      }
+
+      .upload-preview {
+        width: 92px;
+        height: 92px;
+        border-radius: 22px;
+        overflow: hidden;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, #cbd5e1, #e2e8f0);
+        color: #475569;
+        font-weight: 800;
+      }
+
+      .upload-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .upload-buttons {
+        display: flex;
+        gap: 0.7rem;
+        flex-wrap: wrap;
+      }
+
+      .upload-buttons button,
+      .upload-buttons label {
+        border: 0;
+        border-radius: 12px;
+        padding: 0.8rem 1rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .pick { background: #0f172a; color: white; }
+      .upload { background: var(--blue); color: white; }
+      .clear { background: white; color: #334155; border: 1px solid var(--border) !important; }
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.95rem;
+        min-width: 0;
+      }
+
+      @media (max-width: 640px) {
+        .grid-2 { grid-template-columns: 1fr; }
+      }
+
+      .block {
+        padding: 1.05rem;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.76);
+        border: 1px solid rgba(148, 163, 184, 0.18);
+        min-width: 0;
+      }
+
+      .label {
+        display: block;
+        margin-bottom: 0.35rem;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--muted);
+      }
+
+      .value {
+        color: var(--ink);
+        font-weight: 700;
+        line-height: 1.35;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+
+      .bio {
+        min-height: 122px;
+        line-height: 1.65;
+        color: #334155;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+
+      .mini-form {
+        display: grid;
+        gap: 0.8rem;
+        margin-top: 1rem;
+      }
+
+      .mini-form label {
+        display: grid;
+        gap: 0.45rem;
+        color: #334155;
+        font-weight: 600;
+      }
+
+      .mini-form input,
+      .mini-form textarea {
+        width: 100%;
+        border: 1px solid rgba(148, 163, 184, 0.32);
+        border-radius: 14px;
+        padding: 0.9rem 1rem;
+        font: inherit;
+        background: rgba(255, 255, 255, 0.94);
+        box-sizing: border-box;
+      }
+
+      .panel-card {
+        min-width: 0;
+      }
+
+      .mini-form textarea {
+        min-height: 130px;
+        resize: vertical;
+      }
+
+      .loading {
+        display: grid;
+        place-items: center;
+        min-height: 36vh;
+        gap: 0.85rem;
+        color: var(--muted);
+      }
+
+      .spinner {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        border: 3px solid rgba(37, 99, 235, 0.12);
+        border-top-color: var(--blue);
+        animation: spin 0.8s linear infinite;
+      }
+
+      @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+  </head>
+  <body class="portal-page">
+    <header class="gov-header">
+      <div class="container gov-header-inner">
+        <img src="https://www.figma.com/api/mcp/asset/55d910c5-1bcc-479c-acd9-c78a28860e9b" alt="GOV.CO" class="gov-logo" />
+        <nav class="gov-links">
+          <a href="https://www.gov.co/" target="_blank" rel="noreferrer">GOV.CO</a>
+          <a href="#">Ministerio de Cultura</a>
+          <a href="#">Proimágenes</a>
+        </nav>
+      </div>
+      <div class="flag-strip"></div>
+    </header>
+
+    <nav class="site-nav">
+      <div class="container site-nav-inner">
+        <a href="/" class="brand"><span class="brand-icon">◧</span><span>PUFAB</span></a>
+        <button class="menu-toggle" aria-label="Abrir menú" id="menuToggle">☰</button>
+        <div class="nav-links" id="navLinks">
+          <a href="/">Inicio</a>
+          <a href="/directorio/">Directorio</a>
+          <a href="/tramites/">Trámites</a>
+          <a href="/contacto/">Contacto</a>
+        </div>
+        <div class="nav-cta">
+          <a class="btn btn-ghost" href="/contacto/">Contacto</a>
+          <a class="btn btn-primary" href="/directorio/">Ventanilla Única</a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="page-wrap container">
+      <div id="profileRoot">
+        <div class="loading"><div class="spinner"></div><div>Cargando tu perfil...</div></div>
+      </div>
+    </main>
+
+    <footer class="site-footer auth-footer">
+      <div class="container footer-grid">
+        <section>
+          <div class="brand footer-brand"><span class="brand-icon">◧</span><span>PUFAB</span></div>
+          <p>Comisión Fílmica de Boyacá.</p>
+        </section>
+        <section>
+          <h4>Directorio</h4>
+          <a href="/">Inicio</a>
+          <a href="/directorio/">Locaciones</a>
+          <a href="/contacto/">Contacto</a>
+        </section>
+        <section>
+          <h4>Contacto</h4>
+          <p>info@boyacafilm.gov.co</p>
+          <p>Tunja, Boyacá</p>
+        </section>
+      </div>
+    </footer>
+
+    <script src="/nav-session.js"></script>
+    <script>
+      const profileRoot = document.getElementById('profileRoot');
+      const menuToggle = document.getElementById('menuToggle');
+      const navLinks = document.getElementById('navLinks');
+
+      menuToggle?.addEventListener('click', () => navLinks?.classList.toggle('open'));
+
+      let state = { profile: null, selectedFile: null };
+
+      function getToken() {
+        try {
+          const session = JSON.parse(localStorage.getItem('pufab_session') || 'null');
+          return localStorage.getItem('pufab_token') || session?.token || '';
+        } catch {
+          return localStorage.getItem('pufab_token') || '';
+        }
+      }
+
+      function escapeHtml(value) {
+        return String(value ?? '')
+          .replaceAll('&', '&amp;')
+          .replaceAll('<', '&lt;')
+          .replaceAll('>', '&gt;')
+          .replaceAll('"', '&quot;')
+          .replaceAll("'", '&#39;');
+      }
+
+      const MAX_PROFILE_PHOTO_SIZE = 10 * 1024 * 1024;
+
+      function fmtDate(value) {
+        if (!value) return 'No disponible';
+        const date = new Date(value);
+        return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' });
+      }
+
+      function displayName(profile) {
+        const session = JSON.parse(localStorage.getItem('pufab_session') || 'null');
+        const candidate = profile.nombre || session?.name || '';
+
+        if (candidate && !String(candidate).includes('@')) {
+          return String(candidate);
+        }
+
+        if (profile.email) {
+          return String(profile.email).split('@')[0].replaceAll('.', ' ');
+        }
+
+        return 'Usuario';
+      }
+
+      function fullName(profile) {
+        if (profile.tipo_persona === 'juridica') {
+          return profile.perfil_juridico?.razon_social || displayName(profile);
+        }
+
+        const natural = profile.perfil_natural;
+        if (natural) {
+          return [natural.primer_nombre, natural.segundo_nombre, natural.primer_apellido, natural.segundo_apellido].filter(Boolean).join(' ') || displayName(profile);
+        }
+
+        return displayName(profile);
+      }
+
+      function description(profile) {
+        if (profile.tipo_persona === 'juridica' && profile.perfil_juridico) {
+          const j = profile.perfil_juridico;
+          return [j.tipo_entidad?.nombre, j.municipio?.nombre, j.nombre_representante_legal].filter(Boolean).join(' · ');
+        }
+
+        if (profile.perfil_natural) {
+          const n = profile.perfil_natural;
+          return [n.municipio_residencia?.nombre, n.nivel_educativo?.nombre, n.tipo_discapacidad?.nombre].filter(Boolean).join(' · ');
+        }
+
+        return 'Agrega información básica para completar tu perfil';
+      }
+
+      function avatarMarkup(profile) {
+        if (profile.avatar_url) {
+          return `<img src="${escapeHtml(profile.avatar_url)}" alt="Foto de perfil">`;
+        }
+
+        return escapeHtml(fullName(profile).trim().charAt(0).toUpperCase() || 'U');
+      }
+
+      function render(profile) {
+        const isActive = String(profile.estado_cuenta_codigo || '').toLowerCase() === 'activo';
+        const statusText = profile.estado_cuenta || 'Pendiente de aprobación';
+        const roleText = profile.tipo_perfil || 'Sin rol asignado';
+        const avatar = avatarMarkup(profile);
+
+        profileRoot.innerHTML = `
+          <section class="hero-card">
+            <h1>Mi perfil</h1>
+            <p>Revisa y actualiza tu información básica, sube una foto personalizada y administra los datos visibles de tu cuenta.</p>
+          </section>
+
+          <section class="layout">
+            <aside class="side-card">
+              <div class="avatar-shell">
+                <div class="avatar" id="avatarBox">${avatar}</div>
+                <div>
+                  <h2 class="name">${escapeHtml(fullName(profile))}</h2>
+                  <p class="subtitle">${escapeHtml(description(profile))}</p>
+                </div>
+                <div class="chips">
+                  <span class="chip primary">${escapeHtml(roleText)}</span>
+                  <span class="chip ${isActive ? 'success' : 'warning'}">${escapeHtml(statusText)}</span>
+                </div>
+
+                <div class="upload-box">
+                  <div class="upload-preview" id="uploadPreview">${avatar}</div>
+                  <div style="color:#334155; font-size:.93rem; line-height:1.45;">Sube una imagen cuadrada para personalizar tu perfil. Se admiten JPG, PNG y WEBP.</div>
+                  <input id="photoInput" type="file" accept="image/*" style="display:none;" />
+                  <div id="photoFileName" style="font-size:.85rem; color:#64748b; margin-top:-0.15rem;">Sin archivo seleccionado</div>
+                  <div class="upload-buttons">
+                    <button type="button" class="pick" id="pickPhotoBtn">Seleccionar foto</button>
+                    <button type="button" class="clear" id="clearPhotoBtn">Limpiar</button>
+                    <button type="button" class="upload" id="uploadPhotoBtn">Guardar foto</button>
+                  </div>
+                </div>
+
+                <div class="action-stack">
+                  <button type="button" class="btn-save" id="logoutBtn">Cerrar sesión</button>
+                </div>
+              </div>
+            </aside>
+
+            <div class="panel-card">
+              <div style="padding:1.35rem 1.35rem 0;">
+                <div class="grid-2">
+                  <div class="block"><span class="label">Correo</span><span class="value">${escapeHtml(profile.email || 'No disponible')}</span></div>
+                  <div class="block"><span class="label">Teléfono</span><span class="value">${escapeHtml(profile.telefono || 'No registrado')}</span></div>
+                  <div class="block"><span class="label">Tipo de persona</span><span class="value">${escapeHtml(profile.tipo_persona === 'natural' ? 'Persona natural' : 'Persona jurídica')}</span></div>
+                  <div class="block"><span class="label">Último acceso</span><span class="value">${escapeHtml(fmtDate(profile.ultimo_login))}</span></div>
+                </div>
+              </div>
+
+              <div style="padding:1.35rem;">
+                <div class="block bio">
+                  <span class="label">Biografía</span>
+                  <div>${escapeHtml(profile.bio || 'Agrega una breve biografía para contar quién eres y qué haces dentro de la plataforma.')}</div>
+                </div>
+
+                <form class="mini-form" id="profileForm">
+                  <label>
+                    Teléfono
+                    <input type="text" id="phoneInput" value="${escapeHtml(profile.telefono || '')}" placeholder="300 1234567" />
+                  </label>
+                  <label>
+                    Biografía
+                    <textarea id="bioInput" maxlength="1000" placeholder="Escribe una presentación breve sobre tu trabajo o actividad.">${escapeHtml(profile.bio || '')}</textarea>
+                  </label>
+                  <div class="upload-buttons" style="padding-top:0.2rem;">
+                    <button type="submit" class="upload">Guardar cambios</button>
+                  </div>
+                </form>
+              </div>
+
+              <div style="padding:0 1.35rem 1.35rem;">
+                <div class="block">
+                  <span class="label">Ficha del perfil</span>
+                  <div class="grid-2" id="detailGrid" style="margin-top:0.8rem;"></div>
+                </div>
+              </div>
+            </div>
+          </section>
+        `;
+
+        const detailGrid = document.getElementById('detailGrid');
+        const details = [];
+
+        if (profile.tipo_persona === 'natural' && profile.perfil_natural) {
+          const n = profile.perfil_natural;
+          details.push(
+            ['Documento', n.numero_documento || 'No disponible'],
+            ['Municipio', n.municipio_residencia?.nombre || 'No disponible'],
+            ['Nivel educativo', n.nivel_educativo?.nombre || 'No disponible'],
+            ['Discapacidad', n.tiene_discapacidad ? (n.tipo_discapacidad?.nombre || 'Sí') : 'No'],
+            ['Inglés hablado', String(n.ingles_habla ?? 0)],
+            ['Inglés escrito', String(n.ingles_escribe ?? 0)],
+          );
+        } else if (profile.tipo_persona === 'juridica' && profile.perfil_juridico) {
+          const j = profile.perfil_juridico;
+          details.push(
+            ['Razón social', j.razon_social || 'No disponible'],
+            ['NIT', j.nit || 'No disponible'],
+            ['Representante legal', j.nombre_representante_legal || 'No disponible'],
+            ['Entidad', j.tipo_entidad?.nombre || 'No disponible'],
+            ['Municipio', j.municipio?.nombre || 'No disponible'],
+            ['Correo institucional', j.correo_institucional || 'No disponible'],
+          );
+        }
+
+        detailGrid.innerHTML = details.map(([label, value]) => `
+          <div class="block">
+            <span class="label">${escapeHtml(label)}</span>
+            <span class="value">${escapeHtml(value)}</span>
+          </div>
+        `).join('');
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+          localStorage.removeItem('pufab_session');
+          localStorage.removeItem('pufab_token');
+          window.location.href = '/iniciar-sesion/';
+        });
+
+        const photoInput = document.getElementById('photoInput');
+        const pickPhotoBtn = document.getElementById('pickPhotoBtn');
+        const uploadPreview = document.getElementById('uploadPreview');
+        const avatarBox = document.getElementById('avatarBox');
+        const photoFileName = document.getElementById('photoFileName');
+        let selectedFile = null;
+
+        pickPhotoBtn?.addEventListener('click', () => {
+          photoInput?.click();
+        });
+
+        photoInput.addEventListener('change', () => {
+          selectedFile = photoInput.files?.[0] || null;
+          if (!selectedFile) {
+            uploadPreview.innerHTML = avatar;
+            if (photoFileName) photoFileName.textContent = 'Sin archivo seleccionado';
+            return;
+          }
+
+          if (selectedFile.size > MAX_PROFILE_PHOTO_SIZE) {
+            alert('La foto supera el tamaño máximo permitido de 10 MB. Usa una imagen más ligera o comprímela antes de subirla.');
+            selectedFile = null;
+            photoInput.value = '';
+            uploadPreview.innerHTML = avatar;
+            avatarBox.innerHTML = avatar;
+            if (photoFileName) photoFileName.textContent = 'Sin archivo seleccionado';
+            return;
+          }
+
+          if (photoFileName) photoFileName.textContent = selectedFile.name;
+
+          const reader = new FileReader();
+          reader.onload = () => {
+            const preview = String(reader.result || '');
+            uploadPreview.innerHTML = `<img src="${escapeHtml(preview)}" alt="Vista previa">`;
+            avatarBox.innerHTML = `<img src="${escapeHtml(preview)}" alt="Foto de perfil">`;
+          };
+          reader.readAsDataURL(selectedFile);
+        });
+
+        document.getElementById('clearPhotoBtn').addEventListener('click', () => {
+          selectedFile = null;
+          photoInput.value = '';
+          uploadPreview.innerHTML = avatar;
+          avatarBox.innerHTML = avatar;
+          if (photoFileName) photoFileName.textContent = 'Sin archivo seleccionado';
+        });
+
+        document.getElementById('uploadPhotoBtn').addEventListener('click', async () => {
+          const file = selectedFile || photoInput.files?.[0] || null;
+          if (!file) {
+            alert('Selecciona una foto primero.');
+            return;
+          }
+
+          if (file.size > MAX_PROFILE_PHOTO_SIZE) {
+            alert('La foto supera el tamaño máximo permitido de 10 MB. Usa una imagen más ligera o comprímela antes de subirla.');
+            return;
+          }
+
+          const formData = new FormData();
+          formData.append('foto', file);
+
+          try {
+            const response = await fetch('/api/v1/auth/me/foto', {
+              method: 'POST',
+              headers: { Authorization: `Bearer ${getToken()}` },
+              body: formData,
+            });
+
+            const contentType = response.headers.get('content-type') || '';
+            const payload = contentType.includes('application/json') ? await response.json() : { mensaje: await response.text() };
+            const data = payload?.datos || payload;
+
+            if (!response.ok) {
+              throw new Error(data?.mensaje || data?.message || 'No se pudo guardar la foto');
+            }
+
+            const session = JSON.parse(localStorage.getItem('pufab_session') || 'null');
+            if (session) {
+              session.avatarUrl = data?.avatar_url || session.avatarUrl || '';
+              localStorage.setItem('pufab_session', JSON.stringify(session));
+            }
+
+            await cargarPerfil();
+            selectedFile = null;
+            photoInput.value = '';
+            if (photoFileName) photoFileName.textContent = 'Sin archivo seleccionado';
+          } catch (error) {
+            alert('❌ ' + error.message);
+          }
+        });
+
+        document.getElementById('profileForm').addEventListener('submit', async (event) => {
+          event.preventDefault();
+
+          try {
+            const response = await fetch('/api/v1/auth/me', {
+              method: 'PATCH',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${getToken()}`,
+              },
+              body: JSON.stringify({
+                telefono: document.getElementById('phoneInput').value.trim(),
+                bio: document.getElementById('bioInput').value.trim(),
+              }),
+            });
+
+            const payload = await response.json();
+            const data = payload?.datos || payload;
+
+            if (!response.ok) {
+              throw new Error(data?.mensaje || data?.message || 'No se pudo actualizar el perfil');
+            }
+
+            const session = JSON.parse(localStorage.getItem('pufab_session') || 'null');
+            if (session) {
+              session.bio = data?.bio || session.bio || '';
+              session.name = data?.nombre || session.name || '';
+              localStorage.setItem('pufab_session', JSON.stringify(session));
+            }
+
+            await cargarPerfil();
+            alert('Perfil actualizado correctamente.');
+          } catch (error) {
+            alert('❌ ' + error.message);
+          }
+        });
+      }
+
+      async function cargarPerfil() {
+        try {
+          const response = await fetch('/api/v1/auth/me', {
+            headers: { Authorization: `Bearer ${getToken()}` },
+          });
+
+          const payload = await response.json();
+          const data = payload?.datos || payload;
+
+          if (!response.ok) {
+            throw new Error(data?.mensaje || data?.message || 'No se pudo cargar el perfil');
+          }
+
+          state.profile = data;
+          render(data);
+        } catch (error) {
+          profileRoot.innerHTML = `
+            <section class="hero-card" style="text-align:center; padding:2rem;">
+              <h1 style="margin-top:0;">No pudimos cargar tu perfil</h1>
+              <p style="margin:0.5rem auto 1.25rem; color:#64748b;">${escapeHtml(error.message)}</p>
+              <a href="/iniciar-sesion/" class="btn btn-primary">Volver a ingresar</a>
+            </section>
+          `;
+        }
+      }
+
+      cargarPerfil();
+    </script>
+  </body>
+</html>

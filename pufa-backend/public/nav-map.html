@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PUFAB - Mapa de Navegación</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+      body {
+        background: #f5f5f5;
+      }
+
+      .nav-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 0.5rem;
+        font-size: 32px;
+      }
+
+      .subtitle {
+        text-align: center;
+        color: #768794;
+        margin-bottom: 2rem;
+        font-size: 14px;
+      }
+
+      .nav-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .nav-card {
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s;
+      }
+
+      .nav-card:hover {
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+      }
+
+      .nav-card-header {
+        background: linear-gradient(135deg, var(--green-700) 0%, #1e4620 100%);
+        color: white;
+        padding: 1.5rem;
+        font-size: 20px;
+      }
+
+      .nav-card-content {
+        padding: 1.5rem;
+      }
+
+      .nav-card-content p {
+        margin: 0 0 1rem;
+        color: #768794;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .nav-links {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .nav-link {
+        display: block;
+        padding: 0.75rem 1rem;
+        background: #f9f9f9;
+        border-radius: 6px;
+        color: var(--green-700);
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 13px;
+        transition: all 0.2s;
+        border-left: 3px solid var(--green-700);
+      }
+
+      .nav-link:hover {
+        background: #f0f7f1;
+        padding-left: 1.25rem;
+      }
+
+      .section {
+        margin: 2rem 0;
+      }
+
+      .section-title {
+        font-size: 20px;
+        font-weight: 700;
+        margin: 2rem 0 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 3px solid var(--green-700);
+      }
+
+      .flowchart {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        overflow-x: auto;
+        margin-bottom: 2rem;
+      }
+
+      .flow-box {
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .flow-step {
+        background: #f9f9f9;
+        padding: 1.5rem;
+        border-radius: 6px;
+        border-left: 4px solid var(--green-700);
+        min-width: 200px;
+        flex: 0 0 auto;
+      }
+
+      .flow-step strong {
+        display: block;
+        color: var(--green-700);
+        margin-bottom: 0.5rem;
+      }
+
+      .arrow {
+        font-size: 24px;
+        color: var(--green-700);
+        flex: 0 0 auto;
+      }
+
+      .badges {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 0.3rem 0.75rem;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      .badge-get {
+        background: #dbeafe;
+        color: #1e40af;
+      }
+
+      .badge-post {
+        background: #dcfce7;
+        color: #166534;
+      }
+
+      .badge-patch {
+        background: #fef3c7;
+        color: #92400e;
+      }
+
+      .quick-access {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+      }
+
+      .quick-btn {
+        display: block;
+        padding: 1rem;
+        background: linear-gradient(135deg, var(--green-700) 0%, #1e4620 100%);
+        color: white;
+        text-align: center;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.2s;
+        font-size: 13px;
+      }
+
+      .quick-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(45, 126, 62, 0.3);
+      }
+
+      .info-box {
+        background: #f0f7f1;
+        border-left: 4px solid var(--green-700);
+        padding: 1.5rem;
+        border-radius: 6px;
+        margin-bottom: 2rem;
+      }
+
+      .info-box h3 {
+        margin: 0 0 0.5rem;
+        color: var(--green-700);
+      }
+
+      .info-box p {
+        margin: 0;
+        color: #333;
+        font-size: 13px;
+      }
+
+      @media (max-width: 768px) {
+        .nav-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .flow-box {
+          flex-direction: column;
+        }
+
+        .arrow {
+          transform: rotate(90deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="gov-header">
+      <div class="container gov-header-inner">
+        <img
+          src="https://www.figma.com/api/mcp/asset/55d910c5-1bcc-479c-acd9-c78a28860e9b"
+          alt="GOV.CO"
+          class="gov-logo"
+        />
+        <nav class="gov-links">
+          <a href="https://www.gov.co/" target="_blank" rel="noreferrer">GOV.CO</a>
+          <a href="#">Ministerio de Cultura</a>
+          <a href="#">Proimágenes</a>
+        </nav>
+      </div>
+      <div class="flag-strip"></div>
+    </header>
+
+    <nav class="site-nav">
+      <div class="container site-nav-inner">
+        <a href="/" class="brand">
+          <span class="brand-icon">◧</span>
+          <strong>PUFAB</strong>
+        </a>
+        <div class="nav-links" id="navLinks">
+          <a href="/">Inicio</a>
+          <a href="/nav-map.html" class="active">Mapa</a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="section-white">
+      <div class="nav-container">
+        <h1>🗺️ Mapa de Navegación PUFAB</h1>
+        <p class="subtitle">Accede a todas las vistas del sistema de forma rápida</p>
+
+        <!-- INFO -->
+        <div class="info-box">
+          <h3>✅ Sistema Completo y Funcional</h3>
+          <p>
+            Todas las vistas han sido creadas y están conectadas a los 36 endpoints del backend. Puedes navegar entre ellas y
+            probar todas las operaciones.
+          </p>
+        </div>
+
+        <!-- QUICK ACCESS -->
+        <div class="section">
+          <div class="section-title">🚀 Acceso Rápido</div>
+          <div class="quick-access">
+            <a href="/" class="quick-btn">🏠 Home</a>
+            <a href="/iniciar-sesion/" class="quick-btn">🔒 Login</a>
+            <a href="/registro/" class="quick-btn">📝 Registro</a>
+            <a href="/dashboard/" class="quick-btn">📊 Dashboard</a>
+            <a href="/admin-dashboard.html" class="quick-btn">⚙️ Admin</a>
+            <a href="/test-operations.html" class="quick-btn">🧪 Tests</a>
+          </div>
+        </div>
+
+        <!-- SECTIONS -->
+        <div class="section">
+          <div class="section-title">📚 Vistas Disponibles</div>
+
+          <div class="nav-grid">
+            <!-- HOME -->
+            <div class="nav-card">
+              <div class="nav-card-header">🏠 Home</div>
+              <div class="nav-card-content">
+                <p>Página de inicio con información del sistema, mapa interactivo y contacto.</p>
+                <div class="nav-links">
+                  <a href="/" class="nav-link">→ Ir a Home</a>
+                </div>
+              </div>
+            </div>
+
+            <!-- AUTENTICACIÓN -->
+            <div class="nav-card">
+              <div class="nav-card-header">🔐 Autenticación</div>
+              <div class="nav-card-content">
+                <p>Registro, login y completar perfil. Punto de entrada para nuevos usuarios.</p>
+                <div class="nav-links">
+                  <a href="/registro/" class="nav-link">→ Registrarse</a>
+                  <a href="/iniciar-sesion/" class="nav-link">→ Iniciar Sesión</a>
+                  <a href="/completar-perfil/" class="nav-link">→ Completar Perfil</a>
+                </div>
+              </div>
+            </div>
+
+            <!-- DASHBOARD -->
+            <div class="nav-card">
+              <div class="nav-card-header">📊 Dashboard</div>
+              <div class="nav-card-content">
+                <p>Panel de control principal. Vista de proyectos, trámites, documentos y pagos.</p>
+                <div class="nav-links">
+                  <a href="/dashboard/" class="nav-link">→ Mi Dashboard</a>
+                </div>
+              </div>
+            </div>
+
+            <!-- PROYECTOS -->
+            <div class="nav-card">
+              <div class="nav-card-header">🎬 Proyectos</div>
+              <div class="nav-card-content">
+                <p>Crear nuevos proyectos audiovisuales. Ver detalles y gestionar.</p>
+                <div class="nav-links">
+                  <a href="/crear-proyecto/" class="nav-link">→ Crear Proyecto</a>
+                  <a href="/detalle-proyecto/" class="nav-link">→ Ver Detalle</a>
+                </div>
+                <div class="badges">
+                  <span class="badge badge-post">POST /proyectos</span>
+                  <span class="badge badge-get">GET /proyectos</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- TRÁMITES -->
+            <div class="nav-card">
+              <div class="nav-card-header">📄 Trámites PUFAB</div>
+              <div class="nav-card-content">
+                <p>Solicitar permiso P.U.F.A.B. Incluye locaciones, equipo técnico y compromisos.</p>
+                <div class="nav-links">
+                  <a href="/crear-tramite/" class="nav-link">→ Crear Trámite</a>
+                  <a href="/detalle-tramite/" class="nav-link">→ Ver Detalle</a>
+                </div>
+                <div class="badges">
+                  <span class="badge badge-post">POST /tramites</span>
+                  <span class="badge badge-patch">PATCH /tramites/:id</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- DOCUMENTOS -->
+            <div class="nav-card">
+              <div class="nav-card-header">📋 Documentos</div>
+              <div class="nav-card-content">
+                <p>Subir y gestionar documentos de trámites. Drag & drop + validación.</p>
+                <div class="nav-links">
+                  <a href="/subir-documentos/" class="nav-link">→ Subir Documentos</a>
+                </div>
+                <div class="badges">
+                  <span class="badge badge-post">POST /documentos</span>
+                  <span class="badge badge-patch">PATCH /documentos/:id</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- PAGOS -->
+            <div class="nav-card">
+              <div class="nav-card-header">💳 Pagos</div>
+              <div class="nav-card-content">
+                <p>Registrar pagos y abonos. Transferencia o consignación bancaria.</p>
+                <div class="nav-links">
+                  <a href="/registrar-pago/" class="nav-link">→ Registrar Pago</a>
+                </div>
+                <div class="badges">
+                  <span class="badge badge-post">POST /pagos</span>
+                  <span class="badge badge-get">GET /pagos/:id</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- ADMIN -->
+            <div class="nav-card">
+              <div class="nav-card-header">⚙️ Admin Dashboard</div>
+              <div class="nav-card-content">
+                <p>Panel administrativo. Gestión de usuarios, solicitudes, documentos, pagos.</p>
+                <div class="nav-links">
+                  <a href="/admin-dashboard.html" class="nav-link">→ Panel Admin</a>
+                </div>
+                <div class="badges">
+                  <span class="badge badge-get">GET /usuarios</span>
+                  <span class="badge badge-patch">PATCH /solicitudes/:id</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- TESTS -->
+            <div class="nav-card">
+              <div class="nav-card-header">🧪 Test Operations</div>
+              <div class="nav-card-content">
+                <p>Centro interactivo para probar todos los endpoints. Ejecutar operaciones directamente.</p>
+                <div class="nav-links">
+                  <a href="/test-operations.html" class="nav-link">→ Ir a Pruebas</a>
+                </div>
+                <div class="badges">
+                  <span class="badge badge-get">GET *</span>
+                  <span class="badge badge-post">POST *</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FLUJOS -->
+        <div class="section">
+          <div class="section-title">🔄 Flujos Principales</div>
+
+          <h3 style="margin-top: 1.5rem; margin-bottom: 1rem;">Flujo 1: Nuevo Usuario</h3>
+          <div class="flowchart">
+            <div class="flow-box">
+              <div class="flow-step">
+                <strong>Registrarse</strong>
+                /registro/
+              </div>
+              <span class="arrow">→</span>
+              <div class="flow-step">
+                <strong>Completar Perfil</strong>
+                /completar-perfil/
+              </div>
+              <span class="arrow">→</span>
+              <div class="flow-step">
+                <strong>Dashboard</strong>
+                /dashboard/
+              </div>
+            </div>
+          </div>
+
+          <h3 style="margin-top: 1.5rem; margin-bottom: 1rem;">Flujo 2: Crear Proyecto y Trámite</h3>
+          <div class="flowchart">
+            <div class="flow-box">
+              <div class="flow-step">
+                <strong>Crear Proyecto</strong>
+                /crear-proyecto/
+              </div>
+              <span class="arrow">→</span>
+              <div class="flow-step">
+                <strong>Crear Trámite</strong>
+                /crear-tramite/
+              </div>
+              <span class="arrow">→</span>
+              <div class="flow-step">
+                <strong>Ver Detalle</strong>
+                /detalle-tramite/
+              </div>
+            </div>
+          </div>
+
+          <h3 style="margin-top: 1.5rem; margin-bottom: 1rem;">Flujo 3: Documentos y Pagos</h3>
+          <div class="flowchart">
+            <div class="flow-box">
+              <div class="flow-step">
+                <strong>Subir Documentos</strong>
+                /subir-documentos/
+              </div>
+              <span class="arrow">→</span>
+              <div class="flow-step">
+                <strong>Registrar Pago</strong>
+                /registrar-pago/
+              </div>
+              <span class="arrow">→</span>
+              <div class="flow-step">
+                <strong>Admin Revisa</strong>
+                /admin-dashboard.html
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ENDPOINTS -->
+        <div class="section">
+          <div class="section-title">📡 Endpoints Conectados (36 Total)</div>
+
+          <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+            <thead>
+              <tr style="background: #f9f9f9; border-bottom: 2px solid #e0e0e0;">
+                <th style="padding: 1rem; text-align: left; font-weight: 600;">Módulo</th>
+                <th style="padding: 1rem; text-align: left; font-weight: 600;">Endpoints</th>
+                <th style="padding: 1rem; text-align: left; font-weight: 600;">Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid #e0e0e0;">
+                <td style="padding: 1rem;">👤 Auth</td>
+                <td style="padding: 1rem;">POST /auth/register, POST /auth/login</td>
+                <td style="padding: 1rem;"><span style="background: #dcfce7; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 11px; font-weight: 700;">✓ OK</span></td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e0e0e0;">
+                <td style="padding: 1rem;">👥 Usuarios</td>
+                <td style="padding: 1rem;">GET /usuarios, POST /perfil/natural, POST /perfil/juridica</td>
+                <td style="padding: 1rem;"><span style="background: #dcfce7; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 11px; font-weight: 700;">✓ OK</span></td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e0e0e0;">
+                <td style="padding: 1rem;">🎬 Proyectos</td>
+                <td style="padding: 1rem;">GET, POST, PATCH /proyectos</td>
+                <td style="padding: 1rem;"><span style="background: #dcfce7; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 11px; font-weight: 700;">✓ OK</span></td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e0e0e0;">
+                <td style="padding: 1rem;">📄 Trámites</td>
+                <td style="padding: 1rem;">GET, POST, PATCH /tramites</td>
+                <td style="padding: 1rem;"><span style="background: #dcfce7; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 11px; font-weight: 700;">✓ OK</span></td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e0e0e0;">
+                <td style="padding: 1rem;">📋 Documentos</td>
+                <td style="padding: 1rem;">GET, POST, PATCH /documentos</td>
+                <td style="padding: 1rem;"><span style="background: #dcfce7; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 11px; font-weight: 700;">✓ OK</span></td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e0e0e0;">
+                <td style="padding: 1rem;">💳 Pagos</td>
+                <td style="padding: 1rem;">GET, POST, PATCH /pagos</td>
+                <td style="padding: 1rem;"><span style="background: #dcfce7; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 11px; font-weight: 700;">✓ OK</span></td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e0e0e0;">
+                <td style="padding: 1rem;">📚 Catálogos</td>
+                <td style="padding: 1rem;">GET /catalogos/* (8 tipos)</td>
+                <td style="padding: 1rem;"><span style="background: #dcfce7; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 11px; font-weight: 700;">✓ OK</span></td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e0e0e0;">
+                <td style="padding: 1rem;">🏢 Entidades</td>
+                <td style="padding: 1rem;">GET, POST /entidades</td>
+                <td style="padding: 1rem;"><span style="background: #dcfce7; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 11px; font-weight: 700;">✓ OK</span></td>
+              </tr>
+              <tr>
+                <td style="padding: 1rem;">📝 Registro</td>
+                <td style="padding: 1rem;">GET, PATCH /registro/solicitudes</td>
+                <td style="padding: 1rem;"><span style="background: #dcfce7; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 11px; font-weight: 700;">✓ OK</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- FEATURES -->
+        <div class="section">
+          <div class="section-title">✨ Características Implementadas</div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+            <div>
+              <strong>✓ Seguridad</strong>
+              <ul style="margin: 0.5rem 0 0; padding-left: 1.5rem; color: #768794; font-size: 13px;">
+                <li>Autenticación JWT</li>
+                <li>Session con localStorage</li>
+                <li>Rutas protegidas</li>
+                <li>RBAC (roles)</li>
+              </ul>
+            </div>
+            <div>
+              <strong>✓ Formularios</strong>
+              <ul style="margin: 0.5rem 0 0; padding-left: 1.5rem; color: #768794; font-size: 13px;">
+                <li>Validación completa</li>
+                <li>Feedback de errores</li>
+                <li>Carga de catálogos</li>
+                <li>Estados de carga</li>
+              </ul>
+            </div>
+            <div>
+              <strong>✓ Interfaz</strong>
+              <ul style="margin: 0.5rem 0 0; padding-left: 1.5rem; color: #768794; font-size: 13px;">
+                <li>Drag & drop archivos</li>
+                <li>Tablas interactivas</li>
+                <li>Modales dinámicos</li>
+                <li>Responsive design</li>
+              </ul>
+            </div>
+            <div>
+              <strong>✓ Integración</strong>
+              <ul style="margin: 0.5rem 0 0; padding-left: 1.5rem; color: #768794; font-size: 13px;">
+                <li>36 endpoints</li>
+                <li>Google Maps</li>
+                <li>Barras de progreso</li>
+                <li>API client centralizado</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- DOCUMENTACIÓN -->
+        <div class="section">
+          <div class="section-title">📚 Documentación</div>
+          <div class="info-box">
+            <h3>📖 Guía Completa de Frontend</h3>
+            <p>
+              Para documentación detallada de cada vista, endpoints y flujos, consulta el archivo
+              <strong>FRONTEND-GUIDE.md</strong> en la raíz del proyecto.
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer style="background: #f9f9f9; padding: 2rem; margin-top: 2rem; border-top: 1px solid #e0e0e0; text-align: center; color: #768794; font-size: 13px;">
+      <p style="margin: 0;">PUFAB © 2024 • Secretaría de Cultura y Patrimonio • Comisión Fílmica de Boyacá</p>
+      <p style="margin: 0.5rem 0 0;">
+        <strong>Versión:</strong> 1.0.0 | <strong>Estado:</strong> ✅ Completo y Funcional
+      </p>
+    </footer>
+  </body>
+</html>

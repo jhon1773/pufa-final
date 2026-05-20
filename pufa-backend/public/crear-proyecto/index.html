@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PUFAB - Crear Proyecto</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+      .form-container {
+        background: var(--white);
+        border-radius: var(--radius);
+        padding: 2rem;
+        box-shadow: var(--shadow);
+        max-width: 800px;
+        margin: 2rem auto;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      .form-group input,
+      .form-group textarea,
+      .form-group select {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 14px;
+      }
+
+      .form-group textarea {
+        resize: vertical;
+        min-height: 100px;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+      }
+
+      @media (max-width: 600px) {
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+      }
+
+      .error-message {
+        background: #fee;
+        color: #c33;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        border-left: 4px solid #c33;
+      }
+
+      .success-message {
+        background: #efe;
+        color: #3c3;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        border-left: 4px solid #3c3;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="gov-header">
+      <div class="container gov-header-inner">
+        <img
+          src="https://www.figma.com/api/mcp/asset/55d910c5-1bcc-479c-acd9-c78a28860e9b"
+          alt="GOV.CO"
+          class="gov-logo"
+        />
+        <nav class="gov-links">
+          <a href="https://www.gov.co/" target="_blank" rel="noreferrer">GOV.CO</a>
+          <a href="#">Ministerio de Cultura</a>
+          <a href="#">Proimágenes</a>
+        </nav>
+      </div>
+      <div class="flag-strip"></div>
+    </header>
+
+    <nav class="site-nav">
+      <div class="container site-nav-inner">
+        <a href="/admin/" class="brand">
+          <span class="brand-icon">◧</span>
+          <span>PUFAB</span>
+        </a>
+        <button class="menu-toggle" aria-label="Abrir menú" id="menuToggle">☰</button>
+        <div class="nav-links" id="navLinks">
+          <a href="/admin/">Panel Admin</a>
+          <a href="/">Inicio</a>
+          <a href="/contacto/">Contacto</a>
+        </div>
+        <div class="nav-cta">
+          <a class="btn btn-ghost" id="logoutBtn">Cerrar Sesión</a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="section-white">
+      <div class="container">
+        <div class="form-container">
+          <h1>Crear Nuevo Proyecto</h1>
+          <p style="color: var(--muted); margin-bottom: 2rem;">Paso 1: Información básica del proyecto audiovisual</p>
+
+          <div id="error-message" class="error-message" style="display: none;"></div>
+          <div id="success-message" class="success-message" style="display: none;"></div>
+
+          <form id="crearProyectoForm">
+            <div class="form-group">
+              <label for="titulo">Título del Proyecto *</label>
+              <input type="text" id="titulo" name="titulo" placeholder="Ej: Boyacá en Plano" required />
+            </div>
+
+            <div class="form-group">
+              <label for="descripcion">Descripción *</label>
+              <textarea
+                id="descripcion"
+                name="descripcion"
+                placeholder="Describe brevemente tu proyecto audiovisual (tipo de producción, sinopsis, objetivos, etc.)"
+                required
+              ></textarea>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="tipoProduccion">Tipo de Producción *</label>
+                <select id="tipoProduccion" name="tipoProduccion" required>
+                  <option value="">Selecciona tipo de producción</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="presupuesto">Presupuesto (COP) *</label>
+                <input type="number" id="presupuesto" name="presupuesto" placeholder="Ej: 50000000" min="0" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="servicioRequerido">Servicio requerido / preferido</label>
+              <select id="servicioRequerido" name="servicioRequerido">
+                <option value="">Cargando servicios...</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="ubicacionPrincipal">Municipio Principal de Rodaje *</label>
+              <select id="ubicacionPrincipal" name="ubicacionPrincipal" required>
+                <option value="">Selecciona municipio</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="fechaInicio">Fecha estimada de inicio *</label>
+              <input type="date" id="fechaInicio" name="fechaInicio" required />
+            </div>
+
+            <div class="form-group">
+              <label for="duracionDias">Duración estimada (días) *</label>
+              <input type="number" id="duracionDias" name="duracionDias" min="1" placeholder="Ej: 30" required />
+            </div>
+
+            <div class="form-group">
+              <label for="equipo">Tamaño del equipo de producción *</label>
+              <select id="equipo" name="equipo" required>
+                <option value="">Selecciona tamaño del equipo</option>
+                <option value="pequeno">Pequeño (1-10 personas)</option>
+                <option value="mediano">Mediano (11-50 personas)</option>
+                <option value="grande">Grande (51-150 personas)</option>
+                <option value="muy_grande">Muy grande (150+ personas)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="contactoPrincipal">Contacto Principal *</label>
+              <input
+                type="text"
+                id="contactoPrincipal"
+                name="contactoPrincipal"
+                placeholder="Nombre del productor o coordinador"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="telefonoContacto">Teléfono de Contacto *</label>
+              <input type="tel" id="telefonoContacto" name="telefonoContacto" placeholder="+57 300 123 4567" required />
+            </div>
+
+            <div class="form-group">
+              <label for="documentosAdicionales">Documentos adicionales (opcionales)</label>
+              <input
+                type="file"
+                id="documentosAdicionales"
+                name="documentosAdicionales"
+                multiple
+                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                style="padding: 0.75rem; border: 1px dashed #9ca3af; border-radius: 10px;"
+              />
+              <small style="display:block;margin-top:0.4rem;color:var(--muted);">
+                Puedes subir soportes como sinopsis extendida, presupuesto detallado o referencias visuales.
+              </small>
+              <div id="documentosResumen" style="margin-top:0.4rem;color:#374151;font-size:13px;"></div>
+            </div>
+
+            <div class="form-actions">
+              <a href="/admin/" class="btn btn-ghost">Cancelar</a>
+              <button type="submit" class="btn btn-primary" id="submitBtn">Crear Proyecto</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <script src="/api-client.js"></script>
+    <script src="/route-guard.js"></script>
+    <script>
+      const form = document.getElementById('crearProyectoForm');
+      const errorDiv = document.getElementById('error-message');
+      const successDiv = document.getElementById('success-message');
+      const submitBtn = document.getElementById('submitBtn');
+      const logoutBtn = document.getElementById('logoutBtn');
+      const documentosInput = document.getElementById('documentosAdicionales');
+      const documentosResumen = document.getElementById('documentosResumen');
+      const servicioRequerido = document.getElementById('servicioRequerido');
+
+      // Logout
+      logoutBtn.addEventListener('click', () => {
+        API_CLIENT.clearSession();
+        window.location.href = '/iniciar-sesion/';
+      });
+
+      // Cargar catálogos
+      async function loadCatalogos() {
+        try {
+          const tipos = await API_CLIENT.catalogos.tiposProduccion();
+          const municipios = await API_CLIENT.catalogos.municipios();
+          const servicios = await API_CLIENT.portal.proveedor.serviciosPublicos();
+
+          const selectTipo = document.getElementById('tipoProduccion');
+          tipos.forEach((tipo) => {
+            const option = document.createElement('option');
+            option.value = tipo.id;
+            option.textContent = tipo.nombre;
+            selectTipo.appendChild(option);
+          });
+
+          const selectMunicipio = document.getElementById('ubicacionPrincipal');
+          municipios.forEach((municipio) => {
+            const option = document.createElement('option');
+            option.value = municipio.id;
+            option.textContent = municipio.nombre;
+            selectMunicipio.appendChild(option);
+          });
+
+          if (servicioRequerido) {
+            const servicioList = servicios?.data || servicios || [];
+            servicioRequerido.innerHTML = '<option value="">Selecciona un servicio</option>';
+            if (Array.isArray(servicioList) && servicioList.length) {
+              servicioList.forEach((servicio) => {
+                const option = document.createElement('option');
+                option.value = servicio.id;
+                option.textContent = `${servicio.nombre}${servicio.proveedor_nombre ? ` - ${servicio.proveedor_nombre}` : ''}`;
+                servicioRequerido.appendChild(option);
+              });
+            } else {
+              servicioRequerido.innerHTML = '<option value="">No hay servicios registrados</option>';
+            }
+          }
+        } catch (error) {
+          console.error('Error cargando catálogos:', error);
+        }
+      }
+
+      documentosInput?.addEventListener('change', () => {
+        const files = Array.from(documentosInput.files || []);
+        if (!files.length) {
+          documentosResumen.textContent = '';
+          return;
+        }
+        documentosResumen.textContent = `${files.length} archivo(s): ${files.map((f) => f.name).join(', ')}`;
+      });
+
+      // Enviar formulario
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        errorDiv.style.display = 'none';
+        successDiv.style.display = 'none';
+
+        try {
+          const fechaInicio = form.fechaInicio.value;
+          const duracionDias = parseInt(form.duracionDias.value, 10);
+          const fechaFin = new Date(fechaInicio);
+          if (!Number.isNaN(duracionDias) && duracionDias > 0) {
+            fechaFin.setDate(fechaFin.getDate() + duracionDias - 1);
+          }
+
+          const fechaFinIso = !Number.isNaN(fechaFin.getTime())
+            ? fechaFin.toISOString().slice(0, 10)
+            : undefined;
+
+          const data = {
+            nombre_proyecto: form.titulo.value,
+            sinopsis: form.descripcion.value,
+            tipo_produccion_id: parseInt(form.tipoProduccion.value),
+            presupuesto_total: parseInt(form.presupuesto.value),
+            municipio_principal_id: parseInt(form.ubicacionPrincipal.value),
+            servicio_requerido_id: form.servicioRequerido.value ? parseInt(form.servicioRequerido.value, 10) : undefined,
+            fecha_inicio_prevista: fechaInicio,
+            fecha_fin_prevista: fechaFinIso,
+            tamano_equipo: form.equipo.value,
+            contacto_principal: form.contactoPrincipal.value,
+            telefono_contacto: form.telefonoContacto.value,
+          };
+
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Creando proyecto...';
+
+          const result = await API_CLIENT.proyectos.crear(data);
+
+          const archivos = Array.from(documentosInput?.files || []);
+          if (archivos.length) {
+            submitBtn.textContent = 'Subiendo documentos...';
+            await Promise.all(
+              archivos.map((archivo) => API_CLIENT.documentos.subir(archivo, null, null, null, result.id)),
+            );
+          }
+
+          successDiv.textContent = '✓ Proyecto creado exitosamente. Redirigiendo...';
+          successDiv.style.display = 'block';
+
+          setTimeout(() => {
+            window.location.href = `/detalle-proyecto/?id=${result.id}`;
+          }, 1500);
+        } catch (error) {
+          errorDiv.textContent = error.message || 'Error al crear el proyecto.';
+          errorDiv.style.display = 'block';
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Crear Proyecto';
+        }
+      });
+
+      // Cargar catálogos al iniciar
+      loadCatalogos();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="landscape2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#87CEEB;stop-opacity:1" />
+      <stop offset="60%" style="stop-color:#B0E0E6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#landscape2)"/>
+  <polygon points="0,180 120,80 250,140 380,90 400,180 400,300 0,300" fill="#1B5E20"/>
+  <ellipse cx="200" cy="220" rx="150" ry="50" fill="#4A90E2" opacity="0.5"/>
+  <polygon points="20,210 80,160 140,200 200,150 260,190 320,140 380,210 400,300 0,300" fill="#2D5016" opacity="0.6"/>
+</svg>

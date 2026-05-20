@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PUFAB - Directorio de Proveedores</title>
+    <meta
+      name="description"
+      content="Directorio público de proveedores, subcategorías y especialidades disponibles en Boyacá."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="directory-page">
+    <header class="gov-header">
+      <div class="container gov-header-inner">
+        <img
+          src="https://www.figma.com/api/mcp/asset/55d910c5-1bcc-479c-acd9-c78a28860e9b"
+          alt="GOV.CO"
+          class="gov-logo"
+        />
+        <nav class="gov-links">
+          <a href="https://www.gov.co/" target="_blank" rel="noreferrer">GOV.CO</a>
+          <a href="#">Ministerio de Cultura</a>
+          <a href="#">Proimágenes</a>
+        </nav>
+      </div>
+      <div class="flag-strip"></div>
+    </header>
+
+    <nav class="site-nav">
+      <div class="container site-nav-inner">
+        <a href="/" class="brand">
+          <span class="brand-icon">◧</span>
+          <span>PUFAB</span>
+        </a>
+        <button class="menu-toggle" aria-label="Abrir menú" id="menuToggle">☰</button>
+        <div class="nav-links" id="navLinks">
+          <a href="/">Inicio</a>
+          <a href="/#conocenos">Conózcanos</a>
+          <a href="/directorio/" class="active">Directorio</a>
+          <a href="/tramites/">Trámites</a>
+          <a href="/contacto/">Contacto</a>
+          <a href="/iniciar-sesion/">Ingresar</a>
+        </div>
+        <div class="nav-cta">
+          <a class="btn btn-ghost" href="/iniciar-sesion/">Ingresar</a>
+          <a class="btn btn-primary" href="/contacto/">Ventanilla Única</a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="directory-shell">
+      <section class="directory-hero section-white">
+        <div class="container directory-hero-grid">
+          <div class="directory-copy">
+            <span class="pill">Directorio público</span>
+            <h1>Proveedores verificados para tu producción</h1>
+            <p>
+              Consulta el catálogo público de proveedores visibles en el directorio. Filtra por
+              subcategoría y recorre las tarjetas que se alimentan desde la API real del sistema.
+            </p>
+            <div class="directory-summary" id="summaryCards">
+              <article><strong id="totalResults">0</strong><span>Resultados</span></article>
+              <article><strong id="totalPages">0</strong><span>Páginas</span></article>
+              <article><strong id="activeFilters">0</strong><span>Filtros activos</span></article>
+            </div>
+          </div>
+
+          <aside class="directory-filters-panel">
+            <div class="directory-search">
+              <label for="directorySearch">Buscar en la página</label>
+              <input id="directorySearch" type="search" placeholder="Proveedor, especialidad, correo..." />
+            </div>
+            <div class="directory-actions" id="quickFilters"></div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="directory-main section-soft">
+        <div class="container directory-layout">
+          <aside class="directory-sidebar">
+            <div class="directory-card directory-card-sticky">
+              <h2>Filtros</h2>
+              <div class="directory-filter-group">
+                <label for="subcategorySelect">Subcategoría</label>
+                <select id="subcategorySelect">
+                  <option value="">Todas</option>
+                </select>
+              </div>
+              <div class="directory-filter-group">
+                <label>Página</label>
+                <p class="directory-note">La búsqueda se aplica sobre los resultados cargados en pantalla.</p>
+              </div>
+              <button class="btn btn-light full" type="button" id="clearFilters">Limpiar filtros</button>
+            </div>
+          </aside>
+
+          <div class="directory-results">
+            <div class="directory-toolbar">
+              <p id="resultsLabel">Cargando resultados...</p>
+              <div class="directory-toolbar-actions">
+                <button class="btn btn-light" type="button" id="prevPage">Anterior</button>
+                <span class="directory-page-pill" id="pageLabel">Página 1</span>
+                <button class="btn btn-light" type="button" id="nextPage">Siguiente</button>
+              </div>
+            </div>
+
+            <div class="directory-state directory-loading" id="loadingState">Cargando directorio...</div>
+            <div class="directory-state directory-empty" id="emptyState" hidden>No hay proveedores para mostrar.</div>
+
+            <div class="directory-grid" id="directoryGrid" aria-live="polite"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <section>
+          <div class="brand footer-brand"><span class="brand-icon">◧</span><span>PUFAB</span></div>
+          <p>
+            Comisión Fílmica de Boyacá. Facilitamos la conexión entre producciones audiovisuales,
+            locaciones y talento local.
+          </p>
+        </section>
+        <section>
+          <h4>Directorio</h4>
+          <a href="/">Inicio</a>
+          <a href="/#conocenos">Conózcanos</a>
+          <a href="/directorio/">Directorio de proveedores</a>
+        </section>
+        <section>
+          <h4>Contacto</h4>
+          <p>info@boyacafilm.gov.co</p>
+          <p>Tunja, Boyacá</p>
+          <p>+57 8 123 4567</p>
+        </section>
+        <section>
+          <h4>Síguenos</h4>
+          <div class="socials">
+            <a href="#">F</a>
+            <a href="#">I</a>
+            <a href="#">X</a>
+          </div>
+        </section>
+      </div>
+    </footer>
+
+    <script src="/nav-session.js"></script>
+    <script src="/directorio/directorio.js"></script>
+  </body>
+</html>

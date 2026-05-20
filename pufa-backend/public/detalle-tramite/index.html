@@ -1,0 +1,663 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PUFAB - Detalle Trámite</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+      .detail-wrapper {
+        max-width: 1000px;
+        display: grid;
+        grid-template-columns: 1fr 280px;
+        gap: 2rem;
+      }
+
+      .detail-main {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      .detail-sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      .detail-card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+      }
+
+      .detail-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1.5rem;
+      }
+
+      .detail-header h1 {
+        margin: 0;
+        font-size: 28px;
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      .status-pendiente {
+        background: #fef3c7;
+        color: #92400e;
+      }
+
+      .status-en-revision {
+        background: #e0e7ff;
+        color: #3730a3;
+      }
+
+      .status-aprobado {
+        background: #dcfce7;
+        color: #166534;
+      }
+
+      .status-rechazado {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+      }
+
+      .info-item {
+        border-left: 3px solid var(--green-700);
+        padding-left: 1rem;
+      }
+
+      .info-item strong {
+        display: block;
+        font-size: 11px;
+        text-transform: uppercase;
+        color: #768794;
+        margin-bottom: 0.4rem;
+      }
+
+      .info-item span {
+        display: block;
+        font-size: 15px;
+        color: #333;
+      }
+
+      .tabs {
+        display: flex;
+        gap: 1rem;
+        border-bottom: 2px solid #e0e0e0;
+        margin-bottom: 1.5rem;
+      }
+
+      .tabs button {
+        background: none;
+        border: none;
+        padding: 0.75rem 1rem;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 13px;
+        border-bottom: 3px solid transparent;
+        transition: all 0.2s;
+      }
+
+      .tabs button:hover {
+        color: var(--green-700);
+      }
+
+      .tabs button.active {
+        border-bottom-color: var(--green-700);
+        color: var(--green-700);
+      }
+
+      .tab-pane {
+        display: none;
+      }
+
+      .tab-pane.active {
+        display: block;
+      }
+
+      .locations-list,
+      .equipment-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .location-item,
+      .equipment-item {
+        background: #f9f9f9;
+        padding: 1rem;
+        border-radius: 6px;
+        border-left: 3px solid var(--green-700);
+      }
+
+      .document-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background: #f9f9f9;
+        border-radius: 6px;
+        margin-bottom: 0.75rem;
+      }
+
+      .document-info {
+        flex: 1;
+      }
+
+      .document-name {
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+      }
+
+      .document-meta {
+        font-size: 12px;
+        color: #768794;
+      }
+
+      .payment-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background: #f9f9f9;
+        border-radius: 6px;
+        margin-bottom: 0.75rem;
+      }
+
+      .payment-amount {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--green-700);
+      }
+
+      .commitments {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .commitment {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        padding: 0.75rem;
+        background: #f9f9f9;
+        border-radius: 4px;
+        font-size: 13px;
+      }
+
+      .commitment input[type='checkbox'] {
+        margin-top: 0.25rem;
+        cursor: pointer;
+      }
+
+      .sidebar-card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+      }
+
+      .sidebar-card h3 {
+        margin: 0 0 1rem;
+        font-size: 13px;
+        text-transform: uppercase;
+        color: #768794;
+      }
+
+      .sidebar-card ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      .sidebar-card li {
+        padding: 0.5rem 0;
+        font-size: 13px;
+        border-bottom: 1px solid #e0e0e0;
+      }
+
+      .sidebar-card li:last-child {
+        border-bottom: none;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .btn-small {
+        padding: 0.6rem 1rem;
+        font-size: 13px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: 0.2s;
+        font-weight: 500;
+      }
+
+      .btn-primary {
+        background: var(--green-700);
+        color: white;
+      }
+
+      .btn-secondary {
+        background: #e0e0e0;
+        color: #333;
+      }
+
+      .btn-danger {
+        background: #ef4444;
+        color: white;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 2rem;
+        color: #768794;
+      }
+
+      .error {
+        background: #fee2e2;
+        color: #991b1b;
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+      }
+
+      @media (max-width: 768px) {
+        .detail-wrapper {
+          grid-template-columns: 1fr;
+        }
+
+        .info-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .tabs {
+          overflow-x: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="gov-header">
+      <div class="container gov-header-inner">
+        <img
+          src="https://www.figma.com/api/mcp/asset/55d910c5-1bcc-479c-acd9-c78a28860e9b"
+          alt="GOV.CO"
+          class="gov-logo"
+        />
+        <nav class="gov-links">
+          <a href="https://www.gov.co/" target="_blank" rel="noreferrer">GOV.CO</a>
+          <a href="#">Ministerio de Cultura</a>
+          <a href="#">Proimágenes</a>
+        </nav>
+      </div>
+      <div class="flag-strip"></div>
+    </header>
+
+    <nav class="site-nav">
+      <div class="container site-nav-inner">
+        <a href="/" class="brand">
+          <span class="brand-icon">◧</span>
+          <strong>PUFAB</strong>
+        </a>
+        <div class="nav-links" id="navLinks">
+          <a href="/">Inicio</a>
+          <a href="/dashboard/" id="dashLink">Dashboard</a>
+        </div>
+        <div class="nav-cta">
+          <button class="btn btn-ghost" id="logoutBtn">Cerrar Sesión</button>
+        </div>
+      </div>
+    </nav>
+
+    <main class="section-white">
+      <div class="container">
+        <a href="javascript:history.back()" style="text-decoration: none; color: var(--green-700); margin-bottom: 1rem; display: inline-block;">← Volver</a>
+
+        <div id="errorContainer"></div>
+        <div id="contentContainer" class="loading">Cargando trámite...</div>
+      </div>
+    </main>
+
+    <script src="/api-client.js"></script>
+    <script>
+      const tramiteId = new URLSearchParams(window.location.search).get('id');
+      const errorContainer = document.getElementById('errorContainer');
+      const contentContainer = document.getElementById('contentContainer');
+
+      // Logout
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        API_CLIENT.clearSession();
+        window.location.href = '/iniciar-sesion/';
+      });
+
+      if (!tramiteId) {
+        errorContainer.innerHTML = '<div class="error">❌ ID de trámite no especificado</div>';
+        contentContainer.style.display = 'none';
+      } else {
+        cargarTramite();
+      }
+
+      async function cargarTramite() {
+        try {
+          const tramite = await API_CLIENT.tramites.obtener(tramiteId);
+
+          $html(tramite);
+
+          // Cargar documentos
+          try {
+            const docs = await API_CLIENT.documentos.listarPorTramite(tramiteId);
+            renderDocumentos(docs.data || docs);
+          } catch (e) {
+            console.log('Sin documentos');
+          }
+        } catch (error) {
+          errorContainer.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+          contentContainer.style.display = 'none';
+        }
+      }
+
+      function $html(tramite) {
+        const statusClass = `status-${(tramite.estado || 'pendiente').toLowerCase()}`;
+
+        contentContainer.innerHTML = `
+          <div class="detail-wrapper">
+            <div class="detail-main">
+              <div class="detail-card">
+                <div class="detail-header">
+                  <div>
+                    <h1>${tramite.proyecto?.nombre_proyecto || 'Trámite'}</h1>
+                    <p style="margin: 0.5rem 0 0; color: #768794; font-size: 13px;">Radicado: ${tramite.radicado || tramite.id}</p>
+                  </div>
+                  <span class="status-badge ${statusClass}">${tramite.estado || 'Pendiente'}</span>
+                </div>
+
+                <div class="info-grid">
+                  <div class="info-item">
+                    <strong>Solicitante</strong>
+                    <span>${tramite.usuario_solicitante?.email || 'N/A'}</span>
+                  </div>
+                  <div class="info-item">
+                    <strong>Proyecto</strong>
+                    <span>${tramite.proyecto?.nombre_proyecto || 'N/A'}</span>
+                  </div>
+                  <div class="info-item">
+                    <strong>Fecha Creación</strong>
+                    <span>${new Date(tramite.fecha_creacion).toLocaleDateString('es-CO')}</span>
+                  </div>
+                  <div class="info-item">
+                    <strong>Descripción Proyecto</strong>
+                    <span>${tramite.proyecto?.sinopsis || 'N/A'}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="detail-card">
+                <div class="tabs">
+                  <button class="tab-btn active" data-tab="locaciones">📍 Locaciones (${(tramite.locaciones || []).length})</button>
+                  <button class="tab-btn" data-tab="equipo">🎥 Equipo Técnico (${(tramite.equipo_tecnico || []).length})</button>
+                  <button class="tab-btn" data-tab="documentos">📄 Documentos</button>
+                  <button class="tab-btn" data-tab="validacion">🧾 Validación y Recibo</button>
+                  <button class="tab-btn" data-tab="compromisos">✓ Compromisos</button>
+                </div>
+
+                <!-- TAB: LOCACIONES -->
+                <div class="tab-pane active" id="tab-locaciones">
+                  <div class="locations-list">
+                    ${(tramite.locaciones || [])
+                      .map(
+                        (loc) => `
+                      <div class="location-item">
+                        <strong>${loc.tipo_espacio?.nombre || 'Locación'}</strong>
+                        <p style="margin: 0.5rem 0 0; font-size: 13px;">
+                          ${loc.direccion}<br>
+                          <small style="color: #768794;">${loc.municipio?.nombre || 'N/A'} • ${loc.municipio?.departamento || 'N/A'}</small>
+                        </p>
+                      </div>
+                    `
+                      )
+                      .join('')}
+                  </div>
+                </div>
+
+                <!-- TAB: EQUIPO TÉCNICO -->
+                <div class="tab-pane" id="tab-equipo">
+                  <div class="equipment-list">
+                    ${(tramite.equipo_tecnico || [])
+                      .map(
+                        (eq) => `
+                      <div class="equipment-item">
+                        <strong>${eq.rol_equipo_tecnico?.nombre || 'Rol'}</strong>
+                        <p style="margin: 0.5rem 0 0; font-size: 13px;">
+                          ${eq.nombre_completo}<br>
+                          <small style="color: #768794;">${eq.identificacion || 'N/A'}</small>
+                        </p>
+                      </div>
+                    `
+                      )
+                      .join('')}
+                  </div>
+                </div>
+
+                <!-- TAB: DOCUMENTOS -->
+                <div class="tab-pane" id="tab-documentos">
+                  <div id="documentosContainer" class="loading">Cargando documentos...</div>
+                </div>
+
+                <!-- TAB: VALIDACIÓN Y RECIBO -->
+                <div class="tab-pane" id="tab-validacion">
+                  <div class="sidebar-card" style="margin-bottom: 1rem;">
+                    <h3 style="margin-bottom: 0.75rem;">Validación previa al pago</h3>
+                    <ul>
+                      <li>Revisa que la información del trámite sea correcta.</li>
+                      <li>Descarga el recibo para pagar en banco.</li>
+                      <li>Por ahora no se registran pagos dentro del aplicativo.</li>
+                    </ul>
+                  </div>
+
+                  <div class="sidebar-card">
+                    <h3 style="margin-bottom: 0.75rem;">Recibo bancario</h3>
+                    <p style="margin-top: 0; color: #4b5563; font-size: 13px;">
+                      Genera un PDF con los datos del trámite y el valor de referencia para pago.
+                    </p>
+                    <div class="action-buttons">
+                      <button class="btn-small btn-primary" onclick="downloadReciboTramite(${tramite.id})">📄 Descargar PDF</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- TAB: COMPROMISOS -->
+                <div class="tab-pane" id="tab-compromisos">
+                  <div class="commitments">
+                    ${[
+                      'Sobre espacios públicos',
+                      'Impacto ambiental',
+                      'Impacto social',
+                      'Impacto económico',
+                      'Seguridad y protección civil'
+                    ]
+                      .map(
+                        (comp, i) => `
+                      <div class="commitment">
+                        <span>✓</span>
+                        <label>${comp}</label>
+                      </div>
+                    `
+                      )
+                      .join('')}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <aside class="detail-sidebar">
+              <div class="sidebar-card">
+                <h3>Estado del Trámite</h3>
+                <ul>
+                  <li><strong>${tramite.estado || 'Pendiente'}</strong></li>
+                  <li>Creado: ${new Date(tramite.fecha_creacion).toLocaleDateString('es-CO')}</li>
+                  <li id="updatedDate">Actualizado: ${new Date(tramite.fecha_actualizacion || tramite.fecha_creacion).toLocaleDateString('es-CO')}</li>
+                </ul>
+                <div class="action-buttons">
+                  <button class="btn-small btn-primary" onclick="alert('Cambiar estado del trámite')">Cambiar Estado</button>
+                </div>
+              </div>
+
+              <div class="sidebar-card">
+                <h3>Solicitante</h3>
+                <ul>
+                  <li>${tramite.usuario_solicitante?.email || 'N/A'}</li>
+                  <li>Teléfono: ${tramite.usuario_solicitante?.telefono || 'N/A'}</li>
+                  <li>Rol: ${tramite.usuario_solicitante?.roles?.[0]?.nombre || 'productor'}</li>
+                </ul>
+              </div>
+
+              <div class="sidebar-card">
+                <h3>Proyecto</h3>
+                <ul>
+                  <li><strong>${tramite.proyecto?.nombre_proyecto || 'N/A'}</strong></li>
+                  <li>Presupuesto: $${Number(tramite.proyecto?.presupuesto_total || 0).toLocaleString('es-CO')}</li>
+                  <li>Municipio: ${tramite.proyecto?.municipio_principal?.nombre || 'N/A'}</li>
+                </ul>
+              </div>
+            </aside>
+          </div>
+        `;
+
+        // Agregar event listeners a tabs
+        document.querySelectorAll('.tab-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('active'));
+            document.querySelectorAll('.tab-pane').forEach((p) => p.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
+          });
+        });
+      }
+
+      function renderDocumentos(docs) {
+        const container = document.getElementById('documentosContainer');
+        if (!docs || docs.length === 0) {
+          container.innerHTML = '<p style="text-align: center; color: #768794;">Sin documentos cargados</p>';
+          return;
+        }
+
+        container.innerHTML = docs
+          .map(
+            (d) => `
+          <div class="document-item">
+            <div class="document-info">
+              <div class="document-name">📄 ${d.nombre_original || d.nombre_archivo || 'Documento'}</div>
+              <div class="document-meta">
+                Estado: <strong>${d.estado_validacion || d.estado || 'pendiente'}</strong> • ${new Date(d.fecha_subida || d.fecha_creacion || Date.now()).toLocaleDateString('es-CO')}
+              </div>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <span class="status-badge status-${(d.estado_validacion || d.estado || 'pendiente').toLowerCase()}">${d.estado_validacion || d.estado || 'Pendiente'}</span>
+              <button onclick="downloadDocumento(${d.id})" style="padding: 0.5rem 1rem; background: #0b3d91; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600;">📥 Descargar</button>
+            </div>
+          </div>
+        `
+          )
+          .join('');
+      }
+
+      async function downloadReciboTramite(tramiteIdValue) {
+        try {
+          const token = localStorage.getItem('pufab_token');
+          const resp = await fetch(`/api/v1/tramites/${tramiteIdValue}/recibo-banco`, {
+            headers: token ? { Authorization: `Bearer ${token}` } : {},
+          });
+          if (!resp.ok) throw new Error('No se pudo descargar el recibo');
+          const blob = await resp.blob();
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `recibo-tramite-${tramiteIdValue}.pdf`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+        } catch (err) {
+          alert('Error descargando PDF: ' + err.message);
+        }
+      }
+
+      async function downloadDocumento(docId) {
+        try {
+          const token = localStorage.getItem('pufab_token');
+          const resp = await fetch(`/api/v1/documentos/${docId}/descargar`, {
+            headers: token ? { Authorization: `Bearer ${token}` } : {},
+          });
+          if (!resp.ok) throw new Error('No se pudo descargar el documento');
+          const blob = await resp.blob();
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = getFilenameFromDisposition(resp.headers.get('content-disposition')) || (`documento-${docId}` + getExtensionFromContentType(resp.headers.get('content-type')));
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+        } catch (err) {
+          alert('Error descargando documento: ' + err.message);
+        }
+      }
+
+      function getFilenameFromDisposition(contentDisposition) {
+        if (!contentDisposition) return '';
+        const utf8Match = contentDisposition.match(/filename\*=UTF-8''([^;]+)/i);
+        if (utf8Match?.[1]) {
+          try {
+            return decodeURIComponent(utf8Match[1]);
+          } catch {
+            return utf8Match[1];
+          }
+        }
+        const asciiMatch = contentDisposition.match(/filename="?([^";]+)"?/i);
+        return asciiMatch?.[1] || '';
+      }
+
+      function getExtensionFromContentType(contentType) {
+        const types = {
+          'application/pdf': '.pdf',
+          'application/msword': '.doc',
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '.docx',
+          'image/jpeg': '.jpg',
+          'image/png': '.png',
+        };
+        return types[contentType] || '.bin';
+      }
+    </script>
+  </body>
+</html>

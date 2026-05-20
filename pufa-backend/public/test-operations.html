@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PUFAB - Centro de Pruebas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+      .test-container {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 2rem;
+        margin: 2rem 0;
+      }
+
+      .test-sidebar {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        height: fit-content;
+        position: sticky;
+        top: 120px;
+      }
+
+      .test-sidebar h3 {
+        margin: 0 0 1rem;
+        font-size: 12px;
+        text-transform: uppercase;
+        color: #768794;
+      }
+
+      .test-menu {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .test-menu button {
+        background: none;
+        border: none;
+        padding: 0.75rem 1rem;
+        text-align: left;
+        cursor: pointer;
+        border-radius: 6px;
+        font-size: 13px;
+        transition: all 0.2s;
+      }
+
+      .test-menu button:hover {
+        background: #f5f5f5;
+      }
+
+      .test-menu button.active {
+        background: var(--green-700);
+        color: white;
+        font-weight: 600;
+      }
+
+      .test-main {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      .test-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .test-card h2 {
+        margin: 0 0 1rem;
+        font-size: 18px;
+      }
+
+      .test-group {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .test-item {
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        padding: 1rem;
+      }
+
+      .test-item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+        cursor: pointer;
+      }
+
+      .test-item-title {
+        font-weight: 500;
+        flex: 1;
+      }
+
+      .test-item-badge {
+        display: inline-block;
+        padding: 0.2rem 0.6rem;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        margin-left: 0.5rem;
+      }
+
+      .badge-get {
+        background: #dbeafe;
+        color: #1e40af;
+      }
+
+      .badge-post {
+        background: #dcfce7;
+        color: #166534;
+      }
+
+      .badge-patch {
+        background: #fef3c7;
+        color: #92400e;
+      }
+
+      .badge-delete {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      .test-details {
+        display: none;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #e0e0e0;
+      }
+
+      .test-details.show {
+        display: block;
+      }
+
+      .test-form {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .form-row {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .form-row input {
+        flex: 1;
+      }
+
+      .test-form input,
+      .test-form select,
+      .test-form textarea {
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-family: inherit;
+        font-size: 12px;
+      }
+
+      .test-buttons {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 0.75rem;
+      }
+
+      .btn-run {
+        padding: 0.5rem 1rem;
+        background: var(--green-700);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 500;
+        transition: 0.2s;
+      }
+
+      .btn-run:hover {
+        background: #1e4620;
+      }
+
+      .btn-clear {
+        padding: 0.5rem 1rem;
+        background: #e0e0e0;
+        color: #333;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      .test-result {
+        margin-top: 0.75rem;
+        padding: 0.75rem;
+        border-radius: 4px;
+        font-size: 12px;
+        max-height: 300px;
+        overflow-y: auto;
+        background: #f5f5f5;
+        border: 1px solid #ddd;
+        font-family: 'Courier New', monospace;
+      }
+
+      .result-success {
+        background: #dcfce7;
+        border-color: #10b981;
+        color: #166534;
+      }
+
+      .result-error {
+        background: #fee2e2;
+        border-color: #ef4444;
+        color: #991b1b;
+      }
+
+      .result-loading {
+        background: #e0e7ff;
+        border-color: #6366f1;
+        color: #3730a3;
+      }
+
+      .status-indicator {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-right: 0.5rem;
+      }
+
+      .status-pending {
+        background: #fbbf24;
+      }
+
+      .status-success {
+        background: #10b981;
+      }
+
+      .status-error {
+        background: #ef4444;
+      }
+
+      .status-idle {
+        background: #d1d5db;
+      }
+
+      .endpoint-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .endpoint-item {
+        padding: 0.5rem;
+        background: #f9f9f9;
+        border-radius: 4px;
+        font-size: 12px;
+        border-left: 3px solid var(--green-700);
+      }
+
+      .endpoint-item code {
+        background: white;
+        padding: 0.2rem 0.4rem;
+        border-radius: 2px;
+        font-size: 11px;
+      }
+
+      @media (max-width: 768px) {
+        .test-container {
+          grid-template-columns: 1fr;
+        }
+
+        .test-sidebar {
+          position: static;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="gov-header">
+      <div class="container gov-header-inner">
+        <img
+          src="https://www.figma.com/api/mcp/asset/55d910c5-1bcc-479c-acd9-c78a28860e9b"
+          alt="GOV.CO"
+          class="gov-logo"
+        />
+        <nav class="gov-links">
+          <a href="https://www.gov.co/" target="_blank" rel="noreferrer">GOV.CO</a>
+          <a href="#">Ministerio de Cultura</a>
+          <a href="#">Proimágenes</a>
+        </nav>
+      </div>
+      <div class="flag-strip"></div>
+    </header>
+
+    <nav class="site-nav">
+      <div class="container site-nav-inner">
+        <a href="/" class="brand">
+          <span class="brand-icon">◧</span>
+          <strong>PUFAB Testing</strong>
+        </a>
+        <div class="nav-links" id="navLinks">
+          <a href="/">Inicio</a>
+          <a href="/test-operations.html" class="active">Pruebas</a>
+        </div>
+        <div class="nav-cta">
+          <button class="btn btn-ghost" id="logoutBtn">Cerrar Sesión</button>
+        </div>
+      </div>
+    </nav>
+
+    <main class="section-white">
+      <div class="container">
+        <h1>🧪 Centro de Pruebas - Endpoints Backend</h1>
+        <p style="color: #768794;">Prueba cada endpoint del backend de forma interactiva</p>
+
+        <div class="test-container">
+          <!-- SIDEBAR -->
+          <aside class="test-sidebar">
+            <h3>Módulos</h3>
+            <div class="test-menu">
+              <button class="active" data-module="usuarios">👥 Usuarios</button>
+              <button data-module="proyectos">🎬 Proyectos</button>
+              <button data-module="tramites">📄 Trámites</button>
+              <button data-module="documentos">📋 Documentos</button>
+              <button data-module="pagos">💳 Pagos</button>
+              <button data-module="catalogos">📚 Catálogos</button>
+              <button data-module="entidades">🏢 Entidades</button>
+              <button data-module="registry">👤 Registro</button>
+            </div>
+          </aside>
+
+          <!-- MAIN CONTENT -->
+          <section class="test-main" id="testMain"></section>
+        </div>
+      </div>
+    </main>
+
+    <script src="/api-client.js"></script>
+    <script>
+      const testMain = document.getElementById('testMain');
+      const menuButtons = document.querySelectorAll('.test-menu button');
+      let currentModule = 'usuarios';
+
+      // Logout
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        API_CLIENT.clearSession();
+        window.location.href = '/iniciar-sesion/';
+      });
+
+      // Definición de endpoints por módulo
+      const endpoints = {
+        usuarios: [
+          { method: 'GET', name: 'Listar Usuarios', func: () => API_CLIENT.usuarios.listar(1, 10) },
+          { method: 'GET', name: 'Obtener Mi Perfil', func: () => API_CLIENT.usuarios.miPerfil() }
+        ],
+        proyectos: [
+          { method: 'GET', name: 'Listar Proyectos', func: () => API_CLIENT.proyectos.listar(1, 10) },
+          { method: 'POST', name: 'Crear Proyecto', needsForm: true, fields: ['titulo', 'descripcion'], func: (data) => API_CLIENT.proyectos.crear(data) }
+        ],
+        tramites: [
+          { method: 'GET', name: 'Listar Trámites', func: () => API_CLIENT.tramites.listar(1, 10) },
+          { method: 'POST', name: 'Crear Trámite', needsForm: true, fields: ['proyecto_id', 'descripcion'], func: (data) => API_CLIENT.tramites.crear(data) }
+        ],
+        documentos: [
+          { method: 'GET', name: 'Listar Documentos (Por Trámite)', needsForm: true, fields: ['tramite_id'], func: (data) => API_CLIENT.documentos.listarPorTramite(data.tramite_id) },
+          { method: 'PATCH', name: 'Validar Documento', needsForm: true, fields: ['doc_id', 'estado'], func: (data) => API_CLIENT.documentos.validar(data.doc_id, data.estado) }
+        ],
+        pagos: [
+          { method: 'GET', name: 'Listar Pagos (Por Trámite)', needsForm: true, fields: ['tramite_id'], func: (data) => API_CLIENT.pagos.listarPorTramite(data.tramite_id) },
+          { method: 'POST', name: 'Registrar Pago', needsForm: true, fields: ['tramite_id', 'monto', 'tipo'], func: (data) => API_CLIENT.pagos.crear(data.tramite_id, data) }
+        ],
+        catalogos: [
+          { method: 'GET', name: 'Listar Catálogos', func: () => API_CLIENT.catalogos.listar() },
+          { method: 'GET', name: 'Obtener Catálogo', needsForm: true, fields: ['tipo'], func: (data) => API_CLIENT.catalogos.obtener(data.tipo) }
+        ],
+        entidades: [
+          { method: 'GET', name: 'Listar Entidades', func: () => API_CLIENT.entidades.listar(1, 10) },
+          { method: 'POST', name: 'Crear Entidad', needsForm: true, fields: ['nombre', 'sigla'], func: (data) => API_CLIENT.entidades.crear(data) }
+        ],
+        registry: [
+          { method: 'GET', name: 'Listar Solicitudes', func: () => API_CLIENT.registro.listarSolicitudes(1, 10) },
+          {
+            method: 'PATCH',
+            name: 'Revisar Solicitud',
+            needsForm: true,
+            fields: ['solicitud_id', 'estado', 'observaciones'],
+            func: (data) => API_CLIENT.registro.revisarSolicitud(data.solicitud_id, data.estado, data.observaciones)
+          }
+        ]
+      };
+
+      // Menu switch
+      menuButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          menuButtons.forEach((b) => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentModule = btn.dataset.module;
+          renderTests();
+        });
+      });
+
+      function methodToBadge(method) {
+        return `<span class="test-item-badge badge-${method.toLowerCase()}">${method}</span>`;
+      }
+
+      function renderTests() {
+        const tests = endpoints[currentModule] || [];
+
+        testMain.innerHTML = tests
+          .map(
+            (test, i) => `
+          <div class="test-card">
+            <div class="test-item">
+              <div class="test-item-header" onclick="toggleDetails(${i})">
+                <span class="test-item-title">
+                  <span class="status-indicator status-idle"></span>${test.name}
+                </span>
+                ${methodToBadge(test.method)}
+              </div>
+              <div class="test-details" id="details-${i}">
+                ${test.needsForm ? `<div class="test-form" id="form-${i}">
+                  ${test.fields.map((f) => `<input type="text" data-field="${f}" placeholder="${f}" />`).join('')}
+                </div>` : ''}
+                <div class="test-buttons">
+                  <button class="btn-run" onclick="runTest(${i}, '${currentModule}')">Ejecutar</button>
+                  <button class="btn-clear" onclick="clearResult(${i})">Limpiar</button>
+                </div>
+                <div class="test-result" id="result-${i}" style="display: none;"></div>
+              </div>
+            </div>
+          </div>
+        `
+          )
+          .join('');
+      }
+
+      function toggleDetails(index) {
+        const details = document.getElementById(`details-${index}`);
+        details.classList.toggle('show');
+      }
+
+      async function runTest(index, module) {
+        const tests = endpoints[module];
+        const test = tests[index];
+        const resultEl = document.getElementById(`result-${index}`);
+
+        resultEl.style.display = 'block';
+        resultEl.className = 'test-result result-loading';
+        resultEl.textContent = '⏳ ejecutando...';
+
+        try {
+          let result;
+
+          if (test.needsForm) {
+            const form = document.getElementById(`form-${index}`);
+            const inputs = form.querySelectorAll('input');
+            const data = {};
+            inputs.forEach((input) => {
+              data[input.dataset.field] = input.value || 'test';
+            });
+            result = await test.func(data);
+          } else {
+            result = await test.func();
+          }
+
+          resultEl.className = 'test-result result-success';
+          resultEl.textContent = '✓ Exitoso:\n\n' + JSON.stringify(result, null, 2);
+        } catch (error) {
+          resultEl.className = 'test-result result-error';
+          resultEl.textContent = '✗ Error:\n\n' + error.message;
+        }
+      }
+
+      function clearResult(index) {
+        document.getElementById(`result-${index}`).style.display = 'none';
+      }
+
+      // Render initial
+      renderTests();
+
+      // Expose to global
+      window.toggleDetails = toggleDetails;
+      window.runTest = runTest;
+      window.clearResult = clearResult;
+    </script>
+  </body>
+</html>

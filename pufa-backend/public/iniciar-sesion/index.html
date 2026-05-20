@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PUFAB - Iniciar Sesión</title>
+    <meta
+      name="description"
+      content="Acceso al sistema PUFAB para productores, proveedores, academia y administradores."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+      body.auth-page {
+        background:
+          radial-gradient(circle at top left, rgba(37, 99, 235, 0.16), transparent 28%),
+          radial-gradient(circle at top right, rgba(15, 118, 110, 0.14), transparent 26%),
+          linear-gradient(180deg, #f8fbff 0%, #edf4f8 42%, #f8fafc 100%);
+      }
+
+      .auth-shell {
+        padding: 3rem 0 4rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .auth-grid {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        max-width: 420px;
+      }
+
+      .auth-info {
+        display: none;
+      }
+
+      .auth-card {
+        min-width: 0;
+        background: rgba(255, 255, 255, 0.82);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(148, 163, 184, 0.22);
+        box-shadow: 0 20px 60px rgba(15, 23, 42, 0.1);
+        border-radius: 28px;
+        width: 100%;
+      }
+
+      .auth-info::after {
+        display: none;
+      }
+
+      .auth-kicker {
+        display: none;
+      }
+
+      .auth-info h2 {
+        display: none;
+      }
+
+      .auth-info p {
+        display: none;
+      }
+
+      .auth-highlights {
+        display: none;
+      }
+
+      .highlight-card,
+      .credential-card {
+        display: none;
+      }
+
+      .highlight-card strong,
+      .credential-card strong {
+        display: none;
+      }
+
+      .highlight-card span,
+      .credential-card span {
+        display: none;
+      }
+
+      .credentials-wrap {
+        display: none;
+      }
+
+      .credentials-wrap h3 {
+        display: none;
+      }
+
+      .credentials-wrap p {
+        display: none;
+      }
+
+      .credential-list {
+        display: none;
+      }
+
+      .credential-meta {
+        display: none;
+      }
+
+      .credential-pill {
+        display: none;
+      }
+
+      .credential-pill.green {
+        display: none;
+      }
+
+      .credential-copy {
+        display: none;
+      }
+
+      .credential-copy code {
+        display: none;
+      }
+
+      .auth-card {
+        padding: 1.3rem;
+      }
+
+      .auth-card .auth-header {
+        margin-bottom: 1rem;
+      }
+
+      .auth-card .auth-header h1 {
+        margin-bottom: 0.45rem;
+        color: #10212b;
+      }
+
+      .auth-card .auth-header p {
+        color: #5b6472;
+      }
+
+      .auth-tabs {
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid rgba(148, 163, 184, 0.16);
+        border-radius: 18px;
+      }
+
+      .auth-tab {
+        color: #334155;
+      }
+
+      .auth-tab.active {
+        color: #fff;
+        background: linear-gradient(135deg, #2563eb, #0f766e);
+        box-shadow: 0 10px 24px rgba(37, 99, 235, 0.18);
+      }
+
+      .auth-banner {
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid rgba(148, 163, 184, 0.16);
+      }
+
+      .auth-form label {
+        color: #334155;
+      }
+
+      .auth-form input {
+        border: 1px solid rgba(148, 163, 184, 0.28);
+        background: rgba(255, 255, 255, 0.94);
+      }
+
+      .auth-form input:focus {
+        outline: none;
+        border-color: rgba(37, 99, 235, 0.8);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+      }
+
+      .auth-submit {
+        background: linear-gradient(135deg, #2563eb, #0f766e);
+        box-shadow: 0 18px 28px rgba(37, 99, 235, 0.18);
+      }
+
+      .auth-signup {
+        color: #5b6472;
+      }
+
+      .auth-signup a {
+        color: #1d4ed8;
+        font-weight: 800;
+      }
+
+      .auth-meta a {
+        color: #0f766e;
+      }
+
+      .auth-support {
+        margin-top: 1rem;
+        display: grid;
+        gap: 0.8rem;
+      }
+
+      .auth-support small {
+        color: #5b6472;
+      }
+
+      .auth-support .auth-support-note {
+        padding: 0.95rem 1rem;
+        border-radius: 16px;
+        background: rgba(37, 99, 235, 0.06);
+        border: 1px solid rgba(37, 99, 235, 0.12);
+        color: #334155;
+        line-height: 1.55;
+      }
+
+      @media (max-width: 980px) {
+        .auth-shell {
+          padding: 3rem 0 4rem;
+        }
+      }
+    </style>
+  </head>
+  <body class="auth-page">
+    <header class="gov-header">
+      <div class="container gov-header-inner">
+        <img
+          src="https://www.figma.com/api/mcp/asset/55d910c5-1bcc-479c-acd9-c78a28860e9b"
+          alt="GOV.CO"
+          class="gov-logo"
+        />
+        <nav class="gov-links">
+          <a href="https://www.gov.co/" target="_blank" rel="noreferrer">GOV.CO</a>
+          <a href="#">Ministerio de Cultura</a>
+          <a href="#">Proimágenes</a>
+        </nav>
+      </div>
+      <div class="flag-strip"></div>
+    </header>
+
+    <nav class="site-nav">
+      <div class="container site-nav-inner">
+        <a href="/" class="brand">
+          <span class="brand-icon">◧</span>
+          <span>PUFAB</span>
+        </a>
+        <button class="menu-toggle" aria-label="Abrir menú" id="menuToggle">☰</button>
+        <div class="nav-links" id="navLinks">
+          <a href="/">Inicio</a>
+          <a href="/directorio/">Directorio</a>
+          <a href="/tramites/">Trámites</a>
+          <a href="/contacto/">Contacto</a>
+          <a href="/iniciar-sesion/" class="active">Ingresar</a>
+        </div>
+        <div class="nav-cta">
+          <a class="btn btn-ghost" href="/contacto/">Contacto</a>
+          <a class="btn btn-primary" href="/directorio/">Ventanilla Única</a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="auth-shell">
+      <div class="container auth-grid">
+        <aside class="auth-info">
+          <span class="auth-kicker">Acceso institucional</span>
+          <h2>Ingresa al sistema con una experiencia más limpia y profesional.</h2>
+          <p>
+            El acceso está preparado para perfiles de administración, productoras, proveedores y academia.
+            Usa las cuentas de prueba de abajo para hacer recorridos, presentar el flujo y validar permisos.
+          </p>
+
+          <div class="auth-highlights">
+            <div class="highlight-card">
+              <strong>Seguridad</strong>
+              <span>Control de acceso por estado y rol, con aprobación previa de administración.</span>
+            </div>
+            <div class="highlight-card">
+              <strong>Flujo claro</strong>
+              <span>Ingreso, perfil y panel con una identidad visual uniforme en todo el sistema.</span>
+            </div>
+          </div>
+
+          <div class="credentials-wrap">
+            <h3>Acceso al sistema</h3>
+            <p>
+              Ingresa con tu correo institucional y tu contraseña. Si tu cuenta sigue en revisión, el sistema te
+              indicará el estado antes de permitir el ingreso.
+            </p>
+
+            <div class="auth-support">
+              <div class="auth-support-note">
+                El acceso cambia según el rol seleccionado arriba y el estado de aprobación guardado en la base de datos.
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <section class="auth-card">
+          <button class="auth-close" type="button" aria-label="Cerrar">×</button>
+          <header class="auth-header">
+            <h1>Iniciar Sesión</h1>
+            <p>Ingresa tus credenciales para continuar</p>
+          </header>
+
+        <section class="auth-banner" id="registrationNotice" style="display:none; margin-bottom: 16px;">
+          <span class="auth-banner-icon">⏳</span>
+          <div>
+            <strong>Registro enviado</strong>
+            <p>Tu cuenta quedó pendiente de aprobación. Podrás ingresar cuando el administrador la active.</p>
+          </div>
+        </section>
+
+        <div class="auth-tabs" role="tablist" aria-label="Tipo de usuario" data-active-role="academy" style="--tab-count:4;">
+          <button class="auth-tab" type="button" data-role="producer" data-index="0" title="Productor">Productor</button>
+          <button class="auth-tab" type="button" data-role="provider" data-index="1" title="Proveedor">Proveedor</button>
+          <button class="auth-tab active" type="button" data-role="academy" data-index="2" title="Academia">Academia</button>
+          <button class="auth-tab" type="button" data-role="admin" data-index="3" title="Administrador">Administrador</button>
+        </div>
+
+        <section class="auth-banner" id="authBanner">
+          <span class="auth-banner-icon">🎓</span>
+          <div>
+            <strong>Academia</strong>
+            <p>Accede a recursos educativos y convocatorias</p>
+          </div>
+        </section>
+
+        <form class="auth-form" action="#" method="post">
+          <label>
+            Correo electrónico *
+            <input type="email" name="email" placeholder="tu@email.co" />
+          </label>
+          <label>
+            Contraseña *
+            <div class="auth-password">
+              <input type="password" name="password" placeholder="••••••••" id="passwordInput" />
+              <button type="button" class="auth-password-toggle" id="passwordToggle" aria-label="Mostrar contraseña">◔</button>
+            </div>
+          </label>
+
+          <div class="auth-meta">
+            <label class="auth-remember">
+              <input type="checkbox" name="remember" />
+              <span>Recordarme</span>
+            </label>
+            <a href="#">¿Olvidaste tu contraseña?</a>
+          </div>
+
+          <button type="submit" class="btn btn-primary full auth-submit">Iniciar sesión</button>
+
+          <p class="auth-signup">
+            ¿No tienes cuenta? <a href="/registro/?rol=academico" id="signupByRoleLink">Regístrate</a>
+          </p>
+
+          <div class="auth-support">
+            <div class="auth-support-note">
+              El acceso usa el estado de aprobación de la cuenta. Si el admin aún no la activa, verás el mensaje de pendiente.
+            </div>
+          </div>
+        </form>
+      </section>
+      </div>
+    </main>
+
+    <footer class="site-footer auth-footer">
+      <div class="container footer-grid">
+        <section>
+          <div class="brand footer-brand"><span class="brand-icon">◧</span><span>PUFAB</span></div>
+          <p>
+            Comisión Fílmica de Boyacá. Facilitamos la conexión entre producciones audiovisuales,
+            locaciones y talento local.
+          </p>
+        </section>
+        <section>
+          <h4>Directorio</h4>
+          <a href="/">Inicio</a>
+          <a href="/directorio/">Locaciones y talentos</a>
+          <a href="/contacto/">Contacto</a>
+        </section>
+        <section>
+          <h4>Contacto</h4>
+          <p>info@boyacafilm.gov.co</p>
+          <p>Tunja, Boyacá</p>
+          <p>+57 8 123 4567</p>
+        </section>
+        <section>
+          <h4>Síguenos</h4>
+          <div class="socials">
+            <a href="#">F</a>
+            <a href="#">I</a>
+            <a href="#">X</a>
+          </div>
+        </section>
+      </div>
+    </footer>
+
+    <script src="/nav-session.js"></script>
+    <script>
+      const form = document.querySelector('.auth-form');
+      const passwordToggle = document.getElementById('passwordToggle');
+      const passwordInput = document.getElementById('passwordInput');
+      const banner = document.getElementById('authBanner');
+      const submitBtn = document.querySelector('.auth-submit');
+      const tabsRoot = document.querySelector('.auth-tabs');
+      const registrationNotice = document.getElementById('registrationNotice');
+      let selectedRole = 'academy';
+      const roleMap = {
+        producer: { label: 'Productor', text: 'Ingresa para gestionar tus proyectos y permisos', icon: '🎬', path: '/tramites/' },
+        provider: { label: 'Proveedor', text: 'Consulta oportunidades y gestiona tu perfil público', icon: '🏢', path: '/proveedor/' },
+        academy: { label: 'Academia', text: 'Accede a recursos educativos y convocatorias', icon: '🎓', path: '/academico/' },
+        admin: { label: 'Administrador', text: 'Supervisa y aprueba trámites y perfiles', icon: '🛡', path: '/admin/' },
+      };
+
+      passwordToggle?.addEventListener('click', () => {
+        if (!passwordInput) return;
+        passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+      });
+
+      function updateRoleUI(button) {
+        if (!button) return;
+        const roleKey = button.dataset.role;
+        const role = roleMap[roleKey];
+        selectedRole = roleKey;
+
+        document.querySelectorAll('.auth-tab').forEach((tab) => tab.classList.remove('active'));
+        button.classList.add('active');
+
+        if (tabsRoot) {
+          const tabIndex = Number(button.dataset.index || 0);
+          tabsRoot.style.setProperty('--tab-index', String(tabIndex));
+          tabsRoot.setAttribute('data-active-role', roleKey);
+        }
+
+        if (banner && role) {
+          banner.innerHTML = `
+            <span class="auth-banner-icon">${role.icon}</span>
+            <div>
+              <strong>${role.label}</strong>
+              <p>${role.text}</p>
+            </div>
+          `;
+        }
+
+        const signupLink = document.getElementById('signupByRoleLink');
+        if (signupLink) {
+          const signupConfig = {
+            producer: { text: 'Regístrate como productora', href: '/registro/?rol=productora' },
+            provider: { text: 'Regístrate como proveedor', href: '/proveedor/registro/' },
+            academy: { text: 'Regístrate como academia', href: '/academico/registro/' },
+            admin: { text: 'Solicitar acceso', href: '/contacto/' },
+          };
+          const config = signupConfig[roleKey] || signupConfig.academy;
+          signupLink.textContent = config.text;
+          signupLink.href = config.href;
+          signupLink.style.pointerEvents = 'auto';
+          signupLink.style.opacity = '1';
+        }
+      }
+
+      document.querySelectorAll('.auth-tab').forEach((button) => {
+        button.addEventListener('click', () => updateRoleUI(button));
+      });
+
+      const defaultTab = document.querySelector('.auth-tab.active');
+      if (defaultTab) updateRoleUI(defaultTab);
+
+      const perfilToRole = {
+        admin: 'admin',
+        productora: 'producer',
+        proveedor: 'provider',
+        academico: 'academy',
+      };
+
+      // Mapeo inverso: de key frontend a tipo_perfil en BD
+      const roleToPerfilBD = {
+        admin: 'admin',
+        producer: 'productora',
+        provider: 'proveedor',
+        academy: 'academico',
+      };
+
+      if (new URLSearchParams(window.location.search).get('registered') === '1' && registrationNotice) {
+        registrationNotice.style.display = 'flex';
+      }
+
+      form?.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const email = String(document.querySelector('input[name="email"]')?.value || '').trim();
+        const password = String(document.querySelector('input[name="password"]')?.value || '');
+
+        if (!email || !password) {
+          alert('Ingresa correo y contraseña.');
+          return;
+        }
+
+        if (submitBtn) submitBtn.textContent = 'Validando...';
+
+        try {
+          const rolBD = roleToPerfilBD[selectedRole] || selectedRole;
+          const response = await fetch('/api/v1/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password, rolSolicitado: rolBD }),
+          });
+
+          const payload = await response.json();
+          if (!response.ok) {
+            throw new Error(payload?.mensaje || payload?.message || 'No fue posible iniciar sesión');
+          }
+
+          const tipoPerfil = payload?.datos?.usuario?.tipo_perfil || payload?.usuario?.tipo_perfil;
+          const roleKey = perfilToRole[tipoPerfil] || 'producer';
+          const usuario = payload?.datos?.usuario || payload?.usuario || {};
+          
+          // Valida que el rol devuelto por el backend coincida con el rol seleccionado en el formulario
+          if (roleKey !== selectedRole) {
+            throw new Error(
+              `Este usuario no pertenece al rol "${roleMap[selectedRole]?.label || selectedRole}". Su perfil es: ${roleMap[roleKey]?.label || tipoPerfil}.`
+            );
+          }
+
+          const role = roleMap[roleKey] || roleMap.academy;
+          const redirectParam = new URLSearchParams(window.location.search).get('redirect');
+          const safeRedirect = redirectParam && redirectParam.startsWith('/') ? redirectParam : null;
+
+          localStorage.setItem(
+            'pufab_session',
+            JSON.stringify({
+              loggedIn: true,
+              role: roleKey,
+              name: usuario.nombre || email.split('@')[0].replaceAll('.', ' '),
+              email,
+              avatarUrl: usuario.avatar_url || '',
+              bio: usuario.bio || '',
+              token: payload?.datos?.access_token || payload?.access_token,
+              startedAt: new Date().toISOString(),
+            }),
+          );
+          localStorage.setItem('pufab_token', payload?.datos?.access_token || payload?.access_token || '');
+
+          window.location.href = safeRedirect || role.path;
+        } catch (error) {
+          alert(error?.message || 'Error iniciando sesión');
+        } finally {
+          if (submitBtn) submitBtn.textContent = 'Iniciar sesión';
+        }
+      });
+    </script>
+  </body>
+</html>

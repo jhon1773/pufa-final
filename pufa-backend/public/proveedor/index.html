@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <script src='/route-guard.js'></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PUFAB - Proveedor | Mi Perfil</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="portal-page">
+    <header class="gov-header">
+      <div class="container gov-header-inner">
+        <img src="https://www.figma.com/api/mcp/asset/55d910c5-1bcc-479c-acd9-c78a28860e9b" alt="GOV.CO" class="gov-logo" />
+        <nav class="gov-links"><a href="https://www.gov.co/" target="_blank" rel="noreferrer">GOV.CO</a><a href="#">Ministerio de Cultura</a><a href="#">Proimágenes</a></nav>
+      </div>
+      <div class="flag-strip"></div>
+    </header>
+
+    <nav class="site-nav">
+      <div class="container site-nav-inner">
+        <a href="/" class="brand"><span class="brand-icon">◧</span><span>PUFAB</span></a>
+        <button class="menu-toggle" aria-label="Abrir menú" id="menuToggle">☰</button>
+        <div class="nav-links" id="navLinks">
+          <a href="/">Inicio</a>
+          <a href="/directorio/">Directorio</a>
+          <a href="/tramites/">Trámites</a>
+          <a href="/contacto/">Contacto</a>
+          <a href="/proveedor/" class="active">Proveedor</a>
+        </div>
+        <div class="portal-user">Laura Castillo</div>
+      </div>
+    </nav>
+
+    <main class="portal-shell container">
+      <aside class="portal-sidebar">
+        <h2>Mi Perfil Profesional</h2>
+        <a class="portal-link active" href="/proveedor/">Mi Panel</a>
+        <a class="portal-link" href="/proveedor/proveedor-2.html">Portafolio</a>
+        <a class="portal-link" href="/proveedor/proveedor-3.html">Disponibilidad</a>
+        <a class="portal-link" href="/proveedor/proveedor-4.html">Solicitudes</a>
+        <a class="portal-link" href="/proveedor/proveedor-5.html">Mensajes</a>
+      </aside>
+
+      <section class="portal-content" id="proveedorPanel">Cargando perfil...</section>
+    </main>
+
+    <div id="editProfileModal" class="modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:1200; align-items:center; justify-content:center;">
+      <div style="background:#fff; width:min(640px,92%); border-radius:14px; padding:1.25rem; box-shadow:0 18px 48px rgba(0,0,0,.25);">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:1rem;">
+          <h3 style="margin:0;">Editar perfil de proveedor</h3>
+          <button type="button" id="closeEditProfile" style="background:none;border:none;font-size:20px;cursor:pointer;">✕</button>
+        </div>
+        <form id="editProfileForm" style="display:grid; gap:0.9rem;">
+          <label style="display:grid; gap:0.35rem; font-size:14px;">Descripción del perfil
+            <textarea id="profileDescripcion" rows="4" style="padding:0.75rem;border:1px solid #d1d5db;border-radius:10px;resize:vertical;"></textarea>
+          </label>
+          <label style="display:grid; gap:0.35rem; font-size:14px;">Sitio web
+            <input id="profileSitioWeb" type="url" placeholder="https://" style="padding:0.75rem;border:1px solid #d1d5db;border-radius:10px;" />
+          </label>
+          <label style="display:grid; gap:0.35rem; font-size:14px;">Teléfono
+            <input id="profileTelefono" type="tel" placeholder="3000000000" style="padding:0.75rem;border:1px solid #d1d5db;border-radius:10px;" />
+          </label>
+          <label style="display:flex; gap:0.6rem; align-items:center; font-size:14px;">
+            <input id="profileVisibleDirectorio" type="checkbox" checked />
+            Mostrar en el directorio público
+          </label>
+          <div style="display:flex; gap:0.75rem; justify-content:flex-end;">
+            <button type="button" id="cancelEditProfile" class="btn btn-ghost">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="/api-client.js"></script>
+    <script>
+      const menuToggle = document.getElementById('menuToggle');
+      const navLinks = document.getElementById('navLinks');
+      const proveedorPanel = document.getElementById('proveedorPanel');
+      const editProfileModal = document.getElementById('editProfileModal');
+      const editProfileForm = document.getElementById('editProfileForm');
+      const closeEditProfile = document.getElementById('closeEditProfile');
+      const cancelEditProfile = document.getElementById('cancelEditProfile');
+      const profileDescripcion = document.getElementById('profileDescripcion');
+      const profileSitioWeb = document.getElementById('profileSitioWeb');
+      const profileTelefono = document.getElementById('profileTelefono');
+      const profileVisibleDirectorio = document.getElementById('profileVisibleDirectorio');
+      let currentProfile = null;
+      menuToggle?.addEventListener('click', () => navLinks?.classList.toggle('open'));
+
+      function money(value) {
+        return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(value);
+      }
+
+      function openEditProfile() {
+        if (!currentProfile) return;
+        profileDescripcion.value = currentProfile.descripcion || '';
+        profileSitioWeb.value = currentProfile.contacto?.sitio_web || '';
+        profileTelefono.value = currentProfile.contacto?.telefono || '';
+        profileVisibleDirectorio.checked = true;
+        editProfileModal.style.display = 'flex';
+      }
+
+      function closeProfileModal() {
+        editProfileModal.style.display = 'none';
+      }
+
+      async function bootstrap() {
+        try {
+          const data = await API_CLIENT.portal.proveedor.panel();
+          currentProfile = data;
+          proveedorPanel.innerHTML = `
+          <div class="portal-breadcrumb">Panel de Proveedor > Mi Panel</div>
+          <div class="provider-header">
+            <div>
+              <h1>${data.nombre}</h1>
+              <p>${data.rol} · ${data.ciudad} · ${data.rating} (${data.resenas} reseñas)</p>
+              <small>${data.descripcion}</small>
+            </div>
+            <button class="btn btn-primary" type="button" id="editProfileBtn">Editar Perfil</button>
+          </div>
+
+          <div class="portal-metrics">
+            <article><strong>${data.metricas.proyectos}</strong><span>Proyectos Completados</span></article>
+            <article><strong>${data.metricas.solicitudes}</strong><span>Solicitudes Pendientes</span></article>
+            <article><strong>${data.metricas.reseñas}</strong><span>Reseñas</span></article>
+            <article><strong>${money(data.metricas.tarifaBase)}</strong><span>Tarifa Base</span></article>
+          </div>
+
+          <section class="portal-card">
+            <h3>Mis Servicios</h3>
+            <div class="services-list">${data.servicios.map((s) => `<div><span>${s.nombre}</span><strong>${money(s.precio)}</strong></div>`).join('')}</div>
+          </section>
+
+          <section class="portal-card">
+            <h3>Solicitudes Recientes</h3>
+            ${data.solicitudes.map((r) => `<div class="portal-permit"><div><small>${r.codigo} · ${r.estado}</small><strong>${r.proyecto}</strong><span>${r.cliente} · ${r.fecha} · ${r.dias} días</span></div><strong>${money(r.valor)}</strong></div>`).join('')}
+          </section>
+        `;
+
+          document.getElementById('editProfileBtn')?.addEventListener('click', openEditProfile);
+        } catch (error) {
+          proveedorPanel.innerHTML = `
+            <div class="portal-breadcrumb">Panel de Proveedor > Mi Panel</div>
+            <article class="portal-card">
+              <h1>No fue posible cargar tu perfil</h1>
+              <p>${error?.message || 'Revisa tu sesión o vuelve a intentarlo.'}</p>
+              <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+                <a class="btn btn-primary" href="/iniciar-sesion/">Volver a iniciar sesión</a>
+                <a class="btn btn-ghost" href="/contacto/">Contactar soporte</a>
+              </div>
+            </article>
+          `;
+        }
+      }
+
+      editProfileForm?.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        try {
+          await API_CLIENT.perfiles.editarProveedor({
+            descripcion_perfil: profileDescripcion.value.trim(),
+            sitio_web: profileSitioWeb.value.trim(),
+            telefono: profileTelefono.value.trim(),
+            visible_directorio: profileVisibleDirectorio.checked,
+          });
+          closeProfileModal();
+          await bootstrap();
+          alert('Perfil actualizado correctamente.');
+        } catch (error) {
+          alert(error?.message || 'No fue posible actualizar el perfil.');
+        }
+      });
+
+      closeEditProfile?.addEventListener('click', closeProfileModal);
+      cancelEditProfile?.addEventListener('click', closeProfileModal);
+
+      bootstrap();
+    </script>
+    <script src='/nav-session.js'></script>
+    <script src='/sidebar-slider.js'></script>
+  </body>
+</html>

@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PUFAB - Detalle Proyecto</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+      .detail-grid {
+        display: grid;
+        grid-template-columns: 1fr 300px;
+        gap: 2rem;
+      }
+
+      .detail-main {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      .detail-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .detail-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1.5rem;
+      }
+
+      .detail-header h1 {
+        margin: 0;
+        font-size: 28px;
+      }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+      }
+
+      .info-item {
+        border-left: 3px solid var(--green-700);
+        padding-left: 1rem;
+      }
+
+      .info-item strong {
+        display: block;
+        font-size: 11px;
+        text-transform: uppercase;
+        color: #768794;
+        margin-bottom: 0.4rem;
+      }
+
+      .info-item span {
+        display: block;
+        font-size: 15px;
+        color: #333;
+      }
+
+      .section-title {
+        font-size: 16px;
+        font-weight: 600;
+        margin: 1.5rem 0 1rem;
+        border-bottom: 2px solid var(--green-700);
+        padding-bottom: 0.5rem;
+      }
+
+      .tramites-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .tramite-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background: #f9f9f9;
+        border-radius: 6px;
+        border-left: 3px solid var(--green-700);
+      }
+
+      .tramite-info {
+        flex: 1;
+      }
+
+      .tramite-title {
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+      }
+
+      .tramite-meta {
+        font-size: 12px;
+        color: #768794;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 0.3rem 0.75rem;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .badge-pendiente {
+        background: #fef3c7;
+        color: #92400e;
+      }
+
+      .badge-aprobado {
+        background: #dcfce7;
+        color: #166534;
+      }
+
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      .sidebar-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .sidebar-card h3 {
+        margin: 0 0 1rem;
+        font-size: 13px;
+        text-transform: uppercase;
+        color: #768794;
+      }
+
+      .sidebar-card ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      .sidebar-card li {
+        padding: 0.5rem 0;
+        font-size: 13px;
+        border-bottom: 1px solid #e0e0e0;
+      }
+
+      .sidebar-card li:last-child {
+        border-bottom: none;
+      }
+
+      .action-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-top: 1rem;
+      }
+
+      .btn {
+        padding: 0.6rem 1rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 13px;
+        transition: 0.2s;
+        text-align: center;
+        text-decoration: none;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #1b5e20, #2e7d32);
+        color: white;
+        box-shadow: 0 10px 24px rgba(46, 125, 50, 0.22);
+      }
+
+      .btn-primary:hover {
+        background: linear-gradient(135deg, #16481a, #256428);
+      }
+
+      .btn-secondary {
+        background: #fff;
+        color: #1e3a8a;
+        border: 1px solid #c7d2fe;
+        box-shadow: 0 8px 18px rgba(37, 99, 235, 0.08);
+      }
+
+      .btn-secondary:hover {
+        background: #eff6ff;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 2rem;
+        color: #768794;
+      }
+
+      .error {
+        background: #fee2e2;
+        color: #991b1b;
+        padding: 1rem;
+        border-radius: 6px;
+      }
+
+      @media (max-width: 768px) {
+        .detail-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .info-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="gov-header">
+      <div class="container gov-header-inner">
+        <img
+          src="https://www.figma.com/api/mcp/asset/55d910c5-1bcc-479c-acd9-c78a28860e9b"
+          alt="GOV.CO"
+          class="gov-logo"
+        />
+        <nav class="gov-links">
+          <a href="https://www.gov.co/" target="_blank" rel="noreferrer">GOV.CO</a>
+          <a href="#">Ministerio de Cultura</a>
+          <a href="#">Proimágenes</a>
+        </nav>
+      </div>
+      <div class="flag-strip"></div>
+    </header>
+
+    <nav class="site-nav">
+      <div class="container site-nav-inner">
+        <a href="/" class="brand">
+          <span class="brand-icon">◧</span>
+          <strong>PUFAB</strong>
+        </a>
+        <div class="nav-links" id="navLinks">
+          <a href="/">Inicio</a>
+          <a href="/dashboard/">Dashboard</a>
+        </div>
+        <div class="nav-cta">
+          <button class="btn btn-ghost" id="logoutBtn">Cerrar Sesión</button>
+        </div>
+      </div>
+    </nav>
+
+    <main class="section-white">
+      <div class="container">
+        <a href="javascript:history.back()" style="text-decoration: none; color: var(--green-700); margin-bottom: 1rem; display: inline-block;">← Volver</a>
+
+        <div id="errorContainer"></div>
+        <div id="contentContainer" class="loading">Cargando proyecto...</div>
+      </div>
+    </main>
+
+    <script src="/api-client.js"></script>
+    <script>
+      const proyectoId = new URLSearchParams(window.location.search).get('id');
+      const errorContainer = document.getElementById('errorContainer');
+      const contentContainer = document.getElementById('contentContainer');
+
+      // Logout
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        API_CLIENT.clearSession();
+        window.location.href = '/iniciar-sesion/';
+      });
+
+      if (!proyectoId) {
+        errorContainer.innerHTML = '<div class="error">❌ ID de proyecto no especificado</div>';
+        contentContainer.style.display = 'none';
+      } else {
+        cargarProyecto();
+      }
+
+      async function cargarProyecto() {
+        try {
+          const proyecto = await API_CLIENT.proyectos.obtener(proyectoId);
+
+          $html(proyecto);
+          await renderDocumentosProyecto(proyecto.id);
+
+          const tramitesDelProyecto = Array.isArray(proyecto.tramites) ? proyecto.tramites : [];
+          renderTramites(tramitesDelProyecto);
+        } catch (error) {
+          errorContainer.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+          contentContainer.style.display = 'none';
+        }
+      }
+
+      function $html(proyecto) {
+        const inicio = proyecto.fecha_inicio_prevista ? new Date(proyecto.fecha_inicio_prevista) : null;
+        const fin = proyecto.fecha_fin_prevista ? new Date(proyecto.fecha_fin_prevista) : null;
+        const duracionDias = inicio && fin
+          ? Math.max(1, Math.floor((fin.getTime() - inicio.getTime()) / (1000 * 60 * 60 * 24)) + 1)
+          : null;
+
+        contentContainer.innerHTML = `
+          <div class="detail-grid">
+            <div class="detail-main">
+              <div class="detail-card">
+                <div class="detail-header">
+                  <div>
+                    <h1>${proyecto.nombre_proyecto || 'Proyecto sin título'}</h1>
+                    <p style="margin: 0.5rem 0 0; color: #768794; font-size: 13px;">ID: ${proyecto.id}</p>
+                  </div>
+                </div>
+
+                <div class="info-grid">
+                  <div class="info-item">
+                    <strong>Director/Realizador</strong>
+                    <span>${proyecto.usuario?.email || 'N/A'}</span>
+                  </div>
+                  <div class="info-item">
+                    <strong>Tipo de Producción</strong>
+                    <span>${proyecto.tipo_produccion?.nombre || 'N/A'}</span>
+                  </div>
+                  <div class="info-item">
+                    <strong>Municipio Principal</strong>
+                    <span>${proyecto.municipio_principal?.nombre || 'N/A'}</span>
+                  </div>
+                  <div class="info-item">
+                    <strong>Presupuesto</strong>
+                    <span>$${Number(proyecto.presupuesto_total || 0).toLocaleString('es-CO')}</span>
+                  </div>
+                  <div class="info-item">
+                    <strong>Fecha de Inicio</strong>
+                    <span>${proyecto.fecha_inicio_prevista ? new Date(proyecto.fecha_inicio_prevista).toLocaleDateString('es-CO') : 'N/A'}</span>
+                  </div>
+                  <div class="info-item">
+                    <strong>Duración (días)</strong>
+                    <span>${duracionDias || 'N/A'} días</span>
+                  </div>
+                </div>
+
+                <div class="section-title">📝 Descripción</div>
+                <p>${proyecto.sinopsis || 'Sin descripción'}</p>
+
+                <div class="section-title">🎥 Equipo Técnico</div>
+                <p style="color: #768794;">
+                  ${proyecto.tamano_equipo ? `Tamaño del equipo: ${proyecto.tamano_equipo}` : 'Sin información de equipo'}
+                </p>
+
+                <div class="section-title">📞 Contacto</div>
+                <ul style="margin: 0; padding-left: 1rem; color: #768794;">
+                  <li>Contacto: ${proyecto.contacto_principal || proyecto.usuario?.email || 'N/A'}</li>
+                  <li>Teléfono: ${proyecto.telefono_contacto || proyecto.usuario?.telefono || 'N/A'}</li>
+                </ul>
+
+                <div class="section-title">📎 Documentos adicionales</div>
+                <div class="tramites-list" id="documentosProyectoList">
+                  <p class="loading">Cargando documentos...</p>
+                </div>
+
+                <div class="section-title">🎬 Trámites Asociados</div>
+                <div class="tramites-list" id="tramitesList">
+                  <p class="loading">Cargando trámites...</p>
+                </div>
+              </div>
+            </div>
+
+            <aside class="sidebar">
+              <div class="sidebar-card">
+                <h3>Información del Proyecto</h3>
+                <ul>
+                  <li><strong>Creado:</strong></li>
+                  <li>${new Date(proyecto.fecha_creacion).toLocaleDateString('es-CO')}</li>
+                  <li style="border-bottom: none;">
+                    <strong>Actualizado:</strong><br>
+                    ${new Date(proyecto.fecha_actualizacion || proyecto.fecha_creacion).toLocaleDateString('es-CO')}
+                  </li>
+                </ul>
+              </div>
+
+              <div class="sidebar-card">
+                <h3>Director/Realizador</h3>
+                <ul>
+                  <li>${proyecto.usuario?.email || 'N/A'}</li>
+                  <li>Rol: ${proyecto.usuario?.rol || 'productor'}</li>
+                  <li style="border-bottom: none;">Teléfono: ${proyecto.usuario?.telefono || 'N/A'}</li>
+                </ul>
+              </div>
+
+              <div class="sidebar-card">
+                <h3>Acciones</h3>
+                <div class="action-buttons">
+                  <a href="/crear-tramite/?proyecto-id=${proyecto.id}" class="btn btn-primary">+ Crear Trámite</a>
+                  <a href="/editar-proyecto/?id=${proyecto.id}" class="btn btn-secondary">Editar Proyecto</a>
+                </div>
+              </div>
+            </aside>
+          </div>
+        `;
+      }
+
+      function renderTramites(tramites) {
+        const container = document.getElementById('tramitesList');
+
+        if (!tramites || tramites.length === 0) {
+          container.innerHTML = '<p style="color: #768794;">Sin trámites creados aún</p>';
+          return;
+        }
+
+        container.innerHTML = tramites
+          .map(
+            (t) => `
+          <div class="tramite-item">
+            <div class="tramite-info">
+              <div class="tramite-title">Trámite #${t.radicado || t.id}</div>
+              <div class="tramite-meta">
+                Estado: <strong>${t.estado || 'Pendiente'}</strong> • ${new Date(t.fecha_creacion).toLocaleDateString('es-CO')}
+              </div>
+            </div>
+            <a href="/detalle-tramite/?id=${t.id}" class="btn btn-primary" style="padding: 0.4rem 0.8rem; font-size: 12px; width: auto;">Ver</a>
+          </div>
+        `
+          )
+          .join('');
+      }
+
+      async function renderDocumentosProyecto(proyectoIdValue) {
+        const container = document.getElementById('documentosProyectoList');
+        if (!container) return;
+
+        try {
+          const documentos = await API_CLIENT.documentos.listarPorProyecto(proyectoIdValue);
+          const docs = documentos.data || documentos;
+
+          if (!docs || docs.length === 0) {
+            container.innerHTML = '<p style="color: #768794;">Sin documentos adicionales</p>';
+            return;
+          }
+
+          container.innerHTML = docs
+            .map(
+              (d) => `
+                <div class="tramite-item">
+                  <div class="tramite-info">
+                    <div class="tramite-title">📄 ${d.nombre_original || 'Documento'}</div>
+                    <div class="tramite-meta">${new Date(d.fecha_subida || Date.now()).toLocaleDateString('es-CO')}</div>
+                  </div>
+                  <button class="btn btn-primary" onclick="downloadDocumentoProyecto(${d.id})" style="padding: 0.4rem 0.8rem; font-size: 12px; width: auto;">Descargar</button>
+                </div>
+              `,
+            )
+            .join('');
+        } catch (error) {
+          container.innerHTML = '<p style="color: #b91c1c;">No se pudieron cargar documentos</p>';
+        }
+      }
+
+      async function downloadDocumentoProyecto(docId) {
+        try {
+          const token = localStorage.getItem('pufab_token');
+          const resp = await fetch(`/api/v1/documentos/${docId}/descargar`, {
+            headers: token ? { Authorization: `Bearer ${token}` } : {},
+          });
+
+          if (!resp.ok) throw new Error('No se pudo descargar el documento');
+
+          const blob = await resp.blob();
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `documento-proyecto-${docId}`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+        } catch (error) {
+          alert('Error descargando documento: ' + error.message);
+        }
+      }
+    </script>
+  </body>
+</html>

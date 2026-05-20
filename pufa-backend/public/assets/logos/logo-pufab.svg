@@ -1,0 +1,10 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fondo circular verde -->
+  <circle cx="100" cy="100" r="95" fill="#1B5E20" stroke="#FDB913" stroke-width="2"/>
+  
+  <!-- Letra P estilizada -->
+  <text x="100" y="130" font-size="80" font-weight="bold" fill="#FDB913" text-anchor="middle" font-family="Arial, sans-serif">◧</text>
+  
+  <!-- Texto PUFAB -->
+  <text x="100" y="160" font-size="16" font-weight="bold" fill="white" text-anchor="middle" font-family="Arial, sans-serif">PUFAB</text>
+</svg>
